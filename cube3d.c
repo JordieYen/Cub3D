@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/15 15:38:43 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/15 18:28:56 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,22 +86,83 @@ void	print_map(t_map *map)
 	}
 }
 
+int	check_space(t_map *map, int x, int y)
+{
+	if (map->coord[y + 1] != NULL)
+	{
+		if (map->coord[y + 1][x] != ' ' && map->coord[y + 1][x] != '1')
+			return (0);
+	}
+	if (y != 0)
+	{
+		if (map->coord[y - 1][x] != ' ' && map->coord[y - 1][x] != '1')
+			return (0);
+	}
+	if (map->coord[y][x + 1] != '\0')
+	{
+		if (map->coord[y][x + 1] != ' ' && map->coord[y][x + 1] != '1')
+			return (0);
+	}
+	if (x != 0)
+	{
+		if (map->coord[y][x - 1] != ' ' && map->coord[y][x - 1] != '1')
+			return (0);
+	}
+	return (1);
+}
+
+int	check_walls(t_map *map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (map->coord[i] != NULL)
+	{
+		j = 0;
+		while (map->coord[i][j] != '\0')
+		{
+			if (map->coord[i][j] == ' ')
+			{
+				if (!check_space(map, j, i))
+					return (0);
+			}
+			if ((i == 0 || map->coord[i + 1] == 0) && (map->coord[i][j]
+				!= ' ' && map->coord[i][j] != '1'))
+				return (0);
+			else if ((j == 0 || map->coord[i][j + 1] == '\0')
+				&& (map->coord[i][j] != ' ' && map->coord[i][j] != '1'))
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
+}
+
 int	check_map(t_map *map)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < map->ylen)
+	while (map->coord[i] != NULL)
 	{
 		j = 0;
-		while (j < map->xlen)
+		while (map->coord[i][j] != '\0')
 		{
-			
+			if (map->coord[i][j] != '0' && map->coord[i][j] != '1'
+				&& map->coord[i][j] != ' ' && map->coord[i][j] != 'N'
+				&& map->coord[i][j] != 'S' && map->coord[i][j] != 'E'
+				&& map->coord[i][j] != 'W')
+				return (0);
 			j++;
 		}
 		i++;
 	}
+	if (!check_walls(map))
+		return (0);
+	return (1);
 }
 
 int	main(int argc, char **argv)
@@ -116,7 +177,10 @@ int	main(int argc, char **argv)
 		close(fd);
 		fd = open(argv[1], O_RDONLY);
 		fill_map(&map, fd);
-		print_map(&map);
+		if (check_map(&map))
+			print_map(&map);
+		else
+			printf("invalid map\n");
 	}
 	else
 		printf("input file name.");
