@@ -1,47 +1,33 @@
 NAME = cube3d
+SOURCES = cube3d.c
+OBJECTS = $(SOURCES:.c=.o)
 
 CC = gcc
-
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g
-
-LIBFT = -Llibft -lft
-
-GNL = -Lgnl -l_get_next_line
-
-MLX = -lmlx -framework OpenGL -framework AppKit
-
-INCLUDES = -Iincludes -Ilibft -Ignl -Imlx
-
-MAIN = cube3d.c 
-
-# SRC =
-
-OBJ = ${SRC:.c=.o}
+CFLAGS = -Wall -Wextra -Werror -Imlx
 
 all: $(NAME)
 
-$(NAME): #${OBJ}
+$(NAME): $(OBJECTS) libft gnl
+	$(CC) -o $@ $(OBJECTS) -Llibft -lft -Lmlx -lmlx -Llibgnl -lgnl
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $?
+
+gnl:
+	make -C libgnl
+
+libft:
 	make -C libft
-	make -C gnl
-	@$(CC) $(CFLAGS) $(INCLUDES) -o $@ ${MAIN} ${SRC} $(LIBFT) $(MLX) $(GNL)
-	# rm -rf *.dSYM
 
 clean:
-	@$(RM) $(OBJ)
-	make clean -C libft
-	make clean -C gnl
+	$(RM) $(OBJECTS)
+	make -C libft clean
+	make -C libgnl clean
 
 fclean: clean
-	@$(RM) $(NAME)
-	make fclean -C libft
-	make fclean -C gnl
-
-test: re
-	./$(NAME) testfiles/42.fdf
-
-dc: re
-	./$(NAME) testfiles/53.fdf
+	$(RM) $(NAME) libft/libft.a
+	$(RM) $(NAME) libgnl/libgnl.a
 
 re: fclean all
 
-.PHONY: clean fclean
+.PHONY: all libft clean fclean re

@@ -13,12 +13,6 @@
 #ifndef CUBE3D_H
 # define CUBE3D_H
 
-# include "mlx.h"
-# include "libft/libft.h"
-# include "gnl/get_next_line.h"
-# include <stdio.h>
-# include <math.h>
-
 typedef struct s_map
 {
 	char	**coord;

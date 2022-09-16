@@ -11,6 +11,10 @@
 /* ************************************************************************** */
 
 #include "cube3d.h"
+# include "libft/libft.h"
+# include "libgnl/get_next_line.h"
+# include <stdio.h>
+# include <math.h>
 
 void	init_map(t_map *map, int fd)
 {
