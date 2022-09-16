@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/16 14:36:31 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/16 15:57:46 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	init_map(t_map *map, int fd)
 		free(line);
 		line = get_next_line(fd);
 	}
-	map->xlen = x - 2;
+	map->xlen = x - 1;
 	map->ylen = y;
 	if (y > 0)
 		map->coord = malloc((y + 1) * sizeof(char *));
@@ -55,13 +55,13 @@ void	fill_map(t_map *map, int fd)
 	{
 		j = 0;
 		line = get_next_line(fd);
-		while (j < map->xlen + 1)
+		while (j < map->xlen + 2)
 		{
 			if (j < ft_strlen(line) - 1)
 				map->coord[i][j] = line[j];
 			else
 				map->coord[i][j] = ' ';
-			if (j == map->xlen )
+			if (j == map->xlen + 1)
 				map->coord[i][j] = '\0';
 			j++;
 		}
@@ -80,7 +80,7 @@ void	print_map(t_map *map)
 	while (i < map->ylen)
 	{
 		j = 0;
-		while (j < map->xlen)
+		while (j < map->xlen + 2)
 		{
 			printf("%c", map->coord[i][j]);
 			j++;
@@ -185,6 +185,7 @@ int	main(int argc, char **argv)
 			print_map(&map);
 		else
 			printf("invalid map\n");
+		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
 	}
 	else
 		printf("input file name.");
