@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/16 15:57:46 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/26 13:20:28 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,31 @@ int	check_map(t_map *map)
 	return (1);
 }
 
+void	createScreen(void)
+{
+	t_vars	vars;
+	t_data	img;
+	// t_coord	center;
+
+	vars.mlx = mlx_init();
+	vars.win = mlx_new_window(vars.mlx, 1920, 1080, "FDF IS SO COOL");
+	img.img = mlx_new_image(vars.mlx, 1920, 1080);
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
+			&img.line_length, &img.endian);
+	vars.img = &img;
+	// vars.chart = chart;
+	// init_coord(&center, 0, 0, 0);
+	// center.x = (chart->coords[0][chart->xlen - 1].x / 2)
+	// 	+ chart->coords[0][0].x;
+	// center.y = (chart->coords[chart->ylen - 1][0].y / 2)
+	// 	+ chart->coords[0][0].y;
+	// rotatechart(&img, chart, center);
+	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
+	// mlx_hook(vars.win, 17, 0, closer, &vars);
+	// mlx_hook(vars.win, 3, 0L, key_hook, &vars);
+	mlx_loop(vars.mlx);	
+}
+
 int	main(int argc, char **argv)
 {
 	int		fd;
@@ -182,6 +207,7 @@ int	main(int argc, char **argv)
 		else
 			printf("invalid map\n");
 		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
+		createScreen();
 	}
 	else
 		printf("input file name.");
