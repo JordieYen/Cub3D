@@ -1,4 +1,4 @@
-NAME = lib_get_next_line.a
+NAME = libgnl.a
 
 CC = gcc
 
