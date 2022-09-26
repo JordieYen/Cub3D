@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/26 14:09:01 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/26 18:13:34 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <stdio.h>
 # include <math.h>
 # include "libmlx/mlx.h"
+#define BLK_WDT 32
+#define STP_SZ 4
 
 void	init_map(t_map *map, int fd)
 {
@@ -43,6 +45,9 @@ void	init_map(t_map *map, int fd)
 		map->coord[y] = malloc((x + 1) * sizeof(char));
 		y--;
 	}
+	map->player = malloc(sizeof(t_player));
+	map->player->x = BLK_WDT / 2;
+	map->player->y = BLK_WDT / 2;
 }
 
 void	fill_map(t_map *map, int fd)
@@ -185,17 +190,97 @@ void	put_p(t_data *data, int x, int y, int color)
 	}
 }
 
+void	swapchar(char *one, char *two)
+{
+	char temp;
+
+	temp = *one;
+	*one = *two;
+	*two = temp;
+}
+
+void	move_player_block(t_map *map, int key)
+{
+	int	x = map->player->xmap;
+	int	y = map->player->ymap;
+	
+	if (key == S && map->coord[y + 1][x] == '0')
+	{
+		swapchar(&map->coord[y + 1][x], &map->coord[y][x]);
+		map->player->y = 0;
+	} 
+	else if (key == W && map->coord[y - 1][x] == '0')
+	{
+		swapchar(&map->coord[y - 1][x], &map->coord[y][x]);
+		map->player->y = BLK_WDT;
+	}
+	else if (key == D && map->coord[y][x + 1] == '0')
+	{
+		swapchar(&map->coord[y][x + 1], &map->coord[y][x]);
+		map->player->x = 0;
+	}
+	else if (key == A && map->coord[y][x - 1] == '0')
+	{
+		swapchar(&map->coord[y][x - 1], &map->coord[y][x]);
+		map->player->x = BLK_WDT;
+	}
+}
+
+void move_player(t_map *map, int key)
+{
+	if (key == S)
+	{
+		if (map->coord[map->player->ymap + 1][map->player->xmap] == '0' || map->player->y <= BLK_WDT)
+			map->player->y += STP_SZ;
+		if (map->player->y >= BLK_WDT)
+			move_player_block(map, key);
+	}
+	if (key == W)
+	{
+		if (map->coord[map->player->ymap - 1][map->player->xmap] == '0' || map->player->y >= 0)
+			map->player->y -= STP_SZ;
+		if (map->player->y <= 0)
+			move_player_block(map, key);
+	}
+	if (key == D)
+	{
+		if (map->coord[map->player->ymap][map->player->xmap + 1] == '0' || map->player->x <= BLK_WDT)
+			map->player->x += STP_SZ;
+		if (map->player->x >= BLK_WDT)
+			move_player_block(map, key);
+	}
+	if (key == A)
+	{
+		if (map->coord[map->player->ymap][map->player->xmap - 1] == '0' || map->player->x >= 0)
+			map->player->x -= STP_SZ;
+		if (map->player->x <= 0)
+			move_player_block(map, key);
+	}
+}
+
+void	createScreen(t_map *map);
+
+
+int	deal_key(int key, t_map *map)
+{
+	if (key == W || key == A || key == S || key == D)
+	{
+		move_player(map, key);
+		mlx_clear_window(map->mlx, map->win);
+		createScreen(map);
+	}
+	return (0);
+}
+
+
 void	createScreen(t_map *map)
 {
-	t_vars	vars;
 	t_data	img;
 
-	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, 1920, 1080, "FDF IS SO COOL");
-	img.img = mlx_new_image(vars.mlx, 1920, 1080);
+	img.img = mlx_new_image(map->mlx, 1920, 1080);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 			&img.line_length, &img.endian);
-	vars.img = &img;
+	map->img = &img;
 
 	int	y;
 	int	j;
@@ -211,22 +296,32 @@ void	createScreen(t_map *map)
 		{
 			if (map->coord[y][x] == '1')
 				color = 0x0066B2FF;
+			else if (map->coord[y][x] == ' ')
+				color = 0x00000;
 			else
-				color = 0xFF0000;
+				color = 0xFF4500;
 			p = -1;
-			while (++p < 62)
+			while (++p < BLK_WDT)
 			{
 				j = -1;
-				while (++j < 62)
-					put_p(&img, x * 64 + p, y * 64 + j, color);
+				while (++j < BLK_WDT)
+					put_p(&img, x * BLK_WDT + p, y * BLK_WDT + j, color);
+			}
+			if (map->coord[y][x] == 'N' || map->coord[y][x] == 'S' || map->coord[y][x] == 'E' || map->coord[y][x] == 'W')
+			{
+				map->player->xmap = x;
+				map->player->ymap = y;
+				put_p(&img, (x * BLK_WDT) + map->player->x, (y * BLK_WDT) + map->player->y, 0xFFFF00);
+				put_p(&img, (x * BLK_WDT) + map->player->x + 1, (y * BLK_WDT) + map->player->y, 0xFFFF00);
+				put_p(&img, (x * BLK_WDT) + map->player->x, (y * BLK_WDT) + map->player->y - 1, 0xFFFF00);
+				put_p(&img, (x * BLK_WDT) + map->player->x + 1, (y * BLK_WDT) + map->player->y - 1, 0xFFFF00);
 			}
 			x++;
 		}
 		printf("\n");
 		y++;
 	}
-	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
-	mlx_loop(vars.mlx);	
+	mlx_put_image_to_window(map->mlx, map->win, img.img, 0, 0);
 }
 
 int	main(int argc, char **argv)
@@ -246,7 +341,12 @@ int	main(int argc, char **argv)
 		else
 			printf("invalid map\n");
 		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
+		printf("HELLOP\n");
+		map.mlx = mlx_init();
+		map.win = mlx_new_window(map.mlx, 1920, 1080, "FDF IS SO COOL");
+		mlx_key_hook(map.win, deal_key, &map);
 		createScreen(&map);
+		mlx_loop(map.mlx);
 	}
 	else
 		printf("input file name.");
