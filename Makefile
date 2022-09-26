@@ -5,10 +5,12 @@ OBJECTS = $(SOURCES:.c=.o)
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -Imlx
 
+MLX = -lmlx -framework OpenGL -framework AppKit
+
 all: $(NAME)
 
-$(NAME): $(OBJECTS) libft gnl
-	$(CC) -o $@ $(OBJECTS) -Llibft -lft -Lmlx -lmlx -Llibgnl -lgnl
+$(NAME): $(OBJECTS) gnl libft
+	$(CC) -o $@ $(OBJECTS) -Llibft -lft -Llibmlx $(MLX) -Llibgnl -lgnl
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $?
@@ -25,9 +27,9 @@ clean:
 	make -C libgnl clean
 
 fclean: clean
-	$(RM) $(NAME) libft/libft.a
-	$(RM) $(NAME) libgnl/libgnl.a
+	make -C libft fclean
+	make -C libgnl fclean
 
 re: fclean all
 
-.PHONY: all libft clean fclean re
+.PHONY: all libft libgnl clean fclean re

@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/26 13:20:28 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/26 14:09:01 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "libgnl/get_next_line.h"
 # include <stdio.h>
 # include <math.h>
+# include "libmlx/mlx.h"
 
 void	init_map(t_map *map, int fd)
 {
@@ -80,7 +81,7 @@ void	print_map(t_map *map)
 	while (i < map->ylen)
 	{
 		j = 0;
-		while (j < map->xlen + 2)
+		while (j < map->xlen)
 		{
 			printf("%c", map->coord[i][j]);
 			j++;
@@ -169,11 +170,25 @@ int	check_map(t_map *map)
 	return (1);
 }
 
-void	createScreen(void)
+void	put_p(t_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	if (y < 1080 && x < 1920)
+	{
+		if (y > 0 && x > 0)
+		{
+			dst = data->addr + (y * data->line_length + x
+					* (data->bits_per_pixel / 8));
+			*(unsigned int *)dst = color;
+		}
+	}
+}
+
+void	createScreen(t_map *map)
 {
 	t_vars	vars;
 	t_data	img;
-	// t_coord	center;
 
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, 1920, 1080, "FDF IS SO COOL");
@@ -181,16 +196,36 @@ void	createScreen(void)
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 			&img.line_length, &img.endian);
 	vars.img = &img;
-	// vars.chart = chart;
-	// init_coord(&center, 0, 0, 0);
-	// center.x = (chart->coords[0][chart->xlen - 1].x / 2)
-	// 	+ chart->coords[0][0].x;
-	// center.y = (chart->coords[chart->ylen - 1][0].y / 2)
-	// 	+ chart->coords[0][0].y;
-	// rotatechart(&img, chart, center);
+
+	int	y;
+	int	j;
+	int x;
+	int color;
+	int p;
+
+	y = 0;
+	while (y < map->ylen)
+	{
+		x = 0;
+		while (x < map->xlen)
+		{
+			if (map->coord[y][x] == '1')
+				color = 0x0066B2FF;
+			else
+				color = 0xFF0000;
+			p = -1;
+			while (++p < 62)
+			{
+				j = -1;
+				while (++j < 62)
+					put_p(&img, x * 64 + p, y * 64 + j, color);
+			}
+			x++;
+		}
+		printf("\n");
+		y++;
+	}
 	mlx_put_image_to_window(vars.mlx, vars.win, img.img, 0, 0);
-	// mlx_hook(vars.win, 17, 0, closer, &vars);
-	// mlx_hook(vars.win, 3, 0L, key_hook, &vars);
 	mlx_loop(vars.mlx);	
 }
 
@@ -211,7 +246,7 @@ int	main(int argc, char **argv)
 		else
 			printf("invalid map\n");
 		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
-		createScreen();
+		createScreen(&map);
 	}
 	else
 		printf("input file name.");
