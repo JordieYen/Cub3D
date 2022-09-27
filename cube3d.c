@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/27 12:56:58 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/09/27 13:46:20 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "libmlx/mlx.h"
 #define BLK_WDT 32
 #define STP_SZ 4
+#define PI 3.14159265
 
 void	init_map(t_map *map, int fd)
 {
@@ -48,6 +49,8 @@ void	init_map(t_map *map, int fd)
 	map->player = malloc(sizeof(t_player));
 	map->player->x = BLK_WDT / 2;
 	map->player->y = BLK_WDT / 2;
+	map->player->dx = cos(map->player->angle) * 5;
+	map->player->dy = sin(map->player->angle) * 5;
 }
 
 void	fill_map(t_map *map, int fd)
@@ -231,30 +234,38 @@ void move_player(t_map *map, int key)
 	if (key == S)
 	{
 		if (map->coord[map->player->ymap + 1][map->player->xmap] == '0' || map->player->y < BLK_WDT - STP_SZ)
-			map->player->y += STP_SZ;
+		{
+			map->player->x -= map->player->dx;
+			map->player->y -= map->player->dy;
+		}
 		if (map->player->y >= BLK_WDT)
 			move_player_block(map, key);
 	}
 	if (key == W)
 	{
 		if (map->coord[map->player->ymap - 1][map->player->xmap] == '0' || map->player->y > 0 + STP_SZ)
-			map->player->y -= STP_SZ;
+		{
+			map->player->x += map->player->dx;
+			map->player->y += map->player->dy;
+		}
 		if (map->player->y <= 0)
 			move_player_block(map, key);
 	}
 	if (key == D)
 	{
-		if (map->coord[map->player->ymap][map->player->xmap + 1] == '0' || map->player->x < BLK_WDT - STP_SZ)
-			map->player->x += STP_SZ;
-		if (map->player->x >= BLK_WDT)
-			move_player_block(map, key);
+		map->player->angle += 0.1;
+		if (map->player->angle > 2 * PI)
+			map->player->angle = map->player->angle - 2 * PI;
+		map->player->dx = cos(map->player->angle) * 5;
+		map->player->dy = sin(map->player->angle) * 5;
 	}
 	if (key == A)
 	{
-		if (map->coord[map->player->ymap][map->player->xmap - 1] == '0' || map->player->x > 0 + STP_SZ)
-			map->player->x -= STP_SZ;
-		if (map->player->x <= 0)
-			move_player_block(map, key);
+		map->player->angle -= 0.1;
+		if (map->player->angle < 0)
+			map->player->angle = map->player->angle + 2 * PI;
+		map->player->dx = cos(map->player->angle) * 5;
+		map->player->dy = sin(map->player->angle) * 5;
 	}
 }
 
@@ -315,7 +326,11 @@ void	createScreen(t_map *map)
 				put_p(&img, (x * BLK_WDT) + map->player->x + 1, (y * BLK_WDT) + map->player->y, 0xFFFF00);
 				put_p(&img, (x * BLK_WDT) + map->player->x, (y * BLK_WDT) + map->player->y - 1, 0xFFFF00);
 				put_p(&img, (x * BLK_WDT) + map->player->x + 1, (y * BLK_WDT) + map->player->y - 1, 0xFFFF00);
-				// while ()
+				color = -1; //reuse this var to create dots for direction
+				while (++color < 20)
+				{
+					put_p(&img, (x * BLK_WDT) + map->player->x + (map->player->dx * color / 4), (y * BLK_WDT) + map->player->y + (map->player->dy * color / 4), 0xFFFF00);	
+				}
 			}
 			x++;
 		}

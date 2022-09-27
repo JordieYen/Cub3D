@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/26 19:47:03 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/09/27 13:33:17 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ typedef struct s_player
 	int y;
 	int	xmap;
 	int	ymap;
-	int angle;
+	float angle;
+	float dx;
+	float dy;
 } t_player;
 
 typedef struct s_data
