@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/26 18:13:34 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/27 12:56:58 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,28 +230,28 @@ void move_player(t_map *map, int key)
 {
 	if (key == S)
 	{
-		if (map->coord[map->player->ymap + 1][map->player->xmap] == '0' || map->player->y <= BLK_WDT)
+		if (map->coord[map->player->ymap + 1][map->player->xmap] == '0' || map->player->y < BLK_WDT - STP_SZ)
 			map->player->y += STP_SZ;
 		if (map->player->y >= BLK_WDT)
 			move_player_block(map, key);
 	}
 	if (key == W)
 	{
-		if (map->coord[map->player->ymap - 1][map->player->xmap] == '0' || map->player->y >= 0)
+		if (map->coord[map->player->ymap - 1][map->player->xmap] == '0' || map->player->y > 0 + STP_SZ)
 			map->player->y -= STP_SZ;
 		if (map->player->y <= 0)
 			move_player_block(map, key);
 	}
 	if (key == D)
 	{
-		if (map->coord[map->player->ymap][map->player->xmap + 1] == '0' || map->player->x <= BLK_WDT)
+		if (map->coord[map->player->ymap][map->player->xmap + 1] == '0' || map->player->x < BLK_WDT - STP_SZ)
 			map->player->x += STP_SZ;
 		if (map->player->x >= BLK_WDT)
 			move_player_block(map, key);
 	}
 	if (key == A)
 	{
-		if (map->coord[map->player->ymap][map->player->xmap - 1] == '0' || map->player->x >= 0)
+		if (map->coord[map->player->ymap][map->player->xmap - 1] == '0' || map->player->x > 0 + STP_SZ)
 			map->player->x -= STP_SZ;
 		if (map->player->x <= 0)
 			move_player_block(map, key);
@@ -315,12 +315,13 @@ void	createScreen(t_map *map)
 				put_p(&img, (x * BLK_WDT) + map->player->x + 1, (y * BLK_WDT) + map->player->y, 0xFFFF00);
 				put_p(&img, (x * BLK_WDT) + map->player->x, (y * BLK_WDT) + map->player->y - 1, 0xFFFF00);
 				put_p(&img, (x * BLK_WDT) + map->player->x + 1, (y * BLK_WDT) + map->player->y - 1, 0xFFFF00);
+				// while ()
 			}
 			x++;
 		}
-		printf("\n");
 		y++;
 	}
+	printf("PLAYER X: %d PLAYER Y: %d\n", map->player->x, map->player->y);
 	mlx_put_image_to_window(map->mlx, map->win, img.img, 0, 0);
 }
 
@@ -341,7 +342,6 @@ int	main(int argc, char **argv)
 		else
 			printf("invalid map\n");
 		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
-		printf("HELLOP\n");
 		map.mlx = mlx_init();
 		map.win = mlx_new_window(map.mlx, 1920, 1080, "FDF IS SO COOL");
 		mlx_key_hook(map.win, deal_key, &map);
