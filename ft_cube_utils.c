@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cube_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 18:32:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/09/27 20:07:16 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/09/28 14:58:38 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,14 @@ void	put_p(t_data *data, int x, int y, int color)
 			*(unsigned int *)dst = color;
 		}
 	}
+}
+
+float	dist(int x1, int y1, int x2, int y2)
+{
+	float hypo;
+	
+	hypo = sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
+	return (hypo);
 }
 
 void    draw_two_points(t_map *map, int x1, int y1, int x2, int y2)

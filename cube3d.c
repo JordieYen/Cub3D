@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/27 20:11:21 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/09/28 15:24:17 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	init_map(t_map *map, int fd)
 	map->player = malloc(sizeof(t_player));
 	map->player->x = BLK_WDT / 2;
 	map->player->y = BLK_WDT / 2;
+	map->player->angle = 0;
 	map->player->dx = cos(map->player->angle) * 5;
 	map->player->dy = sin(map->player->angle) * 5;
 }
@@ -289,10 +290,50 @@ int	deal_key(int key, t_map *map)
 	return (0);
 }
 
+void	init_mycoord(t_coord *coord, int x1, int y1)
+{
+	coord->x = x1;
+	coord->y = y1;
+}
+
+static int	i_s(int num1, int num2)
+{
+	if (num1 < num2)
+		return (1);
+	return (-1);
+}
+
+void	connectdots(t_data *img, t_coord coord0, t_coord coord1, int color)
+{
+	t_coord	d;
+	t_coord	s;
+	t_coord	e;
+
+	init_mycoord(&d, abs(coord1.x - coord0.x), -abs(coord1.y - coord0.y));
+	init_mycoord(&s, i_s(coord0.x, coord1.x), i_s(coord0.y, coord1.y));
+	init_mycoord(&e, d.x + d.y, 0);
+	while (1)
+	{
+		put_p(img, coord0.x, coord0.y, color);
+		if (coord0.x == coord1.x && coord0.y == coord1.y)
+			break ;
+		e.y = 2 * e.x;
+		if (e.y >= d.y)
+		{
+			e.x += d.y;
+			coord0.x += s.x;
+		}
+		if (e.y <= d.x)
+		{
+			e.x += d.x;
+			coord0.y += s.y;
+		}
+	}
+}
+
 void	draw_rays(t_map *map)
 {
 	// t_data	*img;
-	return ;
 	int		ray_num;
 	int		dof;
 	int		xoff;
@@ -300,26 +341,38 @@ void	draw_rays(t_map *map)
 	int		mapy;
 	int		mapx;
 	float	aTan;
+	float	nTan;
 	int		i;
-
-	// img = map->img;
+	float	vx;
+	float	vy;
+	float	hx;
+	float	hy;
+	float	DistH;
+	float	DistV;
+	
 	ray_num = 1;
 	map->rays = malloc(sizeof(t_ray *) * ray_num);
 	map->rays->angle = map->player->angle;
-	// -- checking horizontal line --
+	hx = map->player->x;
+	hy = map->player->y;
+	vx = map->player->x;
+	vy = map->player->y;
+	DistH = 1000000;
+	DistV = 1000000;
 	i = -1;
-	while (++i <= ray_num)
+	while (++i < ray_num)
 	{
+		// -- checking horizontal line --
 		dof = 0;
 		aTan = -1/tan(map->rays[i].angle);
-		if (map->rays[i].angle > PI) //if player facing up
+		if (map->rays[i].angle > PI) //if player facing upwards
 		{
 			map->rays[i].y = ((((int)((map->player->ymap * BLK_WDT) + map->player->y)>>6)<<6)-0.0001);
 			map->rays[i].x = ((map->player->ymap * BLK_WDT ) + map->player->y - map->rays[i].y) * aTan + (map->player->xmap * BLK_WDT + map->player->x);
 			yoff = - BLK_WDT;
 			xoff = -yoff * aTan;
 		}
-		if (map->rays[i].angle < PI) //if player facing down
+		if (map->rays[i].angle < PI) //if player facing downdwards
 		{
 			map->rays[i].y = ((((int)((map->player->ymap * BLK_WDT) + map->player->y)>>6)<<6) + BLK_WDT);
 			map->rays[i].x = ((map->player->ymap * BLK_WDT ) + map->player->y - map->rays[i].y) * aTan + (map->player->xmap * BLK_WDT + map->player->x);
@@ -336,8 +389,12 @@ void	draw_rays(t_map *map)
 		{
 			mapx = (int)map->rays[i].x >> 6;
 			mapy = (int)map->rays[i].y >> 6;
-			if (map->coord[mapy][mapx] == '1')
+			printf("mapx %d, mapy %d, ray x %f, ray y %f\n", mapx, mapy, map->rays[i].x, map->rays[i].y);
+			if ((mapy < map->ylen && mapx < map->xlen) &&  map->coord[mapy][mapx] == '1')
 			{
+				hx = map->rays[i].x;
+				hy = map->rays[i].y;
+				DistH = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), hx, hy);
 				dof = 8;
 			}
 			else
@@ -346,8 +403,60 @@ void	draw_rays(t_map *map)
 				map->rays[i].y += yoff;
 				dof += 1;
 			}
-			// draw_two_points(map, map->player->x + (map->player->xmap * BLK_WDT), map->player->y + (map->player->ymap * BLK_WDT), map->rays[i].x, map->rays[i].y);
 		}
+
+		// -- checking vertical line --
+		dof = 0;
+		nTan = -tan(map->rays[i].angle);
+		if (map->rays[i].angle > P2 && map->rays[i].angle < P3) //if player facing leftwards
+		{
+			map->rays[i].x = ((((int)((map->player->xmap * BLK_WDT) + map->player->x)>>6)<<6)-0.0001);
+			map->rays[i].y = ((map->player->xmap * BLK_WDT ) + map->player->x - map->rays[i].x) * nTan + (map->player->ymap * BLK_WDT + map->player->y);
+			xoff = - BLK_WDT;
+			yoff = -xoff * nTan;
+		}
+		if (map->rays[i].angle < P2 || map->rays[i].angle > P3) //if player facing rightwards
+		{
+			map->rays[i].x = ((((int)((map->player->xmap * BLK_WDT) + map->player->x)>>6)<<6) + BLK_WDT);
+			map->rays[i].y = ((map->player->xmap * BLK_WDT ) + map->player->x - map->rays[i].x) * nTan + (map->player->ymap * BLK_WDT + map->player->y);
+			xoff = BLK_WDT;
+			yoff = -xoff * nTan;
+		}
+		if (map->player->angle == 0 || map->player->angle == PI) //if player facing straight, left or down
+		{
+			map->rays[i].x = map->player->x;
+			map->rays[i].y = map->player->y;
+			dof = 8;
+		}
+		while (dof++ < 8)
+		{
+			mapx = (int)map->rays[i].x >> 6;
+			mapy = (int)map->rays[i].y >> 6;
+			printf("mapx %d, mapy %d, ray x %f, ray y %f\n", mapx, mapy, map->rays[i].x, map->rays[i].y);
+			if ((mapy < map->ylen && mapx < map->xlen && mapy >= 0 && mapx >= 0) &&  map->coord[mapy][mapx] == '1')
+			{
+				vx = map->rays[i].x;
+				vy = map->rays[i].y;
+				DistV = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), vx, vy);
+				dof = 8;
+			}
+			else
+			{
+				map->rays[i].x += xoff;
+				map->rays[i].y += yoff;
+				dof += 1;
+			}
+		}
+		t_coord coord1;
+		t_coord coord2;
+		
+				
+		init_mycoord(&coord1, map->player->x + (map->player->xmap * BLK_WDT), map->player->y + (map->player->ymap * BLK_WDT));
+		if (DistH < DistV)
+			init_mycoord(&coord2, hx, hy);
+		else
+			init_mycoord(&coord2, vx, vy);
+		connectdots(map->img, coord1, coord2, 0x330066);
 	}
 }
 
@@ -379,10 +488,10 @@ void	createScreen(t_map *map)
 			else
 				color = 0xFF4500;
 			p = -1;
-			while (++p < BLK_WDT)
+			while (++p < BLK_WDT - 1)
 			{
 				j = -1;
-				while (++j < BLK_WDT)
+				while (++j < BLK_WDT - 1)
 					put_p(&img, x * BLK_WDT + p, y * BLK_WDT + j, color);
 			}
 			if (map->coord[y][x] == 'N' || map->coord[y][x] == 'S' || map->coord[y][x] == 'E' || map->coord[y][x] == 'W')
@@ -426,7 +535,7 @@ int	main(int argc, char **argv)
 			printf("invalid map\n");
 		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
 		map.mlx = mlx_init();
-		map.win = mlx_new_window(map.mlx, 1920, 1080, "FDF IS SO COOL");
+		map.win = mlx_new_window(map.mlx, 1920, 1080, "MLX CUBE3D");
 		mlx_key_hook(map.win, deal_key, &map);
 		createScreen(&map);
 		mlx_loop(map.mlx);

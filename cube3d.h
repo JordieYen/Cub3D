@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/27 20:07:20 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/09/28 14:59:02 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 # define BLK_WDT 64
 # define STP_SZ 4
 # define PI 3.14159265
-
+# define P2 PI/2
+# define P3 3*PI/2
 typedef struct s_player
 {
 	int x;
@@ -61,8 +62,15 @@ typedef struct s_map
 	t_ray		*rays;
 }	t_map;
 
+typedef struct s_coord
+{
+	int	x;
+	int	y;
+}	t_coord;
+
 // ft_cube_utils.c
 void	put_p(t_data *data, int x, int y, int color);
 void    draw_two_points(t_map *map, int x1, int y1, int x2, int y2);
+float	dist(int x1, int y1, int x2, int y2);
 
 #endif
