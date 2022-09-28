@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/27 13:46:20 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/09/27 20:11:21 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include <stdio.h>
 # include <math.h>
 # include "libmlx/mlx.h"
-#define BLK_WDT 32
-#define STP_SZ 4
-#define PI 3.14159265
 
 void	init_map(t_map *map, int fd)
 {
@@ -178,21 +175,6 @@ int	check_map(t_map *map)
 	return (1);
 }
 
-void	put_p(t_data *data, int x, int y, int color)
-{
-	char	*dst;
-
-	if (y < 1080 && x < 1920)
-	{
-		if (y > 0 && x > 0)
-		{
-			dst = data->addr + (y * data->line_length + x
-					* (data->bits_per_pixel / 8));
-			*(unsigned int *)dst = color;
-		}
-	}
-}
-
 void	swapchar(char *one, char *two)
 {
 	char temp;
@@ -202,33 +184,57 @@ void	swapchar(char *one, char *two)
 	*two = temp;
 }
 
-void	move_player_block(t_map *map, int key)
+void	move_player_block(t_map *map)
 {
 	int	x = map->player->xmap;
 	int	y = map->player->ymap;
 	
-	if (key == S && map->coord[y + 1][x] == '0')
+	if (map->player->y < 0)
 	{
-		swapchar(&map->coord[y + 1][x], &map->coord[y][x]);
-		map->player->y = 0;
+		if (map->coord[y - 1][x] == '0')
+		{
+			swapchar(&map->coord[y - 1][x], &map->coord[y][x]);
+			map->player->y = BLK_WDT;
+		}
+		else
+			map->player->y += map->player->dy;
 	} 
-	else if (key == W && map->coord[y - 1][x] == '0')
+	else if (map->player->y > BLK_WDT)
 	{
-		swapchar(&map->coord[y - 1][x], &map->coord[y][x]);
-		map->player->y = BLK_WDT;
+		if (map->coord[y + 1][x] == '0')
+		{
+			swapchar(&map->coord[y + 1][x], &map->coord[y][x]);
+			map->player->y = 0;
+		}
+		else
+			map->player->y -= map->player->dy;
+		
 	}
-	else if (key == D && map->coord[y][x + 1] == '0')
+	else if (map->player->x > BLK_WDT)
 	{
-		swapchar(&map->coord[y][x + 1], &map->coord[y][x]);
-		map->player->x = 0;
+		if (map->coord[y][x + 1] == '0')
+		{
+			swapchar(&map->coord[y][x + 1], &map->coord[y][x]);
+			map->player->x = 0;
+		}
+		else
+			map->player->x -= map->player->dx;
+		
 	}
-	else if (key == A && map->coord[y][x - 1] == '0')
+	else if (map->player->x < 0)
 	{
-		swapchar(&map->coord[y][x - 1], &map->coord[y][x]);
-		map->player->x = BLK_WDT;
+		if (map->coord[y][x - 1] == '0')
+		{
+			swapchar(&map->coord[y][x - 1], &map->coord[y][x]);
+			map->player->x = BLK_WDT;
+		}
+		else
+			map->player->x += map->player->dx;
+		
 	}
 }
 
+//TODO: dont move player at all if it will touch a wall on any side
 void move_player(t_map *map, int key)
 {
 	if (key == S)
@@ -238,8 +244,8 @@ void move_player(t_map *map, int key)
 			map->player->x -= map->player->dx;
 			map->player->y -= map->player->dy;
 		}
-		if (map->player->y >= BLK_WDT)
-			move_player_block(map, key);
+		if (map->player->y >= BLK_WDT || map->player->y <= 0 || map->player->x >= BLK_WDT || map->player->x <= 0)
+			move_player_block(map);
 	}
 	if (key == W)
 	{
@@ -248,8 +254,8 @@ void move_player(t_map *map, int key)
 			map->player->x += map->player->dx;
 			map->player->y += map->player->dy;
 		}
-		if (map->player->y <= 0)
-			move_player_block(map, key);
+		if (map->player->y >= BLK_WDT || map->player->y <= 0 || map->player->x >= BLK_WDT || map->player->x <= 0)
+			move_player_block(map);
 	}
 	if (key == D)
 	{
@@ -283,6 +289,67 @@ int	deal_key(int key, t_map *map)
 	return (0);
 }
 
+void	draw_rays(t_map *map)
+{
+	// t_data	*img;
+	return ;
+	int		ray_num;
+	int		dof;
+	int		xoff;
+	int		yoff;
+	int		mapy;
+	int		mapx;
+	float	aTan;
+	int		i;
+
+	// img = map->img;
+	ray_num = 1;
+	map->rays = malloc(sizeof(t_ray *) * ray_num);
+	map->rays->angle = map->player->angle;
+	// -- checking horizontal line --
+	i = -1;
+	while (++i <= ray_num)
+	{
+		dof = 0;
+		aTan = -1/tan(map->rays[i].angle);
+		if (map->rays[i].angle > PI) //if player facing up
+		{
+			map->rays[i].y = ((((int)((map->player->ymap * BLK_WDT) + map->player->y)>>6)<<6)-0.0001);
+			map->rays[i].x = ((map->player->ymap * BLK_WDT ) + map->player->y - map->rays[i].y) * aTan + (map->player->xmap * BLK_WDT + map->player->x);
+			yoff = - BLK_WDT;
+			xoff = -yoff * aTan;
+		}
+		if (map->rays[i].angle < PI) //if player facing down
+		{
+			map->rays[i].y = ((((int)((map->player->ymap * BLK_WDT) + map->player->y)>>6)<<6) + BLK_WDT);
+			map->rays[i].x = ((map->player->ymap * BLK_WDT ) + map->player->y - map->rays[i].y) * aTan + (map->player->xmap * BLK_WDT + map->player->x);
+			yoff = BLK_WDT;
+			xoff = -yoff * aTan;
+		}
+		if (map->player->angle == 0 || map->player->angle == PI) //if player facing straight, left or down
+		{
+			map->rays[i].x = map->player->x;
+			map->rays[i].y = map->player->y;
+			dof = 8;
+		}
+		while (dof++ < 8)
+		{
+			mapx = (int)map->rays[i].x >> 6;
+			mapy = (int)map->rays[i].y >> 6;
+			if (map->coord[mapy][mapx] == '1')
+			{
+				dof = 8;
+			}
+			else
+			{
+				map->rays[i].x += xoff;
+				map->rays[i].y += yoff;
+				dof += 1;
+			}
+			// draw_two_points(map, map->player->x + (map->player->xmap * BLK_WDT), map->player->y + (map->player->ymap * BLK_WDT), map->rays[i].x, map->rays[i].y);
+		}
+	}
+}
 
 void	createScreen(t_map *map)
 {
@@ -337,6 +404,7 @@ void	createScreen(t_map *map)
 		y++;
 	}
 	printf("PLAYER X: %d PLAYER Y: %d\n", map->player->x, map->player->y);
+	draw_rays(map);
 	mlx_put_image_to_window(map->mlx, map->win, img.img, 0, 0);
 }
 

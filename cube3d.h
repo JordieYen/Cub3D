@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/27 13:33:17 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/09/27 20:07:20 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 # define A 0
 # define S 1
 # define D 2
+# define BLK_WDT 64
+# define STP_SZ 4
+# define PI 3.14159265
 
 typedef struct s_player
 {
@@ -27,6 +30,15 @@ typedef struct s_player
 	float dx;
 	float dy;
 } t_player;
+
+typedef struct s_ray
+{
+	float angle;
+	float x;
+	float y;
+	float xof;
+	float yof;
+} t_ray;
 
 typedef struct s_data
 {
@@ -46,13 +58,11 @@ typedef struct s_map
 	void		*win;
 	t_data		*img;
 	t_player	*player;
+	t_ray		*rays;
 }	t_map;
 
-// typedef struct s_cartesian
-// {
-// 	t_coord		**coords;
-// 	int			xlen;
-// 	int			ylen;
-// }	t_cartesian;
+// ft_cube_utils.c
+void	put_p(t_data *data, int x, int y, int color);
+void    draw_two_points(t_map *map, int x1, int y1, int x2, int y2);
 
 #endif
