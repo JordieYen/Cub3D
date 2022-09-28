@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/28 14:59:02 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/28 19:37:47 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@
 # define D 2
 # define BLK_WDT 64
 # define STP_SZ 4
-# define PI 3.14159265
+# define PI 3.14159265359
 # define P2 PI/2
 # define P3 3*PI/2
+# define DR 0.0174533
+
 typedef struct s_player
 {
 	int x;
@@ -53,6 +55,7 @@ typedef struct s_data
 typedef struct s_map
 {
 	char	**coord;
+	char	direction;
 	int		xlen;
 	int		ylen;
 	void		*mlx;
