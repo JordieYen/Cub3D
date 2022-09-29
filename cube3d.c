@@ -357,24 +357,21 @@ void	draw_rays(t_map *map)
 	t_coord	coord2;
 	float	angle;
 
-	ray_num = 360;
+	ray_num = 1;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
-	hx = map->player->x;
-	hy = map->player->y;
-	vx = map->player->x;
-	vy = map->player->y;
-	DistH = 1000000;
-	DistV = 1000000;
+
 	i = -1;
-	angle = (map->player->angle/2) - (DR * ray_num);
+	angle = (map->player->angle) - (DR * (ray_num/2));
 	if (angle < 0)
 		angle += 2 * PI;
 	if (angle > 2 * PI)
 		angle -= 2 * PI;
 	while (++i < ray_num)
 	{
-		printf("%d\n", i);
-
+		DistH = 1000000;
+		DistV = 1000000;
+		hx = map->player->x;
+		hy = map->player->y;
 		// -- checking horizontal line --
 		dof = 0;
 		aTan = -1/tan(angle);
@@ -402,7 +399,7 @@ void	draw_rays(t_map *map)
 		{
 			mapx = (int)map->rays[i].x >> 6;
 			mapy = (int)map->rays[i].y >> 6;
-			if ((mapy < map->ylen && mapx < map->xlen) &&  map->coord[mapy][mapx] == '1')
+			if ((mapy < map->ylen && mapx < map->xlen && mapy >= 0 && mapx >= 0) &&  map->coord[mapy][mapx] == '1')
 			{
 				hx = map->rays[i].x;
 				hy = map->rays[i].y;
@@ -416,9 +413,10 @@ void	draw_rays(t_map *map)
 				dof += 1;
 			}
 		}
-
 		// -- checking vertical line --
 		dof = 0;
+		vx = map->player->x;
+		vy = map->player->y;
 		nTan = -tan(angle);
 		if (angle > P2 && angle < P3) //if player facing leftwards
 		{
@@ -464,6 +462,7 @@ void	draw_rays(t_map *map)
 		else
 			init_mycoord(&coord2, vx, vy);
 		connectdots(map->img, coord1, coord2, 0x330066);
+		printf("PX PY RA: %d %d %f", (map->player->xmap + map->player->x),(map->player->ymap + map->player->y), angle);
 		angle += DR;
 		if (angle < 0)
 			angle += 2 * PI;
@@ -516,11 +515,8 @@ void	createScreen(t_map *map)
 		}
 		y++;
 	}
-	printf("PLAYER X: %d PLAYER Y: %d\n", map->player->x, map->player->y);
 	draw_rays(map);
-	printf("11\n");
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
-	printf("exit\n");
 }
 
 int	main(int argc, char **argv)
@@ -549,9 +545,7 @@ int	main(int argc, char **argv)
 		map.img = &img;
 		mlx_key_hook(map.win, deal_key, &map);
 		createScreen(&map);
-		printf("1\n");
 		mlx_loop(map.mlx);
-		printf("1\n");
 	}
 	else
 		printf("input file name.");
