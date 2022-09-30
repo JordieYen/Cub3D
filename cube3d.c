@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/28 19:36:37 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/09/30 20:52:57 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,10 @@ void	init_map(t_map *map, int fd)
 	map->player = malloc(sizeof(t_player));
 	map->player->x = BLK_WDT / 2;
 	map->player->y = BLK_WDT / 2;
-	map->player->angle = PI - 0.01;
+	// map->player->angle = 0.01;
+	// map->player->angle = 1.5708;
+	// map->player->angle = PI;
+	map->player->angle = 4.71239;
 	map->player->dx = cos(map->player->angle) * 5;
 	map->player->dy = sin(map->player->angle) * 5;
 }
@@ -194,47 +197,72 @@ void	move_player_block(t_map *map)
 	int	x = map->player->xmap;
 	int	y = map->player->ymap;
 	
+	printf("move\n");
 	if (map->player->y < 0)
 	{
+		printf("A\n");
 		if (map->coord[y - 1][x] == '0')
 		{
+			printf("asdafd\n");
 			swapchar(&map->coord[y - 1][x], &map->coord[y][x]);
 			map->player->y = BLK_WDT;
 		}
 		else
-			map->player->y += map->player->dy;
+		{
+			if (round(map->player->dy) > STP_SZ)
+				map->player->y += round(map->player->dy);
+			else
+				map->player->y += STP_SZ;
+		}
 	} 
 	else if (map->player->y > BLK_WDT)
 	{
+		printf("B\n");
 		if (map->coord[y + 1][x] == '0')
 		{
 			swapchar(&map->coord[y + 1][x], &map->coord[y][x]);
 			map->player->y = 0;
 		}
 		else
-			map->player->y -= map->player->dy;
-		
+		{
+			if (round(map->player->dy) > STP_SZ)
+				map->player->y -= round(map->player->dy);
+			else
+				map->player->y -= STP_SZ;
+		}
 	}
 	else if (map->player->x > BLK_WDT)
 	{
+		printf("C\n");
 		if (map->coord[y][x + 1] == '0')
 		{
+			printf("c if\n");
 			swapchar(&map->coord[y][x + 1], &map->coord[y][x]);
 			map->player->x = 0;
 		}
 		else
-			map->player->x -= map->player->dx;
-		
+		{
+			if (round(map->player->dx) > STP_SZ)
+				map->player->x -= round(map->player->dx);
+			else
+				map->player->x -= STP_SZ;
+		}
 	}
 	else if (map->player->x < 0)
 	{
+		printf("D\n");
 		if (map->coord[y][x - 1] == '0')
 		{
 			swapchar(&map->coord[y][x - 1], &map->coord[y][x]);
 			map->player->x = BLK_WDT;
 		}
 		else
-			map->player->x += map->player->dx;
+		{
+			if (round(map->player->dx) > STP_SZ)
+				map->player->x += round(map->player->dx);
+			else
+				map->player->x += STP_SZ;
+		}
 		
 	}
 }
@@ -244,39 +272,45 @@ void move_player(t_map *map, int key)
 {
 	if (key == S)
 	{
-		if (map->coord[map->player->ymap + 1][map->player->xmap] == '0' || map->player->y < BLK_WDT - STP_SZ)
+		printf("S key y = %d x = %d\n", map->player->y, map->player->x);
+		if ((map->coord[map->player->ymap + 1][map->player->xmap] == '0' || map->player->y <= BLK_WDT - STP_SZ) && (map->coord[map->player->ymap][map->player->xmap + 1] == '0' || map->player->x <= BLK_WDT - STP_SZ))
 		{
-			map->player->x -= map->player->dx;
-			map->player->y -= map->player->dy;
+			printf("S key if one\n");
+			map->player->x -= round(map->player->dx);
+			map->player->y -= round(map->player->dy);
 		}
 		if (map->player->y >= BLK_WDT || map->player->y <= 0 || map->player->x >= BLK_WDT || map->player->x <= 0)
 			move_player_block(map);
 	}
 	if (key == W)
 	{
-		if (map->coord[map->player->ymap - 1][map->player->xmap] == '0' || map->player->y > 0 + STP_SZ)
+		printf("W key y = %d x = %d\n", map->player->y, map->player->x);
+		if ((map->coord[map->player->ymap - 1][map->player->xmap] == '0' || map->player->y >= 0 + STP_SZ) && (map->coord[map->player->ymap][map->player->xmap - 1] == '0' || map->player->x >= 0 + STP_SZ))
 		{
-			map->player->x += map->player->dx;
-			map->player->y += map->player->dy;
+			map->player->x += round(map->player->dx);
+			map->player->y += round(map->player->dy);
 		}
 		if (map->player->y >= BLK_WDT || map->player->y <= 0 || map->player->x >= BLK_WDT || map->player->x <= 0)
 			move_player_block(map);
+		printf("W key after y = %d x = %d\n", map->player->y, map->player->x);
 	}
 	if (key == D)
 	{
-		map->player->angle += 0.1;
+		printf("D key\n");
+		map->player->angle += 0.05;
 		if (map->player->angle > 2 * PI)
 			map->player->angle = map->player->angle - 2 * PI;
-		map->player->dx = cos(map->player->angle) * 5;
-		map->player->dy = sin(map->player->angle) * 5;
+		map->player->dx = cos(map->player->angle) * 4;
+		map->player->dy = sin(map->player->angle) * 4;
 	}
 	if (key == A)
 	{
-		map->player->angle -= 0.1;
+		printf("A key\n");
+		map->player->angle -= 0.05;
 		if (map->player->angle < 0)
 			map->player->angle = map->player->angle + 2 * PI;
-		map->player->dx = cos(map->player->angle) * 5;
-		map->player->dy = sin(map->player->angle) * 5;
+		map->player->dx = cos(map->player->angle) * 4;
+		map->player->dy = sin(map->player->angle) * 4;
 	}
 }
 
@@ -357,7 +391,7 @@ void	draw_rays(t_map *map)
 	t_coord	coord2;
 	float	angle;
 
-	ray_num = 1;
+	ray_num = 45;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
 
 	i = -1;
@@ -462,7 +496,7 @@ void	draw_rays(t_map *map)
 		else
 			init_mycoord(&coord2, vx, vy);
 		connectdots(map->img, coord1, coord2, 0x330066);
-		printf("PX PY RA: %d %d %f", (map->player->xmap + map->player->x),(map->player->ymap + map->player->y), angle);
+		// printf("PX PY RA: %d %d %f", (map->player->xmap + map->player->x),(map->player->ymap + map->player->y), angle);
 		angle += DR;
 		if (angle < 0)
 			angle += 2 * PI;
