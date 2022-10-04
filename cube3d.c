@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/30 20:52:57 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/04 20:07:16 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,6 @@ void	init_map(t_map *map, int fd)
 	map->player = malloc(sizeof(t_player));
 	map->player->x = BLK_WDT / 2;
 	map->player->y = BLK_WDT / 2;
-	// map->player->angle = 0.01;
-	// map->player->angle = 1.5708;
-	// map->player->angle = PI;
 	map->player->angle = 4.71239;
 	map->player->dx = cos(map->player->angle) * 5;
 	map->player->dy = sin(map->player->angle) * 5;
@@ -197,13 +194,11 @@ void	move_player_block(t_map *map)
 	int	x = map->player->xmap;
 	int	y = map->player->ymap;
 	
-	printf("move\n");
 	if (map->player->y < 0)
 	{
 		printf("A\n");
 		if (map->coord[y - 1][x] == '0')
 		{
-			printf("asdafd\n");
 			swapchar(&map->coord[y - 1][x], &map->coord[y][x]);
 			map->player->y = BLK_WDT;
 		}
@@ -272,10 +267,8 @@ void move_player(t_map *map, int key)
 {
 	if (key == S)
 	{
-		printf("S key y = %d x = %d\n", map->player->y, map->player->x);
 		if ((map->coord[map->player->ymap + 1][map->player->xmap] == '0' || map->player->y <= BLK_WDT - STP_SZ) && (map->coord[map->player->ymap][map->player->xmap + 1] == '0' || map->player->x <= BLK_WDT - STP_SZ))
 		{
-			printf("S key if one\n");
 			map->player->x -= round(map->player->dx);
 			map->player->y -= round(map->player->dy);
 		}
@@ -284,7 +277,6 @@ void move_player(t_map *map, int key)
 	}
 	if (key == W)
 	{
-		printf("W key y = %d x = %d\n", map->player->y, map->player->x);
 		if ((map->coord[map->player->ymap - 1][map->player->xmap] == '0' || map->player->y >= 0 + STP_SZ) && (map->coord[map->player->ymap][map->player->xmap - 1] == '0' || map->player->x >= 0 + STP_SZ))
 		{
 			map->player->x += round(map->player->dx);
@@ -292,12 +284,10 @@ void move_player(t_map *map, int key)
 		}
 		if (map->player->y >= BLK_WDT || map->player->y <= 0 || map->player->x >= BLK_WDT || map->player->x <= 0)
 			move_player_block(map);
-		printf("W key after y = %d x = %d\n", map->player->y, map->player->x);
 	}
 	if (key == D)
 	{
-		printf("D key\n");
-		map->player->angle += 0.05;
+		map->player->angle += DR * 4;
 		if (map->player->angle > 2 * PI)
 			map->player->angle = map->player->angle - 2 * PI;
 		map->player->dx = cos(map->player->angle) * 4;
@@ -305,8 +295,7 @@ void move_player(t_map *map, int key)
 	}
 	if (key == A)
 	{
-		printf("A key\n");
-		map->player->angle -= 0.05;
+		map->player->angle -= DR * 4;
 		if (map->player->angle < 0)
 			map->player->angle = map->player->angle + 2 * PI;
 		map->player->dx = cos(map->player->angle) * 4;
@@ -381,17 +370,21 @@ void	draw_rays(t_map *map)
 	float	aTan;
 	float	nTan;
 	int		i;
+	int		j;
 	float	vx;
 	float	vy;
 	float	hx;
 	float	hy;
 	float	DistH;
 	float	DistV;
+	float	DistT;
 	t_coord	coord1;
 	t_coord	coord2;
 	float	angle;
+	float	lineH;
+	float	lineO;
 
-	ray_num = 45;
+	ray_num = 90;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
 
 	i = -1;
@@ -403,7 +396,7 @@ void	draw_rays(t_map *map)
 	while (++i < ray_num)
 	{
 		DistH = 1000000;
-		DistV = 1000000;
+		DistV = 1000000; 
 		hx = map->player->x;
 		hy = map->player->y;
 		// -- checking horizontal line --
@@ -423,7 +416,7 @@ void	draw_rays(t_map *map)
 			yoff = BLK_WDT;
 			xoff = -yoff * aTan;
 		}
-		if (map->player->angle == 0 || map->player->angle == PI) //if player facing straight, left or down
+		if (angle == 0 || angle == PI) //if player facing straight, left or down
 		{
 			map->rays[i].x = map->player->x;
 			map->rays[i].y = map->player->y;
@@ -433,7 +426,11 @@ void	draw_rays(t_map *map)
 		{
 			mapx = (int)map->rays[i].x >> 6;
 			mapy = (int)map->rays[i].y >> 6;
-			if ((mapy < map->ylen && mapx < map->xlen && mapy >= 0 && mapx >= 0) &&  map->coord[mapy][mapx] == '1')
+			if (mapx < 0)
+				mapx = 0;
+			if (mapy < 0)
+				mapy = 0;
+			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
 				hx = map->rays[i].x;
 				hy = map->rays[i].y;
@@ -444,7 +441,6 @@ void	draw_rays(t_map *map)
 			{
 				map->rays[i].x += xoff;
 				map->rays[i].y += yoff;
-				dof += 1;
 			}
 		}
 		// -- checking vertical line --
@@ -466,7 +462,7 @@ void	draw_rays(t_map *map)
 			xoff = BLK_WDT;
 			yoff = -xoff * nTan;
 		}
-		if (map->player->angle == 0 || map->player->angle == PI) //if player facing straight, left or down
+		if (angle == 0 || angle == PI) //if player facing straight, left or down
 		{
 			map->rays[i].x = map->player->x;
 			map->rays[i].y = map->player->y;
@@ -476,7 +472,11 @@ void	draw_rays(t_map *map)
 		{
 			mapx = (int)map->rays[i].x >> 6;
 			mapy = (int)map->rays[i].y >> 6;
-			if ((mapy < map->ylen && mapx < map->xlen && mapy >= 0 && mapx >= 0) &&  map->coord[mapy][mapx] == '1')
+			if (mapx < 0)
+				mapx = 0;
+			if (mapy < 0)
+				mapy = 0;
+			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
 				vx = map->rays[i].x;
 				vy = map->rays[i].y;
@@ -487,16 +487,38 @@ void	draw_rays(t_map *map)
 			{
 				map->rays[i].x += xoff;
 				map->rays[i].y += yoff;
-				dof += 1;
 			}
 		}
 		init_mycoord(&coord1, map->player->x + (map->player->xmap * BLK_WDT), map->player->y + (map->player->ymap * BLK_WDT));
 		if (DistH < DistV)
+		{
+			map->rays[i].x = hx;
+			map->rays[i].y = hy;
 			init_mycoord(&coord2, hx, hy);
-		else
+			DistT = DistH;
+		}
+		else if (DistH > DistV)
+		{
+			map->rays[i].x = vx;
+			map->rays[i].y = vy;
 			init_mycoord(&coord2, vx, vy);
-		connectdots(map->img, coord1, coord2, 0x330066);
-		// printf("PX PY RA: %d %d %f", (map->player->xmap + map->player->x),(map->player->ymap + map->player->y), angle);
+			DistT = DistV;
+		}
+		if (DistH != 1000000 || DistV != 1000000)
+			connectdots(map->img, coord1, coord2, 0x330066);
+		// draw 3d walls
+		lineH = (BLK_WDT * 320) / DistT;
+		if (lineH > 320)
+			lineH = 320;
+		lineO = 640 - (lineH / 2);
+		j = 0;
+		while (j < 8)
+		{
+			init_mycoord(&coord1, 600 + (i * 8) + j, lineO);
+			init_mycoord(&coord2, 600 + (i * 8) + j, lineH + lineO);
+			connectdots(map->img, coord1, coord2, 0x330066);
+			j++;
+		}
 		angle += DR;
 		if (angle < 0)
 			angle += 2 * PI;
@@ -513,7 +535,13 @@ void	createScreen(t_map *map)
 	int x;
 	int color;
 	int p;
+	t_data img;
 
+	// mlx_destroy_image(map->mlx, map->img);
+	img.img = mlx_new_image(map->mlx, 1920, 1080);
+		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
+				&img.line_length, &img.endian);
+	map->img = &img;
 	y = 0;
 	while (y < map->ylen)
 	{
