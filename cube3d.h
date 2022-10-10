@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/09/28 19:37:47 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/10 17:16:00 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,15 @@ typedef struct s_player
 
 typedef struct s_ray
 {
-	float angle;
-	float x;
-	float y;
-	float xof;
-	float yof;
+	float	angle;
+	float	x;
+	float	y;
+	float	xof;
+	float	yof;
+	float	len;
+	int		up;
+	int		left;
+	int		xmin;
 } t_ray;
 
 typedef struct s_data
