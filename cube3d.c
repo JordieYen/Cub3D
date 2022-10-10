@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/04 20:07:16 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/04 20:18:01 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -510,7 +510,7 @@ void	draw_rays(t_map *map)
 		lineH = (BLK_WDT * 320) / DistT;
 		if (lineH > 320)
 			lineH = 320;
-		lineO = 640 - (lineH / 2);
+		lineO = 320 - (lineH / 2);
 		j = 0;
 		while (j < 8)
 		{
