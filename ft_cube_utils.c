@@ -6,12 +6,13 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 18:32:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/09/28 14:58:38 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:25:59 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
 #include <math.h>
+#include <stdio.h>
 
 void	put_p(t_data *data, int x, int y, int color)
 {
@@ -32,7 +33,7 @@ float	dist(int x1, int y1, int x2, int y2)
 {
 	float hypo;
 	
-	hypo = sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
+	hypo = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 	return (hypo);
 }
 
