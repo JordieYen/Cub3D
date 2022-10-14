@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/14 20:03:19 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:35:23 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,47 +313,6 @@ int	deal_key(int key, t_map *map)
 	return (0);
 }
 
-void	init_mycoord(t_coord *coord, int x1, int y1)
-{
-	coord->x = x1;
-	coord->y = y1;
-}
-
-static int	i_s(int num1, int num2)
-{
-	if (num1 < num2)
-		return (1);
-	return (-1);
-}
-
-void	connectdots(t_data *img, t_coord coord0, t_coord coord1, int color)
-{
-	t_coord	d;
-	t_coord	s;
-	t_coord	e;
-
-	init_mycoord(&d, abs(coord1.x - coord0.x), -abs(coord1.y - coord0.y));
-	init_mycoord(&s, i_s(coord0.x, coord1.x), i_s(coord0.y, coord1.y));
-	init_mycoord(&e, d.x + d.y, 0);
-	while (1)
-	{
-		put_p(img, coord0.x, coord0.y, color);
-		if (coord0.x == coord1.x && coord0.y == coord1.y)
-			break ;
-		e.y = 2 * e.x;
-		if (e.y >= d.y)
-		{
-			e.x += d.y;
-			coord0.x += s.x;
-		}
-		if (e.y <= d.x)
-		{
-			e.x += d.x;
-			coord0.y += s.y;
-		}
-	}
-}
-
 void	draw_rays(t_map *map)
 {
 	// t_data	*img;
@@ -423,23 +382,13 @@ void	draw_rays(t_map *map)
 		}
 		while (dof++ < dof_max)
 		{
-			// printf("rayx %f\n",map->rays[i].x / 64);
-			// printf("rayy %f\n",map->rays[i].y / 64);
-			// if (((int)map->rays[i].x / 64) - (map->rays[i].x / 64) <= -0.1)
-			// 	mapx = ((int)map->rays[i].x >> 6) - 1;
-			// else	
-				mapx = ((int)map->rays[i].x >> 6);
-
-			// if (((int)map->rays[i].y / 64) - (map->rays[i].y / 64) <= -0.1)
-			// 	mapy = round((int)map->rays[i].y >> 6);
-			// else	
-				mapy = ((int)map->rays[i].y >> 6);
+			mapx = ((int)map->rays[i].x >> 6);
+			mapy = ((int)map->rays[i].y >> 6);
 
 			if (mapx < 0)
 				mapx = 0;
 			if (mapy < 0)
 				mapy = 0;
-			// printf("horizontal %d %d\n", mapx, mapy);	
 			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
 				hx = map->rays[i].x;
@@ -480,30 +429,19 @@ void	draw_rays(t_map *map)
 		}
 		while (dof++ < dof_max)
 		{
-			// printf("rayx %f\n",map->rays[i].x / 64);
-			// printf("rayy %f\n",map->rays[i].y / 64);
-			// if (((int)map->rays[i].x / 64) - (map->rays[i].x / 64) <= -0.1)
-			// 	mapx = ((int)map->rays[i].x >> 6) - 1;
-			// else	
-				mapx = ((int)map->rays[i].x >> 6);
-
-			// if (((int)map->rays[i].y / 64) - (map->rays[i].y / 64) <= -0.0001)
-			// 	mapy = ((int)map->rays[i].y >> 6) + 1;
-			// else	
-				mapy = ((int)map->rays[i].y >> 6);
+			mapx = ((int)map->rays[i].x >> 6);
+			mapy = ((int)map->rays[i].y >> 6);
 
 			if (mapx < 0)
 				mapx = 0;
 			if (mapy < 0)
 				mapy = 0;
-			// printf("vertical %d %d\n", mapx, mapy);
 			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
 				vx = map->rays[i].x;
 				vy = map->rays[i].y;
 				DistV = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), vx, vy);
 				dof = dof_max;
-				// printf("vertical %d %d\n", mapx, mapy);
 			}
 			else
 			{
@@ -514,7 +452,6 @@ void	draw_rays(t_map *map)
 		if (DistH == 1000000 && DistV == 1000000)
 			DistT = -1;
 
-		init_mycoord(&coord1, map->player->x + (map->player->xmap * BLK_WDT), map->player->y + (map->player->ymap * BLK_WDT));
 		map->rays[i].up = 0;
 		map->rays[i].left = 0;
 		map->rays[i].xmin = 0;
@@ -527,7 +464,6 @@ void	draw_rays(t_map *map)
 				map->rays[i].up = 1;
 			map->rays[i].x = hx;
 			map->rays[i].y = hy;
-			init_mycoord(&coord2, hx, hy);
 			DistT = DistH;
 		}
 		else if (DistH > DistV)
@@ -539,13 +475,9 @@ void	draw_rays(t_map *map)
 				map->rays[i].left = 1;
 			map->rays[i].x = vx;
 			map->rays[i].y = vy;
-			init_mycoord(&coord2, vx, vy);
 			DistT = DistV;
 		}
-		//draw 2d map
-		connectdots(map->img, coord1, coord2, 0x330066);
-		if (DistH > 500 && DistV > 500)
-			map->rays[i].xmin = -1;
+
 		float ca = map->player->angle - angle;
 		if (ca < 0)
 			ca += 2 * PI;
@@ -560,7 +492,8 @@ void	draw_rays(t_map *map)
 		if (angle > 2 * PI)
 			angle -= 2 * PI;	
 	}
-	// printf("---------\n");
+	draw_2d_rays(map, ray_num);
+
 	// corner fix
 	i = -1;
 	j = 0;

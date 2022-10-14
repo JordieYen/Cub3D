@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/11 17:27:03 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:35:06 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,8 @@ typedef struct s_coord
 void	put_p(t_data *data, int x, int y, int color);
 void    draw_two_points(t_map *map, int x1, int y1, int x2, int y2);
 float	dist(int x1, int y1, int x2, int y2);
+void	draw_2d_rays(t_map *map, int raynum);
+void	init_mycoord(t_coord *coord, int x1, int y1);
+void	connectdots(t_data *img, t_coord coord0, t_coord coord1, int color);
 
 #endif
