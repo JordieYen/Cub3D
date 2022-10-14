@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/11 19:23:20 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:03:19 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,13 +379,14 @@ void	draw_rays(t_map *map)
 	float	angle;
 	float	lineH;
 	float	lineO;
+	int		dof_max;
 
+	dof_max = 12;
 	ray_num = 1980;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
 
-	//H = x V = y
 	i = -1;
-	angle = (map->player->angle) - (DR/22 * (ray_num/2));
+	angle = (map->player->angle) - (DR/21 * (ray_num/2));
 	if (angle < 0)
 		angle += 2 * PI;
 	if (angle > 2 * PI)
@@ -401,7 +402,7 @@ void	draw_rays(t_map *map)
 		aTan = -1/tan(angle);
 		if (angle > PI) //if player facing upwards
 		{
-			map->rays[i].y = ((((int)((map->player->ymap * BLK_WDT) + map->player->y)>>6)<<6)-0.0001);
+			map->rays[i].y = ((((int)((map->player->ymap * BLK_WDT) + map->player->y)>>6)<<6) - 0.0001);
 			map->rays[i].x = ((map->player->ymap * BLK_WDT ) + map->player->y - map->rays[i].y) * aTan + (map->player->xmap * BLK_WDT + map->player->x);
 			yoff = - BLK_WDT;
 			xoff = -yoff * aTan;
@@ -417,23 +418,34 @@ void	draw_rays(t_map *map)
 		{
 			map->rays[i].x = map->player->x;
 			map->rays[i].y = map->player->y;
-			dof = 8;
+			dof = dof_max;
 			printf("THIS RAY %d\n", i);
 		}
-		while (dof++ < 8)
+		while (dof++ < dof_max)
 		{
-			mapx = (int)map->rays[i].x >> 6;
-			mapy = (int)map->rays[i].y >> 6;
+			// printf("rayx %f\n",map->rays[i].x / 64);
+			// printf("rayy %f\n",map->rays[i].y / 64);
+			// if (((int)map->rays[i].x / 64) - (map->rays[i].x / 64) <= -0.1)
+			// 	mapx = ((int)map->rays[i].x >> 6) - 1;
+			// else	
+				mapx = ((int)map->rays[i].x >> 6);
+
+			// if (((int)map->rays[i].y / 64) - (map->rays[i].y / 64) <= -0.1)
+			// 	mapy = round((int)map->rays[i].y >> 6);
+			// else	
+				mapy = ((int)map->rays[i].y >> 6);
+
 			if (mapx < 0)
 				mapx = 0;
 			if (mapy < 0)
 				mapy = 0;
+			// printf("horizontal %d %d\n", mapx, mapy);	
 			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
 				hx = map->rays[i].x;
 				hy = map->rays[i].y;
 				DistH = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), hx, hy);
-				dof = 8;
+				dof = dof_max;
 			}
 			else
 			{
@@ -448,7 +460,7 @@ void	draw_rays(t_map *map)
 		nTan = -tan(angle);
 		if (angle > P2 && angle < P3) //if player facing leftwards
 		{
-			map->rays[i].x = ((((int)((map->player->xmap * BLK_WDT) + map->player->x)>>6)<<6)-0.0001);
+			map->rays[i].x = ((((int)((map->player->xmap * BLK_WDT) + map->player->x)>>6)<<6) - 0.0001);
 			map->rays[i].y = ((map->player->xmap * BLK_WDT ) + map->player->x - map->rays[i].x) * nTan + (map->player->ymap * BLK_WDT + map->player->y);
 			xoff = - BLK_WDT;
 			yoff = -xoff * nTan;
@@ -464,22 +476,34 @@ void	draw_rays(t_map *map)
 		{
 			map->rays[i].x = map->player->x;
 			map->rays[i].y = map->player->y;
-			dof = 8;
+			dof = dof_max;
 		}
-		while (dof++ < 8)
+		while (dof++ < dof_max)
 		{
-			mapx = ((int)map->rays[i].x >> 6);
-			mapy = ((int)map->rays[i].y >> 6);
+			// printf("rayx %f\n",map->rays[i].x / 64);
+			// printf("rayy %f\n",map->rays[i].y / 64);
+			// if (((int)map->rays[i].x / 64) - (map->rays[i].x / 64) <= -0.1)
+			// 	mapx = ((int)map->rays[i].x >> 6) - 1;
+			// else	
+				mapx = ((int)map->rays[i].x >> 6);
+
+			// if (((int)map->rays[i].y / 64) - (map->rays[i].y / 64) <= -0.0001)
+			// 	mapy = ((int)map->rays[i].y >> 6) + 1;
+			// else	
+				mapy = ((int)map->rays[i].y >> 6);
+
 			if (mapx < 0)
 				mapx = 0;
 			if (mapy < 0)
 				mapy = 0;
+			// printf("vertical %d %d\n", mapx, mapy);
 			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
 				vx = map->rays[i].x;
 				vy = map->rays[i].y;
 				DistV = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), vx, vy);
-				dof = 8;
+				dof = dof_max;
+				// printf("vertical %d %d\n", mapx, mapy);
 			}
 			else
 			{
@@ -488,10 +512,7 @@ void	draw_rays(t_map *map)
 			}
 		}
 		if (DistH == 1000000 && DistV == 1000000)
-		{
-			printf("LINE FAILED TO HIT\n");
-			map->rays[i].xmin = -1;
-		}
+			DistT = -1;
 
 		init_mycoord(&coord1, map->player->x + (map->player->xmap * BLK_WDT), map->player->y + (map->player->ymap * BLK_WDT));
 		map->rays[i].up = 0;
@@ -521,9 +542,8 @@ void	draw_rays(t_map *map)
 			init_mycoord(&coord2, vx, vy);
 			DistT = DistV;
 		}
-		if (DistH != 1000000 || DistV != 1000000)
-			connectdots(map->img, coord1, coord2, 0x330066);
-		printf("dv = %f dh = %f\n", DistV, DistH);
+		//draw 2d map
+		connectdots(map->img, coord1, coord2, 0x330066);
 		if (DistH > 500 && DistV > 500)
 			map->rays[i].xmin = -1;
 		float ca = map->player->angle - angle;
@@ -531,16 +551,16 @@ void	draw_rays(t_map *map)
 			ca += 2 * PI;
 		if (ca > 2 * PI)
 			ca -= 2 * PI;
-		DistT = DistT * cos(ca);
+		if (DistT != -1)
+			DistT = DistT * cos(ca);
 		map->rays[i].len = DistT;
-		angle += DR/22;
+		angle += DR/21;
 		if (angle < 0)
 			angle += 2 * PI;
 		if (angle > 2 * PI)
 			angle -= 2 * PI;	
 	}
-	printf("---------\n");
-	// new code added here
+	// printf("---------\n");
 	// corner fix
 	i = -1;
 	j = 0;
@@ -550,10 +570,10 @@ void	draw_rays(t_map *map)
 		if (map->rays[i].len - map->rays[i + 1].len < -20)
 		{
 			j = 1;
-			while (map->rays[i].len - map->rays[i + j].len < -20 && (map->rays[i + j].len - map->rays[i + j + 1].len > -10 && map->rays[i + j].len - map->rays[i + j + 1].len < 10))
+			while (map->rays[i].len - map->rays[i + j].len < -20 && (map->rays[i + j].len - map->rays[i + j + 1].len > -5 && map->rays[i + j].len - map->rays[i + j + 1].len < 5))
 				j++;
 		}
-		if ((map->rays[i].len - map->rays[i + j + 1].len > -5 && map->rays[i].len - map->rays[i + j + 1].len < 5) && (j >= 1 && j < 50))
+		if ((map->rays[i].len - map->rays[i + j + 1].len > -5 && map->rays[i].len - map->rays[i + j + 1].len < 5) && (j >= 1 && j < 100))
 		{
 			dof = 0;
 			while (dof < j)
@@ -566,16 +586,14 @@ void	draw_rays(t_map *map)
 	}
 	i = -1;
 	// print 3d map
+	i = -1;
 	int	color;
 	while (++i < ray_num)
 	{
 		lineH = (BLK_WDT * 800) / map->rays[i].len + 0.01;
-		// if (lineH > 840)
-		// 	lineH = 840 + 0.01;
 		lineO = 470 - (lineH / 3) + 0.01;
 		init_mycoord(&coord1, (i * 1), lineO);
 		init_mycoord(&coord2, (i * 1), lineH + lineO);
-		// printf("xmin = %d, left = %d, up = %d\n",map->rays[i].xmin, map->rays[i].left, map->rays[i].up);
 		if (map->rays[i].xmin == 0)
 		{
 			// if (map->rays[i].left == 0)
@@ -590,10 +608,11 @@ void	draw_rays(t_map *map)
 			// else
 			// 	color = 0x3B3FAE;
 		}
-		if (map->rays[i].xmin != -1)
+		if (map->rays[i].len != -1)
 			connectdots(map->img, coord1, coord2, color);
 	}
 	free(map->rays);
+	printf("------\n");
 }
 
 void	createScreen(t_map *map)
