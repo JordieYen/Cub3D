@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/14 20:35:23 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/16 20:58:46 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,6 +313,59 @@ int	deal_key(int key, t_map *map)
 	return (0);
 }
 
+int	double_check(int *ref_mapx, int *ref_mapy, t_map *map, int xoff, int yoff, int i)
+{
+	int mapx;
+	int mapy;
+	float	dif_y;
+	float	dif_x;
+
+	dif_y = (map->rays[i].y / 64) - (int)map->rays[i].y / 64;
+	dif_x = (map->rays[i].x / 64) - (int)map->rays[i].x / 64;
+	mapx = *ref_mapx;
+	mapy = *ref_mapy;
+
+	if (!((dif_x < 0.05 && dif_y > 0.98)
+		|| (dif_x > 0.98 && dif_y > 0.98)
+		|| (dif_x < 0.05 && dif_y < 0.05)
+		|| (dif_x > 0.98 && dif_y < 0.05)))
+		return (0);
+	printf("PRE %d %d!!\n", mapx, mapy);
+	printf("remainder x:%f :%f\n", dif_x, dif_y);
+	if (yoff < 0)
+		yoff = 1;
+	else
+		yoff = -1;
+	if (dif_y < 0.05 || dif_y > -0.05)
+		mapy = ((int)map->rays[i].y / 64) + (dif_y * 2);
+	// else if (dif_y > 0.99)
+		// mapy = ((int)(ray_y + 0.1) >> 6);
+
+	if (xoff < 0)
+		xoff = 1;
+	else
+		xoff = -1;
+	if (dif_x < 0.05 || dif_x > -0.05)
+		mapx = ((int)map->rays[i].x / 64) + (dif_x * 2);
+	// else if (dif_x > 0.99)
+		// mapx = ((int)(ray_x + 0.1) >> 6);
+
+	if (mapx < 0)
+		mapx = 0;
+	if (mapy < 0)
+		mapy = 0;
+	printf("DOUBLE %d %d!!\n", mapx, mapy);
+	if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
+	{
+		printf("POST %d %d!!\n", mapx, mapy);
+		*ref_mapx = mapx;
+		*ref_mapy = mapy;
+		printf("DC HIT %d %d!!\n", mapx, mapy);
+		return (1);
+	}
+	return (0);
+}
+
 void	draw_rays(t_map *map)
 {
 	// t_data	*img;
@@ -341,7 +394,7 @@ void	draw_rays(t_map *map)
 	int		dof_max;
 
 	dof_max = 12;
-	ray_num = 1980;
+	ray_num = 1;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
 
 	i = -1;
@@ -378,12 +431,13 @@ void	draw_rays(t_map *map)
 			map->rays[i].x = map->player->x;
 			map->rays[i].y = map->player->y;
 			dof = dof_max;
-			printf("THIS RAY %d\n", i);
 		}
 		while (dof++ < dof_max)
 		{
+			printf("mapx %f mapy %f\n", map->rays[i].x / 64, map->rays[i].y / 64);
 			mapx = ((int)map->rays[i].x >> 6);
 			mapy = ((int)map->rays[i].y >> 6);
+			double_check(&mapx, &mapy, map, xoff, yoff, i);
 
 			if (mapx < 0)
 				mapx = 0;
@@ -391,6 +445,15 @@ void	draw_rays(t_map *map)
 				mapy = 0;
 			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
+				printf("Hit!\n");
+				hx = map->rays[i].x;
+				hy = map->rays[i].y;
+				DistH = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), hx, hy);
+				dof = dof_max;
+			}
+			else if (double_check(&mapx, &mapy, map, xoff, yoff, i) != 0)
+			{
+				printf("Hit!\n");
 				hx = map->rays[i].x;
 				hy = map->rays[i].y;
 				DistH = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), hx, hy);
@@ -402,6 +465,7 @@ void	draw_rays(t_map *map)
 				map->rays[i].y += yoff;
 			}
 		}
+		printf("vvvvvv\n");
 		// -- checking vertical line --
 		dof = 0;
 		vx = map->player->x;
@@ -429,19 +493,30 @@ void	draw_rays(t_map *map)
 		}
 		while (dof++ < dof_max)
 		{
+			printf("mapx %f mapy %f\n", map->rays[i].x / 64, map->rays[i].y / 64);
 			mapx = ((int)map->rays[i].x >> 6);
 			mapy = ((int)map->rays[i].y >> 6);
-
+				
 			if (mapx < 0)
 				mapx = 0;
 			if (mapy < 0)
 				mapy = 0;
 			if ((mapy < map->ylen && mapx < map->xlen) &&  (map->coord[mapy][mapx] == '1'))
 			{
+				printf("Hit!\n");
 				vx = map->rays[i].x;
 				vy = map->rays[i].y;
 				DistV = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), vx, vy);
 				dof = dof_max;
+			}
+			else if (double_check(&mapx, &mapy, map, xoff, yoff, i) != 0)
+			{
+				printf("Hit!\n");
+				vx = map->rays[i].x;
+				vy = map->rays[i].y;
+				DistV = dist((map->player->xmap * BLK_WDT + map->player->x), (map->player->ymap * BLK_WDT + map->player->y), vx, vy);
+				dof = dof_max;
+				
 			}
 			else
 			{
