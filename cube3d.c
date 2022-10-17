@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/17 19:27:21 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/17 21:47:51 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,10 +246,10 @@ void	draw_rays(t_map *map)
 	int		j;
 	// float	vx = 0.0;
 	// float	vy = 0.0;
-	float	hx;
-	float	hy;
-	float	DistH;
-	float	DistV;
+	// float	hx;
+	// float	hy;
+	// float	DistH;
+	// float	DistV;
 	float	DistT;
 	t_coord	coord1;
 	t_coord	coord2;
@@ -268,7 +268,7 @@ void	draw_rays(t_map *map)
 	int		magnitude;
 
 	dof_max = 12;
-	ray_num = 1920;
+	ray_num = 1;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
 
 	i = -1;
@@ -279,10 +279,6 @@ void	draw_rays(t_map *map)
 		angle -= 2 * PI;
 	while (++i < ray_num)
 	{
-		DistH = 1000000;
-		DistV = 1000000; 
-		hx = map->player->x;
-		hy = map->player->y;
 		// -- checking horizontal line --
 		dof = 0;
 		aTan = -1/tan(angle);
@@ -302,20 +298,26 @@ void	draw_rays(t_map *map)
 			map->rays[i].y = map->player->y;
 			dof = dof_max;
 		}
-
-		ray_max.x = xoff * 12;
-		ray_max.y = yoff * 12;
+		
+		ray_start.x = map->player->x;
+		ray_start.y = map->player->y;
+		ray_max.x = ((map->player->x) + (map->player->dx * 2000));
+		ray_max.y = ((map->player->y) + (map->player->dy * 2000));
+		printf("MAX %f %f\n", ray_max.x,ray_max.y);
 		ray_dir.x = ray_max.x - map->player->x;
 		ray_dir.y = ray_max.y - map->player->y;
-		magnitude = dist(ray_max.x, ray_max.y, 0, 0);
+		magnitude = dist(ray_max.x, ray_max.y,  map->player->x,  map->player->y);
 		ray_dir.x = ray_dir.x / magnitude;
 		ray_dir.y = ray_dir.y / magnitude;
+		printf(" lolo %f %f\n",ray_dir.x, ray_dir.y);
 		ray_step_size.x = sqrt(1 + (ray_dir.y / ray_dir.x) * (ray_dir.y / ray_dir.x));
 		ray_step_size.y = sqrt(1 + (ray_dir.x / ray_dir.y) * (ray_dir.x / ray_dir.y));
+		printf(" step size %f %f\n",ray_step_size.x, ray_step_size.y);
 		map_check.x = map->player->x;
 		map_check.y = map->player->y;
-
 		
+		printf("START %d %d\n", map_check.x, map_check.y);
+
 		// Establish Starting Conditions
 		if (ray_dir.x < 0)
 		{
@@ -338,9 +340,9 @@ void	draw_rays(t_map *map)
 			step.y = 1;
 			ray_length_1d.y = ((float)map_check.y + 1 - ray_start.y) * ray_step_size.y;
 		}
-
+		printf("RAYDIR %f %f\n", ray_dir.x, ray_dir.y);
 		bool bTileFound = false;
-		float fMaxDistance = 100.0f;
+		float fMaxDistance = 2000.0f;
 		float fDistance = 0.0f;
 
 		while (!bTileFound && fDistance < fMaxDistance)
@@ -358,7 +360,7 @@ void	draw_rays(t_map *map)
 				fDistance = ray_length_1d.y;
 				ray_length_1d.y += ray_step_size.y;
 			}
-
+			printf("%d %d\n", map_check.x, map_check.y);
 			// Test tile at new test point
 			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
 			{
@@ -367,13 +369,16 @@ void	draw_rays(t_map *map)
 					bTileFound = true;
 				}
 			}
+			printf("raylength x:%f :y%f\n", ray_length_1d.x, ray_length_1d.y);
 		}
-
 // Calculate intersection location
 		if (bTileFound)
 		{
-			map->rays[i].x = ray_start.x + ray_dir.x * fDistance;
-			map->rays[i].y = ray_start.y + ray_dir.y * fDistance;
+			printf("x = %f %f %f\n", ray_start.x, ray_dir.x, fDistance);
+			printf("y = %f %f %f\n", ray_start.y, ray_dir.y, fDistance);
+			map->rays[i].x = (ray_start.x + ray_dir.x * fDistance);
+			map->rays[i].y = (ray_start.y + ray_dir.y * fDistance);
+			printf(" after %f %f\n", map->rays[i].x, map->rays[i].y);
 			DistT = dist(map->player->x, map->player->y, map->rays[i].x, map->rays[i].y);
 		}
 
@@ -395,6 +400,7 @@ void	draw_rays(t_map *map)
 		if (angle > 2 * PI)
 			angle -= 2 * PI;	
 	}
+	printf("end\n");
 	draw_2d_rays(map, ray_num);
 
 	// corner fix
@@ -499,11 +505,12 @@ void	createScreen(t_map *map)
 				while (++color < 20)
 					put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * color * 10), (map->player->y * BLK_WDT_PXL) + (map->player->dy * color * 10), 0xFFFF00);
 			}
+			put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * 2000), (map->player->y * BLK_WDT_PXL) + (map->player->dy * 2000), 0xFFFF00);
 			x++;
 		}
 		y++;
 	}
-	// draw_rays(map);
+	draw_rays(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
 }
 
