@@ -17,7 +17,7 @@
 # include <math.h>
 # include "libmlx/mlx.h"
 # include <float.h>
-# include <bool.h>
+# include <stdbool.h>
 
 void	init_map(t_map *map, int fd)
 {
@@ -244,8 +244,8 @@ void	draw_rays(t_map *map)
 	// float	nTan;
 	int		i;
 	int		j;
-	float	vx = 0.0;
-	float	vy = 0.0;
+	// float	vx = 0.0;
+	// float	vy = 0.0;
 	float	hx;
 	float	hy;
 	float	DistH;
@@ -262,7 +262,7 @@ void	draw_rays(t_map *map)
 	t_coord	map_check;
 	t_fcoord ray_step_size;
 	t_fcoord ray_length_1d;
-	t_fcoord v_step;
+	t_fcoord step;
 	t_fcoord ray_start;
 
 	int		magnitude;
@@ -319,23 +319,23 @@ void	draw_rays(t_map *map)
 		// Establish Starting Conditions
 		if (ray_dir.x < 0)
 		{
-			v_step.x = -1;
+			step.x = -1;
 			ray_length_1d.x = (ray_start.x - (float)map_check.x) * ray_step_size.x;
 		}
 		else
 		{
-			v_step.x = 1;
+			step.x = 1;
 			ray_length_1d.x = ((float)map_check.x + 1 - ray_start.x) * ray_step_size.x;
 		}
 
 		if (ray_dir.y < 0)
 		{
-			v_step.y = -1;
+			step.y = -1;
 			ray_length_1d.y = (ray_start.y - (float)map_check.y) * ray_step_size.y;
 		}
 		else
 		{
-			v_step.y = 1;
+			step.y = 1;
 			ray_length_1d.y = ((float)map_check.y + 1 - ray_start.y) * ray_step_size.y;
 		}
 
@@ -362,7 +362,7 @@ void	draw_rays(t_map *map)
 			// Test tile at new test point
 			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
 			{
-				if (map->coord[map_check.y, map_check.x] == '1')
+				if (map->coord[map_check.y][map_check.x] == '1')
 				{
 					bTileFound = true;
 				}
@@ -372,8 +372,8 @@ void	draw_rays(t_map *map)
 // Calculate intersection location
 		if (bTileFound)
 		{
-			map->rays[i].x = ray_start.x + ray_dir.x * fDistance.x;
-			map->rays[i].y = ray_start.y + ray_dir.y * fDistance.y;
+			map->rays[i].x = ray_start.x + ray_dir.x * fDistance;
+			map->rays[i].y = ray_start.y + ray_dir.y * fDistance;
 			DistT = dist(map->player->x, map->player->y, map->rays[i].x, map->rays[i].y);
 		}
 
