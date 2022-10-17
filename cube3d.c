@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/17 23:05:36 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/18 00:32:20 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "libmlx/mlx.h"
 # include <float.h>
 # include <stdbool.h>
+# include <stdlib.h>
 
 void	init_map(t_map *map, int fd)
 {
@@ -359,7 +360,7 @@ void	draw_rays(t_map *map)
 	}
 	draw_2d_rays(map, ray_num);
 	// print 3d map
-
+	create_shadows(map, ray_num);
 	int	color;
 	i = -1;
 	while (++i < ray_num)
@@ -384,22 +385,10 @@ void	draw_rays(t_map *map)
 		lineO = 500 - (lineH / 3) + 0.01;
 		init_mycoord(&coord1, (i * 1), lineO);
 		init_mycoord(&coord2, (i * 1), lineH + lineO);
-		if (map->rays[i].xmin == 0)
-		{
-			// if (map->rays[i].left == 0)
-				color = 0x3D0AE5;
-			// else
-			// 	color = 0x565CFF;
-		}
-		else if (map->rays[i].xmin == 1)
-		{
-			// if (map->rays[i].up == 0)
-				color = 0x0E18A5;
-			// else
-			// 	color = 0x3B3FAE;
-		}
+		printf("RGB STR\n");
+		printf("%s\n", map->rays[i].rgb_str);
 		if (map->rays[i].len != -1)
-			connectdots(map->img, coord1, coord2, color);
+			connectdots(map->img, coord1, coord2, htoi(map->rays[i].rgb_str));
 	}
 	free(map->rays);
 }

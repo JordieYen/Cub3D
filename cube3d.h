@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/17 19:29:43 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/18 00:28:04 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,16 @@ typedef struct s_player
 	float dy;
 } t_player;
 
+typedef struct s_rgb
+{
+	int red;
+	int green;
+	int blue;
+} t_rgb;
+
 typedef struct s_ray
 {
+	char	*rgb_str;
 	float	angle;
 	float	x;
 	float	y;
@@ -46,6 +54,7 @@ typedef struct s_ray
 	int		xmin;
 	int		hray_type;
 	int		vray_type;
+	t_rgb	rgb;
 } t_ray;
 
 typedef struct s_data
@@ -90,4 +99,11 @@ void	draw_2d_rays(t_map *map, int raynum);
 void	init_mycoord(t_coord *coord, int x1, int y1);
 void	connectdots(t_data *img, t_coord coord0, t_coord coord1, int color);
 
+// hex_tools.c
+char	*ft_itoh(int decimal);
+int		htoi(char *hex);
+
+// ft_shadows.c
+void	create_shadows(t_map *map, int ray_num);
+int		htoi(char *hex);
 #endif

@@ -1,6 +1,9 @@
 NAME = cube3d
 SOURCES = cube3d.c \
-			ft_cube_utils.c
+			ft_cube_utils.c \
+			ft_shadows.c \
+			ft_hex_tools.c \
+
 OBJECTS = $(SOURCES:.c=.o)
 
 CC = gcc
