@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/14 20:35:06 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/17 18:27:09 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 # define A 0
 # define S 1
 # define D 2
-# define BLK_WDT 64
-# define STP_SZ 4
+# define BLK_WDT 1
+# define BLK_WDT_PXL 32
+# define STP_SZ 0.1
 # define PI 3.14159265359
 # define P2 PI/2
 # define P3 3*PI/2
@@ -25,10 +26,8 @@
 
 typedef struct s_player
 {
-	int x;
-	int y;
-	int	xmap;
-	int	ymap;
+	float x;
+	float y;
 	float angle;
 	float dx;
 	float dy;
@@ -45,6 +44,8 @@ typedef struct s_ray
 	int		up;
 	int		left;
 	int		xmin;
+	int		hray_type;
+	int		vray_type;
 } t_ray;
 
 typedef struct s_data
@@ -74,6 +75,12 @@ typedef struct s_coord
 	int	x;
 	int	y;
 }	t_coord;
+
+typedef struct s_fcoord
+{
+	float	x;
+	float	y;
+}	t_fcoord;
 
 // ft_cube_utils.c
 void	put_p(t_data *data, int x, int y, int color);

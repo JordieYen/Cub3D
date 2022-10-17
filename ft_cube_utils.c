@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 18:32:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/14 21:00:52 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/17 16:58:04 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	draw_2d_rays(t_map *map, int raynum)
 	t_coord	coord2;
 
 	i = -1;
-	init_mycoord(&coord1, map->player->x + (map->player->xmap * BLK_WDT), map->player->y + (map->player->ymap * BLK_WDT));
+	init_mycoord(&coord1, map->player->x, map->player->y);
 	while (++i < raynum)
 	{
 		init_mycoord(&coord2, map->rays[i].x, map->rays[i].y);
