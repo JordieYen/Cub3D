@@ -17,6 +17,7 @@
 # include <math.h>
 # include "libmlx/mlx.h"
 # include <float.h>
+# include <bool.h>
 
 void	init_map(t_map *map, int fd)
 {
@@ -421,31 +422,47 @@ void	draw_rays(t_map *map)
 			ray_length_1d.y = ((float)map_check.y + 1 - ray_start.y) * ray_step_size.y;
 		}
 
+		bool bTileFound = false;
+		float fMaxDistance = 100.0f;
+		float fDistance = 0.0f;
+
+		while (!bTileFound && fDistance < fMaxDistance)
+		{
+			// Walk along shortest path
+			if (ray_length_1d.x < ray_length_1d.y)
+			{
+				map_check.x += step.x;
+				fDistance = ray_length_1d.x;
+				ray_length_1d.x += ray_step_size.x;
+			}
+			else
+			{
+				map_check.y += step.y;
+				fDistance = ray_length_1d.y;
+				ray_length_1d.y += ray_step_size.y;
+			}
+
+			// Test tile at new test point
+			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
+			{
+				if (map->coord[map_check.y, map_check.x] == '1')
+				{
+					bTileFound = true;
+				}
+			}
+		}
+
+// Calculate intersection location
+		if (bTileFound)
+		{
+			map->rays[i].x = ray_start.x + ray_dir.x * fDistance.x;
+			map->rays[i].y = ray_start.y + ray_dir.y * fDistance.y;
+			DistT = dist(map->player->x, map->player->y, map->rays[i].x, map->rays[i].y);
+		}
+
 		map->rays[i].up = 0;
 		map->rays[i].left = 0;
 		map->rays[i].xmin = 0;
-		if (DistH < DistV)
-		{
-			map->rays[i].xmin = 1;
-			if (angle > P3 && angle < P2)
-				map->rays[i].up = 0;
-			else
-				map->rays[i].up = 1;
-			map->rays[i].x = hx;
-			map->rays[i].y = hy;
-			DistT = DistH;
-		}
-		else if (DistH > DistV)
-		{
-			map->rays[i].xmin = 0;
-			if (angle > PI && angle < 2 * PI)
-				map->rays[i].left = 0;
-			else
-				map->rays[i].left = 1;
-			map->rays[i].x = vx;
-			map->rays[i].y = vy;
-			DistT = DistV;
-		}
 
 		float ca = map->player->angle - angle;
 		if (ca < 0)
