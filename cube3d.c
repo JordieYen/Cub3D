@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/18 16:02:40 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/18 19:53:30 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,51 +359,10 @@ void	draw_rays(t_map *map)
 			angle -= 2 * PI;
 
 		//Calculate height of line to draw on screen
-		int lineHeight = (int)(h / map->rays[i].len);
-
-		//calculate lowest and highest pixel to fill in current stripe
-		int drawStart = -lineHeight / 2 + h / 2;
-		if(drawStart < 0)
-			drawStart = 0;
-		int drawEnd = lineHeight / 2 + h / 2;
-		if(drawEnd >= h)
-			drawEnd = h - 1;
-		//texturing calculations
-		// int texNum = worldMap[mapX][mapY] - 1; //1 subtracted from it so that texture 0 can be used!
-
-		//calculate value of wallX
-		double wallX; //where exactly the wall was hit
-		if (map->rays[i].xmin == 0)
-			wallX = map_check.y + map->rays[i].len * ray_dir.y;
-		else
-			wallX = map_check.x + map->rays[i].len * ray_dir.x;
-		wallX -= floor((wallX));
-
-		//x coordinate on the texture
-		// int texX = (int)(wallX * (double)texWidth);
-		// if(map->rays[i].xmin == 0 && ray_dir.x > 0) texX = texWidth - texX - 1;
-		// if(map->rays[i].xmin == 1 && ray_dir.y < 0) texX = texWidth - texX - 1;
-
-		// // How much to increase the texture coordinate per screen pixel
-		// double step = 1.0 * texHeight / lineHeight;
-		// // Starting texture coordinate
-		// double texPos = (drawStart - h / 2 + lineHeight / 2) * step;
-		// int y;
-		
-		// int y = drawStart - 1;
-		// while (y++ < drawEnd)
-		// {
-		// 	// Cast the texture coordinate to integer, and mask with (texHeight - 1) in case of overflow
-		// 	int texY = (int)texPos & (texHeight - 1);
-		// 	texPos += step;
-		// 	int color = texture[texNum][texWidth * texY + texX];
-		// 	//make color darker for y-sides: R, G and B byte each divided through two with a "shift" and an "and"
-		// 	if(map->rays[i].xmin == 0 == 1) color = (color >> 1) & 8355711;
-		// 	put_p(map->img, i, y, color);
-		// }
 	}
 	// draw_2d_rays(map, ray_num);
 	// print 3d map
+	create_line_colors(map, ray_num);
 	create_shadows(map, ray_num);
 	// int	color;
 	// i = -1;
@@ -491,6 +450,7 @@ void	createScreen(t_map *map)
 	}
 	draw_rays(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
+	mlx_put_image_to_window(map->mlx, map->win, map->wall, 100, 100);
 }
 
 int	main(int argc, char **argv)
@@ -498,6 +458,7 @@ int	main(int argc, char **argv)
 	int		fd;
 	t_map	map;
 	t_data	img;
+	char	*relative_path = "./grass_chess.xpm";
 
 	if (argc == 2)
 	{
@@ -517,6 +478,7 @@ int	main(int argc, char **argv)
 		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
 		map.img = &img;
+		map.wall = mlx_xpm_file_to_image(&map.mlx, relative_path, &map.wall_width, &map.wall_height);
 		mlx_hook(map.win, 2, 0, deal_key, &map);
 		createScreen(&map);
 		mlx_loop(map.mlx);

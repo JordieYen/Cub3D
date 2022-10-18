@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/18 16:00:10 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/18 19:29:45 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_rgb
 typedef struct s_ray
 {
 	char	*rgb_str;
+	int		*ray_rgbs;
 	float	angle;
 	float	x;
 	float	y;
@@ -74,6 +75,9 @@ typedef struct s_map
 	char	direction;
 	int		xlen;
 	int		ylen;
+	void	*wall;
+	int		wall_width;
+	int		wall_height;
 	void		*mlx;
 	void		*win;
 	t_data		*img;
@@ -108,4 +112,7 @@ int		htoi(char *hex);
 // ft_shadows.c
 void	create_shadows(t_map *map, int ray_num);
 int		htoi(char *hex);
+// ft_textures.c
+void	create_line_colors(t_map *map, int ray_num);
+
 #endif
