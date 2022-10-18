@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/18 00:28:04 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/18 16:00:10 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # define A 0
 # define S 1
 # define D 2
+# define h 1080
+# define w 1920
 # define BLK_WDT 1
 # define BLK_WDT_PXL 32
 # define STP_SZ 0.1
