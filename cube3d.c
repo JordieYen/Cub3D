@@ -358,26 +358,26 @@ void	draw_rays(t_map *map)
 		if (angle > 2 * PI)
 			angle -= 2 * PI;	
 	}
-	draw_2d_rays(map, ray_num);
+	// draw_2d_rays(map, ray_num);
 	// print 3d map
 	create_shadows(map, ray_num);
-	int	color;
-	i = -1;
-	while (++i < ray_num)
-	{
+	// int	color;
+	// i = -1;
+	// while (++i < ray_num)
+	// {
 		j = -1;
-		color = 0xFFFFFF;
-		while (j++ < 1080)
-		{
-			put_p(map->img, i, j, color);
-			if (j < 504 && j > 300 && color - 0x010101 > 0)
-				color = color - 0x010101;
-			if (j > 504 && j < 700  && color + 0x010101 < 0xFFFFFF)
-				color = color + 0x010101;
-			// if (i == 0)
-			// 	printf("color = %d\n", color);
-		}
-	}
+	// 	color = 0xFFFFFF;
+	// 	while (j++ < 1080)
+	// 	{
+	// 		put_p(map->img, i, j, color);
+	// 		if (j < 504 && j > 300 && color - 0x010101 > 0)
+	// 			color = color - 0x010101;
+	// 		if (j > 504 && j < 700  && color + 0x010101 < 0xFFFFFF)
+	// 			color = color + 0x010101;
+	// 		// if (i == 0)
+	// 		// 	printf("color = %d\n", color);
+	// 	}
+	// }
 	i = -1;
 	while (++i < ray_num)
 	{
@@ -385,8 +385,6 @@ void	draw_rays(t_map *map)
 		lineO = 500 - (lineH / 3) + 0.01;
 		init_mycoord(&coord1, (i * 1), lineO);
 		init_mycoord(&coord2, (i * 1), lineH + lineO);
-		printf("RGB STR\n");
-		printf("%s\n", map->rays[i].rgb_str);
 		if (map->rays[i].len != -1)
 			connectdots(map->img, coord1, coord2, htoi(map->rays[i].rgb_str));
 	}
@@ -420,29 +418,29 @@ void	createScreen(t_map *map)
 			else
 				color = 0xFF4500;
 			p = -1;
-			while (++p < BLK_WDT_PXL - 1)
-			{
+			// while (++p < BLK_WDT_PXL - 1)
+			// {
 				j = -1;
-				while (++j < BLK_WDT_PXL - 1)
-					put_p(map->img, x * BLK_WDT_PXL + p, y * BLK_WDT_PXL + j, color);
-			}
+			// 	while (++j < BLK_WDT_PXL - 1)
+			// 		put_p(map->img, x * BLK_WDT_PXL + p, y * BLK_WDT_PXL + j, color);
+			// }
 			if (map->coord[y][x] == 'N' || map->coord[y][x] == 'S' || map->coord[y][x] == 'E' || map->coord[y][x] == 'W')
 			{
 				map->player->x = x + 0.5;
 				map->player->y = y + 0.5;
 				map->coord[y][x] = '0';
 			}
-			if (y + 1 == map->ylen && x + 1 == map->xlen)
-			{
-				put_p(map->img, (map->player->x * BLK_WDT_PXL), (map->player->y * BLK_WDT_PXL), 0xFFFF00);
-				put_p(map->img, (map->player->x * BLK_WDT_PXL) + 1, (map->player->y * BLK_WDT_PXL), 0xFFFF00);
-				put_p(map->img, (map->player->x * BLK_WDT_PXL), (map->player->y * BLK_WDT_PXL) - 1, 0xFFFF00);
-				put_p(map->img, (map->player->x * BLK_WDT_PXL) + 1, (map->player->y * BLK_WDT_PXL) - 1, 0xFFFF00);
-				color = -1; //reuse this var to create dots for direction
-				while (++color < 20)
-					put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * color * 10), (map->player->y * BLK_WDT_PXL) + (map->player->dy * color * 10), 0xFFFF00);
-			}
-			put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * 2000), (map->player->y * BLK_WDT_PXL) + (map->player->dy * 2000), 0xFFFF00);
+			// if (y + 1 == map->ylen && x + 1 == map->xlen)
+			// {
+			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL), (map->player->y * BLK_WDT_PXL), 0xFFFF00);
+			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL) + 1, (map->player->y * BLK_WDT_PXL), 0xFFFF00);
+			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL), (map->player->y * BLK_WDT_PXL) - 1, 0xFFFF00);
+			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL) + 1, (map->player->y * BLK_WDT_PXL) - 1, 0xFFFF00);
+			// 	color = -1; //reuse this var to create dots for direction
+			// 	while (++color < 20)
+			// 		put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * color * 10), (map->player->y * BLK_WDT_PXL) + (map->player->dy * color * 10), 0xFFFF00);
+			// }
+			// put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * 2000), (map->player->y * BLK_WDT_PXL) + (map->player->dy * 2000), 0xFFFF00);
 			x++;
 		}
 		y++;
