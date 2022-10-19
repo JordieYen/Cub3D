@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/18 19:29:45 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/19 19:38:59 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,16 @@ typedef struct s_rgb
 	int blue;
 } t_rgb;
 
+typedef struct s_xmp_data
+{
+	int		*data;
+	int		bits_per_pixel;
+	int		size_line;
+	int		endian;
+} t_xmp_data;
+
 typedef struct s_ray
 {
-	char	*rgb_str;
 	int		*ray_rgbs;
 	float	angle;
 	float	x;
@@ -54,10 +61,10 @@ typedef struct s_ray
 	float	len;
 	int		up;
 	int		left;
-	int		xmin;
 	int		hray_type;
 	int		vray_type;
 	t_rgb	rgb;
+	char	side;
 } t_ray;
 
 typedef struct s_data
@@ -69,17 +76,23 @@ typedef struct s_data
 	int		endian;
 }	t_data;
 
+typedef struct s_wall
+{
+	void	*wall;
+	int		wall_width;
+	int		wall_height;
+	t_xmp_data xpm_data;
+}	t_wall;
+
 typedef struct s_map
 {
 	char	**coord;
 	char	direction;
 	int		xlen;
 	int		ylen;
-	void	*wall;
-	int		wall_width;
-	int		wall_height;
 	void		*mlx;
 	void		*win;
+	t_wall		wall_n;
 	t_data		*img;
 	t_player	*player;
 	t_ray		*rays;
@@ -107,12 +120,15 @@ void	connectdots(t_data *img, t_coord coord0, t_coord coord1, int color);
 
 // hex_tools.c
 char	*ft_itoh(int decimal);
-int		htoi(char *hex);
+int		ft_htoi(char *hex);
 
 // ft_shadows.c
-void	create_shadows(t_map *map, int ray_num);
-int		htoi(char *hex);
+int	darken_rgb(int rgb, float len);
+
 // ft_textures.c
 void	create_line_colors(t_map *map, int ray_num);
+t_rgb	**create_xmp_array(t_map *map, t_xmp_data *xmpdata);
+void	get_textures(t_map *map);
+void	connect_dots_colors(t_map *map, int x, int height, t_ray ray);
 
 #endif

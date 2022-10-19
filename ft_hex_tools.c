@@ -43,7 +43,7 @@ char *ft_itoh(int decimal)
 	return (hexadecimalNumber);
 }
 
-int htoi(char *hex)
+int ft_htoi(char *hex)
 {
 	int	length;
 	long long decimal;
