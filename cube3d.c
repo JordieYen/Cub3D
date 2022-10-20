@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/19 21:11:34 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/20 12:47:26 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,7 +331,6 @@ void	draw_rays(t_map *map)
 					bTileFound = true;
 			}
 		}
-		map->rays[i].len = 0;
 		// Calculate intersection location
 		if (bTileFound)
 		{
@@ -346,12 +345,8 @@ void	draw_rays(t_map *map)
 			else if (xmin == 1 && (angle < P2 || angle > P3))
 				map->rays[i].side = 'e';
 			DistT = fDistance * BLK_WDT_PXL;
-			map->rays[i].len = DistT;
 		}
-
-		map->rays[i].up = 0;
-		map->rays[i].left = 0;
-
+		
 		float ca = map->player->angle - angle;
 		if (ca < 0)
 			ca += 2 * PI;
@@ -359,6 +354,7 @@ void	draw_rays(t_map *map)
 			ca -= 2 * PI;
 		if (DistT != -1)
 			DistT = DistT * cos(ca);
+		map->rays[i].len = DistT;
 		angle += DR/21.3333;
 		if (angle < 0)
 			angle += 2 * PI;
@@ -370,7 +366,6 @@ void	draw_rays(t_map *map)
 	// draw_2d_rays(map, ray_num);
 	// print 3d map
 	// create_line_colors(map, ray_num);
-	// create_shadows(map, ray_num);
 	// int	color;
 	// i = -1;
 	// while (++i < ray_num)
