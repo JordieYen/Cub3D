@@ -1,0 +1,73 @@
+# include "cube3d.h"
+# include <math.h>
+# include <stdio.h>
+
+void    render_background(t_map *map, int ray_num)
+{
+    int	color;
+	int	i;
+	int	j;
+
+	i = -1;    
+    while (++i < ray_num)
+	{
+		j = -1;
+		color = 0xFFFFFF;
+		while (j++ < 1080)
+		{
+			put_p(map->img, i, j, color);
+			if (j < 504 && j > 300 && color - 0x010101 > 0)
+				color = color - 0x010101;
+			if (j > 504 && j < 700  && color + 0x010101 < 0xFFFFFF)
+				color = color + 0x010101;
+		}
+	} 
+}
+
+void	render_rays(t_map *map, int ray_num)
+{
+	int	i;
+	float wall_height;
+
+	i = -1;
+	while (++i < ray_num)
+	{
+		wall_height = (40 * 800) / map->rays[i].len + 0.01;
+		connect_dots_colors(map, i, wall_height, map->rays[i]);
+	}
+}
+
+void	calculate_intersection(t_ray *ray, float fDistance)
+{
+	float DistT;
+
+	ray->x = (ray->start.x + ray->dir.x * fDistance);
+	ray->y = (ray->start.y + ray->dir.y * fDistance);
+	if (ray->xmin == 0 && ray->angle > 0 && ray->angle < PI)
+		ray->side = 'n';
+	else if (ray->xmin == 0 && ray->angle > PI && ray->angle < 2 * PI)
+		ray->side = 's';
+	if (ray->xmin == 1 && ray->angle < P3 && ray->angle > P2)
+		ray->side = 'w';
+	else if (ray->xmin == 1 && (ray->angle < P2 || ray->angle > P3))
+		ray->side = 'e';
+	DistT = fDistance * BLK_WDT_PXL;
+	ray->len = DistT;
+}
+
+void	init_ray(t_ray *ray, int angle, t_map *map)
+{
+	ray->angle = angle;
+	ray->start.x = map->player->x;
+	ray->start.y = map->player->y;
+	ray->max.x = ((map->player->x) + ((cos(ray->angle) / 10) * 2000));
+	ray->max.y = ((map->player->y) + ((sin(ray->angle) / 10) * 2000));
+	ray->dir.x = ray->max.x - map->player->x;
+	ray->dir.y = ray->max.y - map->player->y;
+	ray->magnitude = dist(ray->max.x, ray->max.y,  map->player->x,  map->player->y);
+	ray->dir.x = ray->dir.x / ray->magnitude;
+	ray->dir.y = ray->dir.y / ray->magnitude;
+	ray->step_size.x = sqrt(1 + (ray->dir.y / ray->dir.x) * (ray->dir.y / ray->dir.x));
+	ray->step_size.y = sqrt(1 + (ray->dir.x / ray->dir.y) * (ray->dir.x / ray->dir.y));
+	printf("A: SSY %f\n", ray->step_size.y);
+}
