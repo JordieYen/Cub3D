@@ -25,6 +25,7 @@
 # define P2 PI/2
 # define P3 3*PI/2
 # define DR 0.0174533
+#include <stdbool.h>
 
 typedef struct s_player
 {
@@ -41,6 +42,18 @@ typedef struct s_rgb
 	int green;
 	int blue;
 } t_rgb;
+
+typedef struct s_coord
+{
+	int	x;
+	int	y;
+}	t_coord;
+
+typedef struct s_fcoord
+{
+	float	x;
+	float	y;
+}	t_fcoord;
 
 typedef struct s_xmp_data
 {
@@ -61,10 +74,15 @@ typedef struct s_ray
 	float	len;
 	int		up;
 	int		left;
-	int		hray_type;
-	int		vray_type;
+	int		magnitude;
 	t_rgb	rgb;
 	char	side;
+	int		xmin;
+	t_fcoord max;
+	t_fcoord start;
+	t_fcoord dir;
+	t_fcoord step_size;
+	t_fcoord length_1d;
 } t_ray;
 
 typedef struct s_data
@@ -100,18 +118,6 @@ typedef struct s_map
 	t_ray		*rays;
 }	t_map;
 
-typedef struct s_coord
-{
-	int	x;
-	int	y;
-}	t_coord;
-
-typedef struct s_fcoord
-{
-	float	x;
-	float	y;
-}	t_fcoord;
-
 // ft_cube_utils.c
 void	put_p(t_data *data, int x, int y, int color);
 void    draw_two_points(t_map *map, int x1, int y1, int x2, int y2);
@@ -132,5 +138,11 @@ void	create_line_colors(t_map *map, int ray_num);
 t_rgb	**create_xmp_array(t_map *map, t_xmp_data *xmpdata);
 void	get_textures(t_map *map);
 void	connect_dots_colors(t_map *map, int x, int height, t_ray ray);
+
+// render.c
+void    render_background(t_map *map, int ray_num);
+void	render_rays(t_map *map, int ray_num);
+void	calculate_intersection(t_ray *ray, float fDistance);
+void	init_ray(t_ray *ray, int angle, t_map *map);
 
 #endif
