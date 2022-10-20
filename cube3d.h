@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/19 19:38:59 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/20 16:37:33 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # define A 0
 # define S 1
 # define D 2
-# define h 1080
-# define w 1920
+# define WIN_H 810
+# define WIN_W 1440
 # define BLK_WDT 1
 # define BLK_WDT_PXL 32
 # define STP_SZ 0.1
@@ -90,6 +90,8 @@ typedef struct s_map
 	char	direction;
 	int		xlen;
 	int		ylen;
+	long int	last_frame;
+	int			fps;
 	void		*mlx;
 	void		*win;
 	t_wall		wall_n;

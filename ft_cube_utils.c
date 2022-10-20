@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 18:32:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/17 20:46:48 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/20 17:48:46 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	put_p(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	if (y < 1080 && x < 1920 && y > 0 && x > 0)
+	if (y < WIN_H && x < WIN_W && y > 0 && x > 0)
 	{
 		dst = data->addr + (y * data->line_length + x
 				* (data->bits_per_pixel / 8));

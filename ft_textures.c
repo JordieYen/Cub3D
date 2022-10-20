@@ -41,7 +41,7 @@ void	connect_dots_colors(t_map *map, int x, int height, t_ray ray)
 
 	y = -1;
 	ray.angle = 0;
-	y_offset = 500 - (height / 2.5) - 0.01;
+	y_offset = 400 - (height / 2.5) - 0.01;
 	while(y++ < height)
 		put_p(map->img, x, y_offset + y, pick_color(ray, map, (float)y / height));
 }

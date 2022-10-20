@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/20 12:47:26 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/20 18:04:04 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <float.h>
 # include <stdbool.h>
 # include <stdlib.h>
+# include <sys/time.h>
 
 void	init_map(t_map *map, int fd)
 {
@@ -202,7 +203,7 @@ void move_player(t_map *map, int key)
 	}
 	if (key == D)
 	{
-		map->player->angle += DR * 9;
+		map->player->angle += DR * 3;
 		if (map->player->angle > 2 * PI)
 			map->player->angle = map->player->angle - 2 * PI;
 		map->player->dx = cos(map->player->angle) / 10;
@@ -210,7 +211,7 @@ void move_player(t_map *map, int key)
 	}
 	if (key == A)
 	{
-		map->player->angle -= DR * 9;
+		map->player->angle -= DR * 3;
 		if (map->player->angle < 0)
 			map->player->angle = map->player->angle + 2 * PI;
 		map->player->dx = cos(map->player->angle) / 10;
@@ -224,12 +225,29 @@ void	createScreen(t_map *map);
 int	deal_key(int key, t_map *map)
 {
 	if (key == W || key == A || key == S || key == D)
-	{
 		move_player(map, key);
-		mlx_clear_window(map->mlx, map->win);
-		createScreen(map);
-	}
 	return (0);
+}
+
+void	draw_minimap(t_map *map)
+{
+	int	x;
+	int	y;
+	int	size;
+
+	size = 250;
+	y = WIN_H - size - 1;
+	while (y++ <  WIN_H - 30)
+	{
+		x = 29;
+		while (x++ < size)
+		{
+			if (y == WIN_H - size || x == 30 || y == WIN_H - 30 || x == size)
+				put_p(map->img, x, y, -1);
+			// if (y == WIN_H - (size * 1.5) )
+		}
+	}
+	put_p(map->img, x, y, 0x0);
 }
 
 void	draw_rays(t_map *map)
@@ -254,7 +272,7 @@ void	draw_rays(t_map *map)
 	int		magnitude;
 
 	dof_max = 12;
-	ray_num = 1920;
+	ray_num = WIN_W;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
 
 	i = -1;
@@ -389,6 +407,7 @@ void	draw_rays(t_map *map)
 		lineH = (40 * 800) / map->rays[i].len + 0.01;
 		connect_dots_colors(map, i, lineH, map->rays[i]);
 	}
+	draw_minimap(map);
 	free(map->rays);
 }
 
@@ -402,8 +421,8 @@ void	createScreen(t_map *map)
 	t_data img;
 
 	// mlx_destroy_image(map->mlx, map->img);
-	img.img = mlx_new_image(map->mlx, 1920, 1080);
-		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
+	img.img = mlx_new_image(map->mlx, WIN_W, WIN_H);
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
 	map->img = &img;
 	y = 0;
@@ -450,6 +469,30 @@ void	createScreen(t_map *map)
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
 }
 
+int	render_screen(void *varg)
+{
+	t_map *map;
+	struct timeval tv;
+	int	color;
+
+	gettimeofday(&tv, NULL);
+	map = (t_map *) varg;
+	mlx_clear_window(map->mlx, map->win);
+	createScreen(map);
+	map->fps = ((tv.tv_sec * 1000) + (tv.tv_usec / 1000)) - map->last_frame;
+	map->last_frame = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	color = 0xFFFFFF;
+	if (1000 / map->fps >= 20)
+		color = 0x00FF00;
+	if (1000 / map->fps < 20)
+		color = 0xFFFF00;
+	if (1000 / map->fps < 10)
+		color = 0xFF0000;
+
+	mlx_string_put(map->mlx, map->win, 0 ,0, color, ft_strjoin("fps :",ft_itoa((float) 1000 / map->fps)));
+	return 0;
+}
+
 int	main(int argc, char **argv)
 {
 	int		fd;
@@ -469,14 +512,16 @@ int	main(int argc, char **argv)
 			printf("invalid map\n");
 		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
 		map.mlx = mlx_init();
-		map.win = mlx_new_window(map.mlx, 1920, 1080, "MLX CUBE3D");
-		img.img = mlx_new_image(map.mlx, 1920, 1080);
+		map.win = mlx_new_window(map.mlx, WIN_W, WIN_H, "MLX CUBE3D");
+		img.img = mlx_new_image(map.mlx, WIN_W, WIN_H);
 		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
 		map.img = &img;
 		get_textures(&map);
-		mlx_hook(map.win, 2, 0, deal_key, &map);
 		createScreen(&map);
+		map.last_frame = 0;
+		mlx_hook(map.win, 2, 0, deal_key, &map);
+		mlx_loop_hook(map.mlx, render_screen, &map);
 		mlx_loop(map.mlx);
 	}
 	else
