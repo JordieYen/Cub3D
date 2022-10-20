@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/18 19:53:30 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/20 12:47:26 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,12 +237,10 @@ void	draw_rays(t_map *map)
 	int		ray_num;
 	int		i;
 	int		j;
+	int		xmin;
 	float	DistT;
-	t_coord	coord1;
-	t_coord	coord2;
 	float	angle;
 	float	lineH;
-	float	lineO;
 	int		dof_max;
 	t_fcoord ray_max;
 	t_fcoord ray_dir;
@@ -317,14 +315,14 @@ void	draw_rays(t_map *map)
 				map_check.x += step.x;
 				fDistance = ray_length_1d.x;
 				ray_length_1d.x += ray_step_size.x;
-				map->rays[i].xmin = 1;
+				xmin = 1;
 			}
 			else
 			{
 				map_check.y += step.y;
 				fDistance = ray_length_1d.y;
 				ray_length_1d.y += ray_step_size.y;
-				map->rays[i].xmin = 0;
+				xmin = 0;
 			}
 			// Test tile at new test point
 			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
@@ -338,12 +336,17 @@ void	draw_rays(t_map *map)
 		{
 			map->rays[i].x = (ray_start.x + ray_dir.x * fDistance);
 			map->rays[i].y = (ray_start.y + ray_dir.y * fDistance);
+			if (xmin == 0 && angle > 0 && angle < PI)
+				map->rays[i].side = 'n';
+			else if (xmin == 0 && angle > PI && angle < 2 * PI)
+				map->rays[i].side = 's';
+			if (xmin == 1 && angle < P3 && angle > P2)
+				map->rays[i].side = 'w';
+			else if (xmin == 1 && (angle < P2 || angle > P3))
+				map->rays[i].side = 'e';
 			DistT = fDistance * BLK_WDT_PXL;
 		}
-
-		map->rays[i].up = 0;
-		map->rays[i].left = 0;
-
+		
 		float ca = map->player->angle - angle;
 		if (ca < 0)
 			ca += 2 * PI;
@@ -362,8 +365,7 @@ void	draw_rays(t_map *map)
 	}
 	// draw_2d_rays(map, ray_num);
 	// print 3d map
-	create_line_colors(map, ray_num);
-	create_shadows(map, ray_num);
+	// create_line_colors(map, ray_num);
 	// int	color;
 	// i = -1;
 	// while (++i < ray_num)
@@ -385,11 +387,7 @@ void	draw_rays(t_map *map)
 	while (++i < ray_num)
 	{
 		lineH = (40 * 800) / map->rays[i].len + 0.01;
-		lineO = 500 - (lineH / 3) + 0.01;
-		init_mycoord(&coord1, (i * 1), lineO);
-		init_mycoord(&coord2, (i * 1), lineH + lineO);
-		if (map->rays[i].len != -1)
-			connectdots(map->img, coord1, coord2, htoi(map->rays[i].rgb_str));
+		connect_dots_colors(map, i, lineH, map->rays[i]);
 	}
 	free(map->rays);
 }
@@ -450,7 +448,6 @@ void	createScreen(t_map *map)
 	}
 	draw_rays(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
-	mlx_put_image_to_window(map->mlx, map->win, map->wall, 100, 100);
 }
 
 int	main(int argc, char **argv)
@@ -458,7 +455,6 @@ int	main(int argc, char **argv)
 	int		fd;
 	t_map	map;
 	t_data	img;
-	char	*relative_path = "./grass_chess.xpm";
 
 	if (argc == 2)
 	{
@@ -478,7 +474,7 @@ int	main(int argc, char **argv)
 		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
 		map.img = &img;
-		map.wall = mlx_xpm_file_to_image(&map.mlx, relative_path, &map.wall_width, &map.wall_height);
+		get_textures(&map);
 		mlx_hook(map.win, 2, 0, deal_key, &map);
 		createScreen(&map);
 		mlx_loop(map.mlx);
