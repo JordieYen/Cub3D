@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/20 18:04:04 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/21 19:26:05 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ int	check_map(t_map *map)
 			if (map->coord[i][j] != '0' && map->coord[i][j] != '1'
 				&& map->coord[i][j] != ' ' && map->coord[i][j] != 'N'
 				&& map->coord[i][j] != 'S' && map->coord[i][j] != 'E'
-				&& map->coord[i][j] != 'W')
+				&& map->coord[i][j] != 'W' && map->coord[i][j] != 'O')
 				return (0);
 			else if (map->coord[i][j] != 'N'
 				&& map->coord[i][j] != 'S' && map->coord[i][j] != 'E'
@@ -182,12 +182,75 @@ int	check_map(t_map *map)
 	return (1);
 }
 
+int	opendoor(t_map *map)
+{
+	if (map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] == 'C')
+		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'O';
+	else if (map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] == 'C')
+		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'O';
+	else
+		return (0);
+	if (map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] == 'C')
+		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'O';
+	else if (map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] == 'C')
+		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'O';
+	else
+		return(0);
+	if (map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] == 'C')
+		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'O';
+	else if (map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] == 'C')
+		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'O';
+	else
+		return (0);
+	if (map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] == 'C')
+		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'O';
+	else if (map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] == 'C')
+		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'O';
+	else
+		return(0);
+	return(1);
+}
+
+int	closedoor(t_map *map)
+{
+	if (map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] == 'O')
+		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'C';
+	else if (map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] == 'O')
+		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'C';
+	else
+		return (0);
+	if (map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] == 'O')
+		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'C';
+	else if (map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] == 'O')
+		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'C';
+	else
+		return (0);
+	if (map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] == 'O')
+		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'C';
+	else if (map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] == 'O')
+		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'C';
+	else
+		return (0);
+	if (map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] == 'O')
+		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'C';
+	else if (map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] == 'O')
+		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'C';
+	else
+		return (0);
+	return (1);
+}
 //TODO: dont move player at all if it will touch a wall on any side
 void move_player(t_map *map, int key)
 {
+	if (key == E)
+	{	
+		if (opendoor(map) == 0)
+			closedoor(map);
+	}
 	if (key == S)
 	{
-		if (map->coord[(int)(map->player->y - map->player->dy)][(int)(map->player->x  - map->player->dx)] == '0')
+		if (map->coord[(int)(map->player->y - map->player->dy)][(int)(map->player->x - map->player->dx)] != '1'
+			&& map->coord[(int)(map->player->y - map->player->dy)][(int)(map->player->x - map->player->dx)] != 'C')
 		{
 			map->player->x -= map->player->dx;
 			map->player->y -= map->player->dy;
@@ -195,7 +258,8 @@ void move_player(t_map *map, int key)
 	}
 	if (key == W)
 	{
-		if (map->coord[(int)(map->player->y + map->player->dy)][(int)(map->player->x  + map->player->dx)] == '0')
+		if (map->coord[(int)(map->player->y + map->player->dy)][(int)(map->player->x + map->player->dx)] != '1'
+			&& map->coord[(int)(map->player->y + map->player->dy)][(int)(map->player->x + map->player->dx)] != 'C')
 		{
 			map->player->x += map->player->dx;
 			map->player->y += map->player->dy;
@@ -224,9 +288,62 @@ void	createScreen(t_map *map);
 
 int	deal_key(int key, t_map *map)
 {
-	if (key == W || key == A || key == S || key == D)
+	if (key == W || key == A || key == S || key == D || key == E)
 		move_player(map, key);
 	return (0);
+}
+
+void	draw_player(t_map *map, int	x, int y)
+{
+	int	color;
+
+	color = 0xAF133D;
+	put_p(map->img, x, y, color);
+	put_p(map->img, x + 1, y, color);
+	put_p(map->img, x -1, y, color);
+	put_p(map->img, x, y - 1, color);
+	put_p(map->img, x, y + 1, color);
+	put_p(map->img, x + 1, y - 1, color);
+	put_p(map->img, x - 1, y + 1, color);
+	put_p(map->img, x + 1, y + 1, color);
+	put_p(map->img, x - 1, y - 1, color);
+	color = -1;
+	while (++color < 10)
+		put_p(map->img, x + (map->player->dx * color * 10), y + (map->player->dy * color * 10), 0xAF133D);
+}
+
+void	render_minimap(t_map *map, int start_x, int start_y, int size)
+{
+	int		x;
+	int		y;
+	float	tempx;
+	float	tempy;
+	int		color;
+
+	y = start_y - 1;
+	tempy = map->player->y - 3;
+	while (y++ <  start_y + size - start_x)
+	{
+		tempx = map->player->x - 3;
+		x = start_x - 1;
+		while (x++ < start_x + size - start_x)
+		{
+			put_p(map->img, x, y, 0);
+			if ((tempx > 0 && tempx < map->xlen) && (tempy > 0 && tempy < map->ylen))
+			{
+				if (map->coord[(int)tempy][(int)tempx] == '1')
+					color = 0x61061F;
+				else if (map->coord[(int)tempy][(int)tempx] == 'C')
+					color = 0x61061F;
+				else
+					color = 0;
+				put_p(map->img, x, y, color);
+			}
+			tempx += 0.03125;
+		}
+		tempy += 0.03125;
+	}
+	draw_player(map, start_x + (size / 2) - 15, start_y + (size / 2) - 15);
 }
 
 void	draw_minimap(t_map *map)
@@ -235,19 +352,18 @@ void	draw_minimap(t_map *map)
 	int	y;
 	int	size;
 
-	size = 250;
+	size = 224;
 	y = WIN_H - size - 1;
+	render_minimap(map, 30, WIN_H - size, size);
 	while (y++ <  WIN_H - 30)
 	{
 		x = 29;
 		while (x++ < size)
 		{
-			if (y == WIN_H - size || x == 30 || y == WIN_H - 30 || x == size)
-				put_p(map->img, x, y, -1);
-			// if (y == WIN_H - (size * 1.5) )
+			if (y <= WIN_H - size + 1 || x <= 31 || y >= WIN_H - 31 || x >= size - 1)
+				put_p(map->img, x, y, 0x44101E);
 		}
 	}
-	put_p(map->img, x, y, 0x0);
 }
 
 void	draw_rays(t_map *map)
@@ -283,6 +399,7 @@ void	draw_rays(t_map *map)
 		angle -= 2 * PI;
 	while (++i < ray_num)
 	{
+		map->rays[i].side = 'r';
 		dx = cos(angle) / 10;
 		dy = sin(angle) / 10;
 		ray_start.x = map->player->x;
@@ -345,8 +462,10 @@ void	draw_rays(t_map *map)
 			// Test tile at new test point
 			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
 			{
-				if (map->coord[map_check.y][map_check.x] == '1')
+				if (map->coord[map_check.y][map_check.x] == '1' || map->coord[map_check.y][map_check.x] == 'C')
 					bTileFound = true;
+				if (map->coord[map_check.y][map_check.x] == 'C')
+					map->rays[i].side = 'C';
 			}
 		}
 		// Calculate intersection location
@@ -354,13 +473,13 @@ void	draw_rays(t_map *map)
 		{
 			map->rays[i].x = (ray_start.x + ray_dir.x * fDistance);
 			map->rays[i].y = (ray_start.y + ray_dir.y * fDistance);
-			if (xmin == 0 && angle > 0 && angle < PI)
+			if (xmin == 0 && angle > 0 && angle < PI && map->rays[i].side != 'C')
 				map->rays[i].side = 'n';
-			else if (xmin == 0 && angle > PI && angle < 2 * PI)
+			else if (xmin == 0 && angle > PI && angle < 2 * PI && map->rays[i].side != 'C')
 				map->rays[i].side = 's';
-			if (xmin == 1 && angle < P3 && angle > P2)
+			if (xmin == 1 && angle < P3 && angle > P2 && map->rays[i].side != 'C')
 				map->rays[i].side = 'w';
-			else if (xmin == 1 && (angle < P2 || angle > P3))
+			else if (xmin == 1 && (angle < P2 || angle > P3) && map->rays[i].side != 'c')
 				map->rays[i].side = 'e';
 			DistT = fDistance * BLK_WDT_PXL;
 		}
@@ -389,14 +508,14 @@ void	draw_rays(t_map *map)
 	// while (++i < ray_num)
 	// {
 		j = -1;
-	// 	color = 0xFFFFFF;
+		// color = 0xFFFFFF;
 	// 	while (j++ < 1080)
 	// 	{
 	// 		put_p(map->img, i, j, color);
-	// 		if (j < 504 && j > 300 && color - 0x010101 > 0)
-	// 			color = color - 0x010101;
-	// 		if (j > 504 && j < 700  && color + 0x010101 < 0xFFFFFF)
-	// 			color = color + 0x010101;
+	// 		if (j < 450 && j > 275 && color - 0x030303 > 0)
+	// 			color = color - 0x030303;
+	// 		if (j > 470 && j < 625  && color + 0x040303 < 0xFFFFFF)
+	// 			color = color + 0x030303;
 	// 		// if (i == 0)
 	// 		// 	printf("color = %d\n", color);
 	// 	}

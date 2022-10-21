@@ -19,8 +19,10 @@ int		pick_color(t_ray ray, t_map *map, float percentage)
 		wall = map->wall_n;
 	if (ray.side == 'w')
 		wall = map->wall_n;
+	if (ray.side == 'C')
+		wall = map->door;
 
-	if (ray.side == 'n' || ray.side == 's')
+	if (ray.side == 'n' || ray.side == 's' || ray.side == 'C')
 	{
 		pixel_y = (int)(wall.wall_height * percentage); // how high and low the pixel is
 		pixel_x = wall.wall_width * (ceil(ray.x) - ray.x);
@@ -43,16 +45,26 @@ void	connect_dots_colors(t_map *map, int x, int height, t_ray ray)
 	ray.angle = 0;
 	y_offset = 400 - (height / 2.5) - 0.01;
 	while(y++ < height)
-		put_p(map->img, x, y_offset + y, pick_color(ray, map, (float)y / height));
+	{
+		if (y_offset + y > 0 && y_offset + y < WIN_H)
+			put_p(map->img, x, y_offset + y, pick_color(ray, map, (float)y / height));
+	}
 }
 
 void	get_textures(t_map *map)
 {
 	char		*wall_n;
 
-	wall_n = "./cyberpunk.xpm";
+	wall_n = "./metal.xpm";
 	map->wall_n.wall = mlx_xpm_file_to_image(&map->mlx, wall_n, &map->wall_n.wall_width, &map->wall_n.wall_height);
 	map->wall_n.xpm_data.data = (int *)mlx_get_data_addr(map->wall_n.wall,
 		&map->wall_n.xpm_data.bits_per_pixel, &map->wall_n.xpm_data.size_line,
 		&map->wall_n.xpm_data.endian);
+	char		*door;
+
+	door = "./cyber.xpm";
+	map->door.wall = mlx_xpm_file_to_image(&map->mlx, door, &map->door.wall_width, &map->door.wall_height);
+	map->door.xpm_data.data = (int *)mlx_get_data_addr(map->door.wall,
+		&map->door.xpm_data.bits_per_pixel, &map->door.xpm_data.size_line,
+		&map->door.xpm_data.endian);
 }

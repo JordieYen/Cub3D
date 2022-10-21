@@ -6,12 +6,13 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/20 16:37:33 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/21 18:41:48 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUBE3D_H
 # define CUBE3D_H
+# define E 14
 # define W 13
 # define A 0
 # define S 1
@@ -95,6 +96,7 @@ typedef struct s_map
 	void		*mlx;
 	void		*win;
 	t_wall		wall_n;
+	t_wall		door;
 	t_data		*img;
 	t_player	*player;
 	t_ray		*rays;
