@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/20 16:37:33 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/22 21:07:22 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ typedef struct s_map
 	t_wall		wall_n;
 	t_data		*img;
 	t_player	*player;
-	t_ray		*rays;
+	t_ray		**rays;
 }	t_map;
 
 // ft_cube_utils.c
@@ -137,12 +137,12 @@ int	darken_rgb(int rgb, float len);
 void	create_line_colors(t_map *map, int ray_num);
 t_rgb	**create_xmp_array(t_map *map, t_xmp_data *xmpdata);
 void	get_textures(t_map *map);
-void	connect_dots_colors(t_map *map, int x, int height, t_ray ray);
+void	connect_dots_colors(t_map *map, int x, int height, t_ray *ray);
 
 // render.c
 void    render_background(t_map *map, int ray_num);
 void	render_rays(t_map *map, int ray_num);
 void	calculate_intersection(t_ray *ray, float fDistance);
-void	init_ray(t_ray *ray, int angle, t_map *map);
+t_ray	*init_ray(float angle, t_map *map);
 
 #endif

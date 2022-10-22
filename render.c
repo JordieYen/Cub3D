@@ -1,6 +1,7 @@
 # include "cube3d.h"
 # include <math.h>
 # include <stdio.h>
+# include <stdlib.h>
 
 void    render_background(t_map *map, int ray_num)
 {
@@ -32,7 +33,7 @@ void	render_rays(t_map *map, int ray_num)
 	i = -1;
 	while (++i < ray_num)
 	{
-		wall_height = (40 * 800) / map->rays[i].len + 0.01;
+		wall_height = (40 * 800) / map->rays[i]->len + 0.01;
 		connect_dots_colors(map, i, wall_height, map->rays[i]);
 	}
 }
@@ -55,13 +56,17 @@ void	calculate_intersection(t_ray *ray, float fDistance)
 	ray->len = DistT;
 }
 
-void	init_ray(t_ray *ray, int angle, t_map *map)
+t_ray	*init_ray(float angle, t_map *map)
 {
+	t_ray *ray;
+
+	ray = malloc(sizeof(t_ray));
 	ray->angle = angle;
+	ray->side = 'r';
 	ray->start.x = map->player->x;
 	ray->start.y = map->player->y;
-	ray->max.x = ((map->player->x) + ((cos(ray->angle) / 10) * 2000));
-	ray->max.y = ((map->player->y) + ((sin(ray->angle) / 10) * 2000));
+	ray->max.x = ((map->player->x) + ((cos(angle) / 10) * 2000));
+	ray->max.y = ((map->player->y) + ((sin(angle) / 10) * 2000));
 	ray->dir.x = ray->max.x - map->player->x;
 	ray->dir.y = ray->max.y - map->player->y;
 	ray->magnitude = dist(ray->max.x, ray->max.y,  map->player->x,  map->player->y);
@@ -69,5 +74,5 @@ void	init_ray(t_ray *ray, int angle, t_map *map)
 	ray->dir.y = ray->dir.y / ray->magnitude;
 	ray->step_size.x = sqrt(1 + (ray->dir.y / ray->dir.x) * (ray->dir.y / ray->dir.x));
 	ray->step_size.y = sqrt(1 + (ray->dir.x / ray->dir.y) * (ray->dir.x / ray->dir.y));
-	printf("A: SSY %f\n", ray->step_size.y);
+	return (ray);
 }

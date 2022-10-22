@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/20 18:04:04 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/22 21:04:06 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,10 +253,15 @@ void	shoot_rays(t_map *map)
 {
 	int		ray_num;
 	int		i;
-	float	DistT;
 	float	angle;
+	bool bTileFound;
+	float fMaxDistance;
+	float fDistance;
 	t_coord	map_check;
 	t_fcoord step;
+	// float		dy;
+	// float		dx;
+	t_ray	*ray;
 
 	ray_num = WIN_W;
 	map->rays = malloc(sizeof(t_ray) * ray_num);
@@ -268,52 +273,74 @@ void	shoot_rays(t_map *map)
 		angle -= 2 * PI;
 	while (++i < ray_num)
 	{
-		init_ray(&map->rays[i], angle, map);
-		printf("B: SSY %f\n", map->rays[i].step_size.y);
+		map->rays[i] = init_ray(angle, map);
+		ray = map->rays[i];
+		// ray->angle = angle;
+		// ray->side = 'r';
+		// dx = cos(angle) / 10;
+		// dy = sin(angle) / 10;
+		// ray->start.x = map->player->x;
+		// ray->start.y = map->player->y;
+		// ray->max.x = ((map->player->x) + (dx * 2000));
+		// ray->max.y = ((map->player->y) + (dy * 2000));
+		// ray->dir.x = ray->max.x - map->player->x;
+		// ray->dir.y = ray->max.y - map->player->y;
+		// ray->magnitude = dist(ray->max.x, ray->max.y,  map->player->x,  map->player->y);
+		// ray->dir.x = ray->dir.x / ray->magnitude;
+		// ray->dir.y = ray->dir.y / ray->magnitude;
+		// ray->step_size.x = sqrt(1 + (ray->dir.y / ray->dir.x) * (ray->dir.y / ray->dir.x));
+		// ray->step_size.y = sqrt(1 + (ray->dir.x / ray->dir.y) * (ray->dir.x / ray->dir.y));
+		// printf("ray->angle %f\n", ray->angle);
+		// printf("ray->start %f %f\n", ray->start.x, ray->start.y);
+		// printf("ray->max %f %f\n", ray->max.x, ray->max.y);
+		// printf("ray->dir %f %f\n", ray->dir.x, ray->dir.y);
+		// printf("ray->magnitude %d\n", ray->magnitude);
+		// printf("ray->step_size %f %f\n", ray->step_size.x, ray->step_size.y);
+		// printf("------\n");
+		// exit(1);
 		map_check.x = map->player->x;
 		map_check.y = map->player->y;
 		// Establish Starting Conditions
-		if (map->rays[i].dir.x < 0)
+		if (ray->dir.x < 0)
 		{
 			step.x = -1;
-			map->rays[i].length_1d.x = (map->rays[i].start.x - (float)map_check.x) * map->rays[i].step_size.x;
+			ray->length_1d.x = (ray->start.x - (float)map_check.x) * ray->step_size.x;
 		}
 		else
 		{
 			step.x = 1;
-			map->rays[i].length_1d.x = ((float)map_check.x + 1 - map->rays[i].start.x) * map->rays[i].step_size.x;
+			ray->length_1d.x = ((float)map_check.x + 1 - ray->start.x) * ray->step_size.x;
 		}
 
-		if (map->rays[i].dir.y < 0)
+		if (ray->dir.y < 0)
 		{
 			step.y = -1;
-			map->rays[i].length_1d.y = (map->rays[i].start.y - (float)map_check.y) * map->rays[i].step_size.y;
+			ray->length_1d.y = (ray->start.y - (float)map_check.y) * ray->step_size.y;
 		}
 		else
 		{
 			step.y = 1;
-			map->rays[i].length_1d.y = ((float)map_check.y + 1 - map->rays[i].start.y) * map->rays[i].step_size.y;
+			ray->length_1d.y = ((float)map_check.y + 1 - ray->start.y) * ray->step_size.y;
 		}
-		bool bTileFound = false;
-		float fMaxDistance = 2000.0f;
-		float fDistance = 0.0f;
-
+		bTileFound = false;
+		fMaxDistance = 2000;
+		fDistance = 0;
 		while (!bTileFound && fDistance < fMaxDistance)
 		{
 			// Walk along shortest path
-			if (map->rays[i].length_1d.x < map->rays[i].length_1d.y)
+			if (ray->length_1d.x < ray->length_1d.y)
 			{
 				map_check.x += step.x;
-				fDistance = map->rays[i].length_1d.x;
-				map->rays[i].length_1d.x += map->rays[i].step_size.x;
-				map->rays[i].xmin = 1;
+				fDistance = ray->length_1d.x;
+				ray->length_1d.x += ray->step_size.x;
+				ray->xmin = 1;
 			}
 			else
 			{
 				map_check.y += step.y;
-				fDistance = map->rays[i].length_1d.y;
-				map->rays[i].length_1d.y += map->rays[i].step_size.y;
-				map->rays[i].xmin = 0;
+				fDistance = ray->length_1d.y;
+				ray->length_1d.y += ray->step_size.y;
+				ray->xmin = 0;
 			}
 			// Test tile at new test point
 			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
@@ -324,16 +351,7 @@ void	shoot_rays(t_map *map)
 		}
 		// Calculate intersection location
 		if (bTileFound)
-			calculate_intersection(&map->rays[i], fDistance);
-		else
-			printf("NOT HIMT\n");
-		float ca = map->player->angle - angle;
-		if (ca < 0)
-			ca += 2 * PI;
-		if (ca > 2 * PI)
-			ca -= 2 * PI;
-		if (DistT != -1)
-			DistT = DistT * cos(ca);
+			calculate_intersection(ray, fDistance);
 		angle += DR/21.3333;
 		if (angle < 0)
 			angle += 2 * PI;
@@ -347,7 +365,6 @@ void	createScreen(t_map *map)
 {
 	int	y;
 	int x;
-	int color;
 	t_data img;
 
 	img.img = mlx_new_image(map->mlx, WIN_W, WIN_H);
@@ -360,12 +377,6 @@ void	createScreen(t_map *map)
 		x = 0;
 		while (x < map->xlen)
 		{
-			if (map->coord[y][x] == '1')
-				color = 0x0066B2FF;
-			else if (map->coord[y][x] == ' ')
-				color = 0x00000;
-			else
-				color = 0xFF4500;
 			if (map->coord[y][x] == 'N' || map->coord[y][x] == 'S' || map->coord[y][x] == 'E' || map->coord[y][x] == 'W')
 			{
 				map->player->x = x + 0.5;
@@ -381,6 +392,9 @@ void	createScreen(t_map *map)
 	render_rays(map, WIN_W);
 	draw_minimap(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
+	x = -1;
+	while (++x < WIN_W)
+		free(map->rays[x]);
 	free(map->rays);
 }
 

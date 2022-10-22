@@ -5,42 +5,42 @@
 #include <math.h>
 #include <limits.h>
 
-int		pick_color(t_ray ray, t_map *map, float percentage)
+int		pick_color(t_ray *ray, t_map *map, float percentage)
 {
 	int pixel_x;
 	int pixel_y;
 	t_wall wall;
 
-	if (ray.side == 'n')
+	if (ray->side == 'n')
 		wall = map->wall_n;
-	if (ray.side == 's')
+	if (ray->side == 's')
 		wall = map->wall_n;
-	if (ray.side == 'e')
+	if (ray->side == 'e')
 		wall = map->wall_n;
-	if (ray.side == 'w')
+	if (ray->side == 'w')
 		wall = map->wall_n;
 
-	if (ray.side == 'n' || ray.side == 's')
+	if (ray->side == 'n' || ray->side == 's')
 	{
 		pixel_y = (int)(wall.wall_height * percentage); // how high and low the pixel is
-		pixel_x = wall.wall_width * (ceil(ray.x) - ray.x);
+		pixel_x = wall.wall_width * (ceil(ray->x) - ray->x);
 	}
-	if (ray.side == 'e' || ray.side == 'w')
+	if (ray->side == 'e' || ray->side == 'w')
 	{
 		pixel_y = (int)(wall.wall_height * percentage); // how high and low the pixel is
-		pixel_x = wall.wall_width * (ceil(ray.y) - ray.y);
+		pixel_x = wall.wall_width * (ceil(ray->y) - ray->y);
 	}
 
-	return (darken_rgb(wall.xpm_data.data[pixel_x + wall.wall_width * pixel_y], ray.len));
+	return (darken_rgb(wall.xpm_data.data[pixel_x + wall.wall_width * pixel_y], ray->len));
 }
 
-void	connect_dots_colors(t_map *map, int x, int height, t_ray ray)
+void	connect_dots_colors(t_map *map, int x, int height, t_ray *ray)
 {
 	int	y;
 	float y_offset;
 
 	y = -1;
-	ray.angle = 0;
+	ray->angle = 0;
 	y_offset = 400 - (height / 2.5) - 0.01;
 	while(y++ < height)
 		put_p(map->img, x, y_offset + y, pick_color(ray, map, (float)y / height));
