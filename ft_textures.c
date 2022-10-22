@@ -50,7 +50,7 @@ void	get_textures(t_map *map)
 {
 	char		*wall_n;
 
-	wall_n = "./cyberpunk.xpm";
+	wall_n = "./textures/cyberpunk.xpm";
 	map->wall_n.wall = mlx_xpm_file_to_image(&map->mlx, wall_n, &map->wall_n.wall_width, &map->wall_n.wall_height);
 	map->wall_n.xpm_data.data = (int *)mlx_get_data_addr(map->wall_n.wall,
 		&map->wall_n.xpm_data.bits_per_pixel, &map->wall_n.xpm_data.size_line,

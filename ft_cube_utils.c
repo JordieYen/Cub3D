@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cube_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 18:32:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/20 17:48:46 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/23 01:38:45 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void    draw_two_points(t_map *map, int x1, int y1, int x2, int y2)
 
     i = -1;
     hypo = sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
-	aTan = -1/tan(map->rays[i].angle);
+	aTan = -1/tan(map->rays[i]->angle);
 	anglex = aTan * (x1 - x2);
 	angley = aTan * (y1 - y2);
     while (++i < hypo)
@@ -105,7 +105,7 @@ void	draw_2d_rays(t_map *map, int raynum)
 	init_mycoord(&coord1, map->player->x * BLK_WDT_PXL, map->player->y * BLK_WDT_PXL);
 	while (++i < raynum)
 	{
-		init_mycoord(&coord2, map->rays[i].x * BLK_WDT_PXL, map->rays[i].y * BLK_WDT_PXL);
+		init_mycoord(&coord2, map->rays[i]->x * BLK_WDT_PXL, map->rays[i]->y * BLK_WDT_PXL);
 		connectdots(map->img, coord1, coord2, 0x330066);
 	}
 }

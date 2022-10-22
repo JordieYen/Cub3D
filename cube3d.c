@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/22 21:04:06 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/23 01:40:33 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,25 +77,6 @@ void	fill_map(t_map *map, int fd)
 		i++;
 	}
 	map->coord[i] = NULL;
-}
-
-void	print_map(t_map *map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < map->ylen)
-	{
-		j = 0;
-		while (j < map->xlen)
-		{
-			printf("%c", map->coord[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
 }
 
 int	check_space(t_map *map, int x, int y)
@@ -251,16 +232,14 @@ void	draw_minimap(t_map *map)
 
 void	shoot_rays(t_map *map)
 {
-	int		ray_num;
-	int		i;
-	float	angle;
-	bool bTileFound;
-	float fMaxDistance;
-	float fDistance;
-	t_coord	map_check;
-	t_fcoord step;
-	// float		dy;
-	// float		dx;
+	int			ray_num;
+	int			i;
+	float		angle;
+	bool		bTileFound;
+	float		fMaxDistance;
+	float		fDistance;
+	t_coord		map_check;
+	t_fcoord	step;
 	t_ray	*ray;
 
 	ray_num = WIN_W;
@@ -275,29 +254,6 @@ void	shoot_rays(t_map *map)
 	{
 		map->rays[i] = init_ray(angle, map);
 		ray = map->rays[i];
-		// ray->angle = angle;
-		// ray->side = 'r';
-		// dx = cos(angle) / 10;
-		// dy = sin(angle) / 10;
-		// ray->start.x = map->player->x;
-		// ray->start.y = map->player->y;
-		// ray->max.x = ((map->player->x) + (dx * 2000));
-		// ray->max.y = ((map->player->y) + (dy * 2000));
-		// ray->dir.x = ray->max.x - map->player->x;
-		// ray->dir.y = ray->max.y - map->player->y;
-		// ray->magnitude = dist(ray->max.x, ray->max.y,  map->player->x,  map->player->y);
-		// ray->dir.x = ray->dir.x / ray->magnitude;
-		// ray->dir.y = ray->dir.y / ray->magnitude;
-		// ray->step_size.x = sqrt(1 + (ray->dir.y / ray->dir.x) * (ray->dir.y / ray->dir.x));
-		// ray->step_size.y = sqrt(1 + (ray->dir.x / ray->dir.y) * (ray->dir.x / ray->dir.y));
-		// printf("ray->angle %f\n", ray->angle);
-		// printf("ray->start %f %f\n", ray->start.x, ray->start.y);
-		// printf("ray->max %f %f\n", ray->max.x, ray->max.y);
-		// printf("ray->dir %f %f\n", ray->dir.x, ray->dir.y);
-		// printf("ray->magnitude %d\n", ray->magnitude);
-		// printf("ray->step_size %f %f\n", ray->step_size.x, ray->step_size.y);
-		// printf("------\n");
-		// exit(1);
 		map_check.x = map->player->x;
 		map_check.y = map->player->y;
 		// Establish Starting Conditions
@@ -435,11 +391,8 @@ int	main(int argc, char **argv)
 		close(fd);
 		fd = open(argv[1], O_RDONLY);
 		fill_map(&map, fd);
-		if (check_map(&map))
-			print_map(&map);
-		else
+		if (check_map(&map) != 1)
 			printf("invalid map\n");
-		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
 		map.mlx = mlx_init();
 		map.win = mlx_new_window(map.mlx, WIN_W, WIN_H, "MLX CUBE3D");
 		img.img = mlx_new_image(map.mlx, WIN_W, WIN_H);
