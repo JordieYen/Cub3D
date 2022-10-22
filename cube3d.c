@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/23 01:40:33 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/23 02:05:20 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,87 +232,26 @@ void	draw_minimap(t_map *map)
 
 void	shoot_rays(t_map *map)
 {
-	int			ray_num;
 	int			i;
 	float		angle;
-	bool		bTileFound;
-	float		fMaxDistance;
-	float		fDistance;
 	t_coord		map_check;
 	t_fcoord	step;
-	t_ray	*ray;
+	t_ray		*ray;
 
-	ray_num = WIN_W;
-	map->rays = malloc(sizeof(t_ray) * ray_num);
-	i = -1;
-	angle = (map->player->angle) - (DR/21.333 * (ray_num/2));
+	map->rays = malloc(sizeof(t_ray) * WIN_W);
+	angle = (map->player->angle) - (DR/21.333 * (WIN_W/2));
 	if (angle < 0)
 		angle += 2 * PI;
-	if (angle > 2 * PI)
+	else if (angle > 2 * PI)
 		angle -= 2 * PI;
-	while (++i < ray_num)
+	i = -1;
+	while (++i < WIN_W)
 	{
 		map->rays[i] = init_ray(angle, map);
 		ray = map->rays[i];
-		map_check.x = map->player->x;
-		map_check.y = map->player->y;
-		// Establish Starting Conditions
-		if (ray->dir.x < 0)
-		{
-			step.x = -1;
-			ray->length_1d.x = (ray->start.x - (float)map_check.x) * ray->step_size.x;
-		}
-		else
-		{
-			step.x = 1;
-			ray->length_1d.x = ((float)map_check.x + 1 - ray->start.x) * ray->step_size.x;
-		}
-
-		if (ray->dir.y < 0)
-		{
-			step.y = -1;
-			ray->length_1d.y = (ray->start.y - (float)map_check.y) * ray->step_size.y;
-		}
-		else
-		{
-			step.y = 1;
-			ray->length_1d.y = ((float)map_check.y + 1 - ray->start.y) * ray->step_size.y;
-		}
-		bTileFound = false;
-		fMaxDistance = 2000;
-		fDistance = 0;
-		while (!bTileFound && fDistance < fMaxDistance)
-		{
-			// Walk along shortest path
-			if (ray->length_1d.x < ray->length_1d.y)
-			{
-				map_check.x += step.x;
-				fDistance = ray->length_1d.x;
-				ray->length_1d.x += ray->step_size.x;
-				ray->xmin = 1;
-			}
-			else
-			{
-				map_check.y += step.y;
-				fDistance = ray->length_1d.y;
-				ray->length_1d.y += ray->step_size.y;
-				ray->xmin = 0;
-			}
-			// Test tile at new test point
-			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
-			{
-				if (map->coord[map_check.y][map_check.x] == '1')
-					bTileFound = true;
-			}
-		}
-		// Calculate intersection location
-		if (bTileFound)
-			calculate_intersection(ray, fDistance);
-		angle += DR/21.3333;
-		if (angle < 0)
-			angle += 2 * PI;
-		if (angle > 2 * PI)
-			angle -= 2 * PI;
+		init_map_check_ray_dir(ray, &map_check, map, &step);
+		calculate_intersection(ray, walk_shortest_path(ray, &map_check, &step, map));
+		angle = rotate_angle(angle);
 	}
 
 }

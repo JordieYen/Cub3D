@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/22 21:07:22 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/23 02:03:27 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,4 +145,8 @@ void	render_rays(t_map *map, int ray_num);
 void	calculate_intersection(t_ray *ray, float fDistance);
 t_ray	*init_ray(float angle, t_map *map);
 
+// ft_render_utils.c
+void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check, t_map *map, t_fcoord *step);
+float	walk_shortest_path(t_ray *ray, t_coord *map_check, t_fcoord *step, t_map *map);
+float	rotate_angle(float angle);
 #endif
