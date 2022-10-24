@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/23 01:42:54 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/24 16:04:10 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,9 @@ int		pick_color(t_ray *ray, t_map *map, float percentage)
 		wall = map->wall_n;
 	if (ray->side == 'w')
 		wall = map->wall_n;
-	if (ray.side == 'C')
-		wall = map->door;
 
 
-	if (ray.side == 'n' || ray.side == 's' || ray.side == 'C')
+	if (ray->side == 'n' || ray->side == 's')
 	{
 		pixel_y = (int)(wall.wall_height * percentage); // how high and low the pixel is
 		pixel_x = wall.wall_width * (ceil(ray->x) - ray->x);

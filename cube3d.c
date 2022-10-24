@@ -6,7 +6,7 @@
 /*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/24 14:32:47 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/24 16:03:31 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,7 @@ void	draw_minimap(t_map *map)
 	}
 }
 
-void	draw_rays(t_map *map)
+void	shoot_rays(t_map *map)
 {
 	int			i;
 	float		angle;
