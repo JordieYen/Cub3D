@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/21 19:26:05 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/24 14:32:47 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,25 +188,19 @@ int	opendoor(t_map *map)
 		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'O';
 	else if (map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] == 'C')
 		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'O';
-	else
-		return (0);
 	if (map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] == 'C')
 		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'O';
 	else if (map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] == 'C')
 		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'O';
-	else
-		return(0);
 	if (map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] == 'C')
 		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'O';
 	else if (map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] == 'C')
 		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'O';
-	else
-		return (0);
 	if (map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] == 'C')
 		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'O';
 	else if (map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] == 'C')
 		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'O';
-	else
+	else //change to if door is open
 		return(0);
 	return(1);
 }
@@ -217,25 +211,19 @@ int	closedoor(t_map *map)
 		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'C';
 	else if (map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] == 'O')
 		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'C';
-	else
-		return (0);
 	if (map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] == 'O')
 		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'C';
 	else if (map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] == 'O')
 		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'C';
-	else
-		return (0);
 	if (map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] == 'O')
 		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'C';
 	else if (map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] == 'O')
 		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'C';
-	else
-		return (0);
 	if (map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] == 'O')
 		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'C';
 	else if (map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] == 'O')
 		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'C';
-	else
+	else //change to if door is closed
 		return (0);
 	return (1);
 }
@@ -366,6 +354,12 @@ void	draw_minimap(t_map *map)
 	}
 }
 
+// void	get_door_raylen(t_ray *ray, float fdistance, float rayhit)
+// {
+// 	if (rayhit >= ray->door_percentange)
+// 		float
+// }
+
 void	draw_rays(t_map *map)
 {
 	int		ray_num;
@@ -466,6 +460,10 @@ void	draw_rays(t_map *map)
 					bTileFound = true;
 				if (map->coord[map_check.y][map_check.x] == 'C')
 					map->rays[i].side = 'C';
+				// if (map->coord[map_check.y][map_check.x] == 'O')
+				// {
+				// 	get_door_raylen(map->ray[i], fDistance)
+				// }
 			}
 		}
 		// Calculate intersection location
