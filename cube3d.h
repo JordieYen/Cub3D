@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/23 02:03:27 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/24 19:50:39 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define P2 PI/2
 # define P3 3*PI/2
 # define DR 0.0174533
+# define FOV 40 * 100
 #include <stdbool.h>
 
 typedef struct s_player
@@ -67,13 +68,18 @@ typedef struct s_xmp_data
 typedef struct s_ray
 {
 	int		*ray_rgbs;
+	char	isdoor;
+	float	doorlen;
+	int		doorxmin;
+	float	doorx;
+	float	doory;
 	float	angle;
+	float	playerangle;
 	float	x;
 	float	y;
 	float	xof;
 	float	yof;
 	float	len;
-	float	doorlen;
 	float	door_percentange;
 	int		up;
 	int		left;
@@ -142,12 +148,14 @@ void	create_line_colors(t_map *map, int ray_num);
 t_rgb	**create_xmp_array(t_map *map, t_xmp_data *xmpdata);
 void	get_textures(t_map *map);
 void	connect_dots_colors(t_map *map, int x, int height, t_ray *ray);
+void	connect_dots_doors(t_map *map, int x, int height, t_ray *ray);
 
 // render.c
 void    render_background(t_map *map, int ray_num);
 void	render_rays(t_map *map, int ray_num);
 void	calculate_intersection(t_ray *ray, float fDistance);
 t_ray	*init_ray(float angle, t_map *map);
+void	render_doors(t_map *map, int ray_num);
 
 // ft_render_utils.c
 void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check, t_map *map, t_fcoord *step);

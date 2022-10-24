@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_render_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:42 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/23 02:03:08 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/24 17:45:21 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube3d.h"
+#include <math.h>
 
 void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check, t_map *map, t_fcoord *step)
 {
@@ -48,6 +49,29 @@ float	rotate_angle(float angle)
 	return (angle);
 }
 
+int	getdoorlen(t_ray *ray, float distance, char c)
+{
+	float	ca;
+	float	DistT;
+
+	if (c == '1')
+		return (true);
+	ca = ray->playerangle - ray->angle;
+	DistT = distance * BLK_WDT_PXL;
+	if (ca < 0)
+		ca += 2 * PI;
+	if (ca > 2 * PI)
+		ca -= 2 * PI;
+	if (DistT != -1)
+		DistT = DistT * cos(ca);
+	ray->doorlen = DistT;
+	ray->doorxmin = ray->xmin;
+	ray->isdoor = 'y';
+	ray->doorx = (ray->start.x + ray->dir.x * distance);
+	ray->doory = (ray->start.y + ray->dir.y * distance);
+	return (false);
+}
+
 float	walk_shortest_path(t_ray *ray, t_coord *map_check, t_fcoord *step, t_map *map)
 {
 	bool		tile_found;
@@ -75,8 +99,8 @@ float	walk_shortest_path(t_ray *ray, t_coord *map_check, t_fcoord *step, t_map *
 		}
 		if (map_check->x >= 0 && map_check->x < map->xlen && map_check->y >= 0 && map_check->y < map->ylen)
 		{
-			if (map->coord[map_check->y][map_check->x] == '1')
-				tile_found = true;
+			if (map->coord[map_check->y][map_check->x] == '1' || map->coord[map_check->y][map_check->x] == 'C')
+				tile_found = getdoorlen(ray, distance, map->coord[map_check->y][map_check->x]);
 		}
 	}
 	return (distance);

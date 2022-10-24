@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:43:04 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/23 01:43:05 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/24 19:12:08 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,31 @@ void	render_rays(t_map *map, int ray_num)
 	i = -1;
 	while (++i < ray_num)
 	{
-		wall_height = (40 * 800) / map->rays[i]->len + 0.01;
+		wall_height = (FOV) / map->rays[i]->len + 0.01;
 		connect_dots_colors(map, i, wall_height, map->rays[i]);
+	}
+}
+
+void	render_doors(t_map *map, int ray_num)
+{
+	int	i;
+	float wall_height;
+
+	i = -1;
+	while (++i < ray_num)
+	{
+		if (map->rays[i]->isdoor == 'y')
+		{
+			wall_height = (FOV) / map->rays[i]->doorlen + 0.01;
+			connect_dots_doors(map, i, wall_height, map->rays[i]);
+		}
 	}
 }
 
 void	calculate_intersection(t_ray *ray, float fDistance)
 {
 	float DistT;
+	float ca = ray->playerangle - ray->angle;
 
 	ray->x = (ray->start.x + ray->dir.x * fDistance);
 	ray->y = (ray->start.y + ray->dir.y * fDistance);
@@ -65,6 +82,12 @@ void	calculate_intersection(t_ray *ray, float fDistance)
 	else if (ray->xmin == 1 && (ray->angle < P2 || ray->angle > P3))
 		ray->side = 'e';
 	DistT = fDistance * BLK_WDT_PXL;
+	if (ca < 0)
+		ca += 2 * PI;
+	if (ca > 2 * PI)
+		ca -= 2 * PI;
+	if (DistT != -1)
+		DistT = DistT * cos(ca);
 	ray->len = DistT;
 }
 
@@ -74,6 +97,8 @@ t_ray	*init_ray(float angle, t_map *map)
 
 	ray = malloc(sizeof(t_ray));
 	ray->angle = angle;
+	ray->playerangle = map->player->angle;
+	ray->isdoor = ';';
 	ray->side = 'r';
 	ray->start.x = map->player->x;
 	ray->start.y = map->player->y;

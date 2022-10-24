@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/24 16:03:31 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/24 19:48:31 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,59 +162,91 @@ int	check_map(t_map *map)
 	return (1);
 }
 
-int	opendoor(t_map *map)
+int	check_if_valid(t_map *map, int offset, char door, char axis)
 {
-	if (map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] == 'C')
-		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'O';
-	else if (map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] == 'C')
-		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'O';
-	if (map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] == 'C')
-		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'O';
-	else if (map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] == 'C')
-		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'O';
-	if (map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] == 'C')
-		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'O';
-	else if (map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] == 'C')
-		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'O';
-	if (map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] == 'C')
-		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'O';
-	else if (map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] == 'C')
-		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'O';
-	else //change to if door is open
-		return(0);
-	return(1);
+	if (axis == 'x')
+	{
+		if (map->player->x + offset < map->xlen && map->player->y + offset < map->ylen)
+		{
+			if (map->coord[(int)(map->player->y)][(int)(map->player->x + offset)] == door)
+				return (1);
+		}
+	}
+	if (axis == 'y')
+	{
+		if (map->player->x + offset < map->xlen && map->player->y + offset < map->ylen)
+		{
+			if (map->coord[(int)(map->player->y + offset)][(int)(map->player->x)] == door)
+				return (1);
+		}
+	}
+	return (0);
 }
 
-int	closedoor(t_map *map)
+void	opendoor(t_map *map)
 {
-	if (map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] == 'O')
+	if (check_if_valid(map, -1, 'C', 'y'))
+		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'O';
+	else if (check_if_valid(map, -2, 'C', 'y'))
+		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'O';
+	if (check_if_valid(map, 1, 'C', 'y'))
+		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'O';
+	else if (check_if_valid(map, 2, 'C', 'y'))
+		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'O';
+	if (check_if_valid(map, -1, 'C', 'x'))
+		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'O';
+	else if (check_if_valid(map, -2, 'C', 'x'))
+		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'O';
+	if (check_if_valid(map, 1, 'C', 'x'))
+		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'O';
+	else if (check_if_valid(map, 2, 'C', 'x'))
+		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'O';
+}
+
+void	closedoor(t_map *map)
+{
+	if (check_if_valid(map, -1, 'O', 'y'))
 		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'C';
-	else if (map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] == 'O')
+	else if (check_if_valid(map, -2, 'O', 'y'))
 		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'C';
-	if (map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] == 'O')
+	if (check_if_valid(map, 1, 'O', 'y'))
 		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'C';
-	else if (map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] == 'O')
+	else if (check_if_valid(map, 2, 'O', 'y'))
 		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'C';
-	if (map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] == 'O')
+	if (check_if_valid(map, -1, 'O', 'x'))
 		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'C';
-	else if (map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] == 'O')
+	else if (check_if_valid(map, -2, 'O', 'x'))
 		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'C';
-	if (map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] == 'O')
+	if (check_if_valid(map, 1, 'O', 'x'))
 		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'C';
-	else if (map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] == 'O')
+	else if (check_if_valid(map, 2, 'O', 'x'))
 		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'C';
-	else //change to if door is closed
-		return (0);
-	return (1);
+}
+
+void	handledoors(t_map *map)
+{
+	static int	isclosed;
+
+	if (map->player->x - floor(map->player->x) >= 0.00001 
+		&& map->player->y - floor(map->player->y) >= 0.00001)
+	{
+		if (isclosed == 0)
+		{
+			opendoor(map);
+			isclosed = 1;
+		}
+		else
+		{
+			closedoor(map);
+			isclosed = 0;
+		}
+	}
 }
 //TODO: dont move player at all if it will touch a wall on any side
 void move_player(t_map *map, int key)
 {
 	if (key == E)
-	{	
-		if (opendoor(map) == 0)
-			closedoor(map);
-	}
+		handledoors(map);
 	if (key == S)
 	{
 		if (map->coord[(int)(map->player->y - map->player->dy)][(int)(map->player->x - map->player->dx)] != '1'
@@ -226,8 +258,8 @@ void move_player(t_map *map, int key)
 	}
 	if (key == W)
 	{
-		if (map->coord[(int)(map->player->y + map->player->dy)][(int)(map->player->x + map->player->dx)] != '1'
-			&& map->coord[(int)(map->player->y + map->player->dy)][(int)(map->player->x + map->player->dx)] != 'C')
+		if (map->coord[(int)(map->player->y + map->player->dy * 2)][(int)(map->player->x + map->player->dx * 2)] != '1'
+			&& map->coord[(int)(map->player->y + map->player->dy * 2)][(int)(map->player->x + map->player->dx * 2)] != 'C')
 		{
 			map->player->x += map->player->dx;
 			map->player->y += map->player->dy;
@@ -370,11 +402,11 @@ void	createScreen(t_map *map)
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
 	map->img = &img;
-	y = 0;
-	while (y < map->ylen)
+	y = -1;
+	while (++y < map->ylen)
 	{
-		x = 0;
-		while (x < map->xlen)
+		x = -1;
+		while (++x < map->xlen)
 		{
 			if (map->coord[y][x] == 'N' || map->coord[y][x] == 'S' || map->coord[y][x] == 'E' || map->coord[y][x] == 'W')
 			{
@@ -382,13 +414,12 @@ void	createScreen(t_map *map)
 				map->player->y = y + 0.5;
 				map->coord[y][x] = '0';
 			}
-			x++;
 		}
-		y++;
 	}
 	shoot_rays(map);
-	render_background(map, WIN_W);
+	// render_background(map, WIN_W);
 	render_rays(map, WIN_W);
+	render_doors(map, WIN_W);
 	draw_minimap(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
 	x = -1;
