@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
 /*   Updated: 2022/10/24 14:32:47 by jking-ye         ###   ########.fr       */
@@ -17,7 +17,6 @@
 # include <math.h>
 # include "libmlx/mlx.h"
 # include <float.h>
-# include <stdbool.h>
 # include <stdlib.h>
 # include <sys/time.h>
 
@@ -78,25 +77,6 @@ void	fill_map(t_map *map, int fd)
 		i++;
 	}
 	map->coord[i] = NULL;
-}
-
-void	print_map(t_map *map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < map->ylen)
-	{
-		j = 0;
-		while (j < map->xlen)
-		{
-			printf("%c", map->coord[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
 }
 
 int	check_space(t_map *map, int x, int y)
@@ -354,190 +334,38 @@ void	draw_minimap(t_map *map)
 	}
 }
 
-// void	get_door_raylen(t_ray *ray, float fdistance, float rayhit)
-// {
-// 	if (rayhit >= ray->door_percentange)
-// 		float
-// }
-
 void	draw_rays(t_map *map)
 {
-	int		ray_num;
-	int		i;
-	int		j;
-	int		xmin;
-	float	DistT;
-	float	angle;
-	float	lineH;
-	int		dof_max;
-	t_fcoord ray_max;
-	t_fcoord ray_dir;
-	t_coord	map_check;
-	t_fcoord ray_step_size;
-	t_fcoord ray_length_1d;
-	t_fcoord step;
-	t_fcoord ray_start;
-	float		dy;
-	float		dx;
-	int		magnitude;
+	int			i;
+	float		angle;
+	t_coord		map_check;
+	t_fcoord	step;
+	t_ray		*ray;
 
-	dof_max = 12;
-	ray_num = WIN_W;
-	map->rays = malloc(sizeof(t_ray) * ray_num);
-
-	i = -1;
-	angle = (map->player->angle) - (DR/21.333 * (ray_num/2));
+	map->rays = malloc(sizeof(t_ray) * WIN_W);
+	angle = (map->player->angle) - (DR/21.333 * (WIN_W/2));
 	if (angle < 0)
 		angle += 2 * PI;
-	if (angle > 2 * PI)
+	else if (angle > 2 * PI)
 		angle -= 2 * PI;
-	while (++i < ray_num)
-	{
-		map->rays[i].side = 'r';
-		dx = cos(angle) / 10;
-		dy = sin(angle) / 10;
-		ray_start.x = map->player->x;
-		ray_start.y = map->player->y;
-		ray_max.x = ((map->player->x) + (dx * 2000));
-		ray_max.y = ((map->player->y) + (dy * 2000));
-		ray_dir.x = ray_max.x - map->player->x;
-		ray_dir.y = ray_max.y - map->player->y;
-		magnitude = dist(ray_max.x, ray_max.y,  map->player->x,  map->player->y);
-		ray_dir.x = ray_dir.x / magnitude;
-		ray_dir.y = ray_dir.y / magnitude;
-		ray_step_size.x = sqrt(1 + (ray_dir.y / ray_dir.x) * (ray_dir.y / ray_dir.x));
-		ray_step_size.y = sqrt(1 + (ray_dir.x / ray_dir.y) * (ray_dir.x / ray_dir.y));
-		map_check.x = map->player->x;
-		map_check.y = map->player->y;
-
-		// Establish Starting Conditions
-		if (ray_dir.x < 0)
-		{
-			step.x = -1;
-			ray_length_1d.x = (ray_start.x - (float)map_check.x) * ray_step_size.x;
-		}
-		else
-		{
-			step.x = 1;
-			ray_length_1d.x = ((float)map_check.x + 1 - ray_start.x) * ray_step_size.x;
-		}
-
-		if (ray_dir.y < 0)
-		{
-			step.y = -1;
-			ray_length_1d.y = (ray_start.y - (float)map_check.y) * ray_step_size.y;
-		}
-		else
-		{
-			step.y = 1;
-			ray_length_1d.y = ((float)map_check.y + 1 - ray_start.y) * ray_step_size.y;
-		}
-		bool bTileFound = false;
-		float fMaxDistance = 2000.0f;
-		float fDistance = 0.0f;
-
-		while (!bTileFound && fDistance < fMaxDistance)
-		{
-			// Walk along shortest path
-			if (ray_length_1d.x < ray_length_1d.y)
-			{
-				map_check.x += step.x;
-				fDistance = ray_length_1d.x;
-				ray_length_1d.x += ray_step_size.x;
-				xmin = 1;
-			}
-			else
-			{
-				map_check.y += step.y;
-				fDistance = ray_length_1d.y;
-				ray_length_1d.y += ray_step_size.y;
-				xmin = 0;
-			}
-			// Test tile at new test point
-			if (map_check.x >= 0 && map_check.x < map->xlen && map_check.y >= 0 && map_check.y < map->ylen)
-			{
-				if (map->coord[map_check.y][map_check.x] == '1' || map->coord[map_check.y][map_check.x] == 'C')
-					bTileFound = true;
-				if (map->coord[map_check.y][map_check.x] == 'C')
-					map->rays[i].side = 'C';
-				// if (map->coord[map_check.y][map_check.x] == 'O')
-				// {
-				// 	get_door_raylen(map->ray[i], fDistance)
-				// }
-			}
-		}
-		// Calculate intersection location
-		if (bTileFound)
-		{
-			map->rays[i].x = (ray_start.x + ray_dir.x * fDistance);
-			map->rays[i].y = (ray_start.y + ray_dir.y * fDistance);
-			if (xmin == 0 && angle > 0 && angle < PI && map->rays[i].side != 'C')
-				map->rays[i].side = 'n';
-			else if (xmin == 0 && angle > PI && angle < 2 * PI && map->rays[i].side != 'C')
-				map->rays[i].side = 's';
-			if (xmin == 1 && angle < P3 && angle > P2 && map->rays[i].side != 'C')
-				map->rays[i].side = 'w';
-			else if (xmin == 1 && (angle < P2 || angle > P3) && map->rays[i].side != 'c')
-				map->rays[i].side = 'e';
-			DistT = fDistance * BLK_WDT_PXL;
-		}
-		
-		float ca = map->player->angle - angle;
-		if (ca < 0)
-			ca += 2 * PI;
-		if (ca > 2 * PI)
-			ca -= 2 * PI;
-		if (DistT != -1)
-			DistT = DistT * cos(ca);
-		map->rays[i].len = DistT;
-		angle += DR/21.3333;
-		if (angle < 0)
-			angle += 2 * PI;
-		if (angle > 2 * PI)
-			angle -= 2 * PI;
-
-		//Calculate height of line to draw on screen
-	}
-	// draw_2d_rays(map, ray_num);
-	// print 3d map
-	// create_line_colors(map, ray_num);
-	// int	color;
-	// i = -1;
-	// while (++i < ray_num)
-	// {
-		j = -1;
-		// color = 0xFFFFFF;
-	// 	while (j++ < 1080)
-	// 	{
-	// 		put_p(map->img, i, j, color);
-	// 		if (j < 450 && j > 275 && color - 0x030303 > 0)
-	// 			color = color - 0x030303;
-	// 		if (j > 470 && j < 625  && color + 0x040303 < 0xFFFFFF)
-	// 			color = color + 0x030303;
-	// 		// if (i == 0)
-	// 		// 	printf("color = %d\n", color);
-	// 	}
-	// }
 	i = -1;
-	while (++i < ray_num)
+	while (++i < WIN_W)
 	{
-		lineH = (40 * 800) / map->rays[i].len + 0.01;
-		connect_dots_colors(map, i, lineH, map->rays[i]);
+		map->rays[i] = init_ray(angle, map);
+		ray = map->rays[i];
+		init_map_check_ray_dir(ray, &map_check, map, &step);
+		calculate_intersection(ray, walk_shortest_path(ray, &map_check, &step, map));
+		angle = rotate_angle(angle);
 	}
-	draw_minimap(map);
-	free(map->rays);
+
 }
 
 void	createScreen(t_map *map)
 {
 	int	y;
-	int	j;
 	int x;
-	int color;
-	int p;
 	t_data img;
 
-	// mlx_destroy_image(map->mlx, map->img);
 	img.img = mlx_new_image(map->mlx, WIN_W, WIN_H);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
@@ -548,42 +376,25 @@ void	createScreen(t_map *map)
 		x = 0;
 		while (x < map->xlen)
 		{
-			if (map->coord[y][x] == '1')
-				color = 0x0066B2FF;
-			else if (map->coord[y][x] == ' ')
-				color = 0x00000;
-			else
-				color = 0xFF4500;
-			p = -1;
-			// while (++p < BLK_WDT_PXL - 1)
-			// {
-				j = -1;
-			// 	while (++j < BLK_WDT_PXL - 1)
-			// 		put_p(map->img, x * BLK_WDT_PXL + p, y * BLK_WDT_PXL + j, color);
-			// }
 			if (map->coord[y][x] == 'N' || map->coord[y][x] == 'S' || map->coord[y][x] == 'E' || map->coord[y][x] == 'W')
 			{
 				map->player->x = x + 0.5;
 				map->player->y = y + 0.5;
 				map->coord[y][x] = '0';
 			}
-			// if (y + 1 == map->ylen && x + 1 == map->xlen)
-			// {
-			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL), (map->player->y * BLK_WDT_PXL), 0xFFFF00);
-			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL) + 1, (map->player->y * BLK_WDT_PXL), 0xFFFF00);
-			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL), (map->player->y * BLK_WDT_PXL) - 1, 0xFFFF00);
-			// 	put_p(map->img, (map->player->x * BLK_WDT_PXL) + 1, (map->player->y * BLK_WDT_PXL) - 1, 0xFFFF00);
-			// 	color = -1; //reuse this var to create dots for direction
-			// 	while (++color < 20)
-			// 		put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * color * 10), (map->player->y * BLK_WDT_PXL) + (map->player->dy * color * 10), 0xFFFF00);
-			// }
-			// put_p(map->img, (map->player->x * BLK_WDT_PXL) + (map->player->dx * 2000), (map->player->y * BLK_WDT_PXL) + (map->player->dy * 2000), 0xFFFF00);
 			x++;
 		}
 		y++;
 	}
-	draw_rays(map);
+	shoot_rays(map);
+	render_background(map, WIN_W);
+	render_rays(map, WIN_W);
+	draw_minimap(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
+	x = -1;
+	while (++x < WIN_W)
+		free(map->rays[x]);
+	free(map->rays);
 }
 
 int	render_screen(void *varg)
@@ -623,11 +434,8 @@ int	main(int argc, char **argv)
 		close(fd);
 		fd = open(argv[1], O_RDONLY);
 		fill_map(&map, fd);
-		if (check_map(&map))
-			print_map(&map);
-		else
+		if (check_map(&map) != 1)
 			printf("invalid map\n");
-		printf("\n xlen = %d, ylen = %d\n", map.xlen, map.ylen);
 		map.mlx = mlx_init();
 		map.win = mlx_new_window(map.mlx, WIN_W, WIN_H, "MLX CUBE3D");
 		img.img = mlx_new_image(map.mlx, WIN_W, WIN_H);

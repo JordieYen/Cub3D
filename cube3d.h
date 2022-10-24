@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/24 14:01:39 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/23 02:03:27 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define P2 PI/2
 # define P3 3*PI/2
 # define DR 0.0174533
+#include <stdbool.h>
 
 typedef struct s_player
 {
@@ -42,6 +43,18 @@ typedef struct s_rgb
 	int green;
 	int blue;
 } t_rgb;
+
+typedef struct s_coord
+{
+	int	x;
+	int	y;
+}	t_coord;
+
+typedef struct s_fcoord
+{
+	float	x;
+	float	y;
+}	t_fcoord;
 
 typedef struct s_xmp_data
 {
@@ -64,10 +77,15 @@ typedef struct s_ray
 	float	door_percentange;
 	int		up;
 	int		left;
-	int		hray_type;
-	int		vray_type;
+	int		magnitude;
 	t_rgb	rgb;
 	char	side;
+	int		xmin;
+	t_fcoord max;
+	t_fcoord start;
+	t_fcoord dir;
+	t_fcoord step_size;
+	t_fcoord length_1d;
 } t_ray;
 
 typedef struct s_data
@@ -101,20 +119,8 @@ typedef struct s_map
 	t_wall		door;
 	t_data		*img;
 	t_player	*player;
-	t_ray		*rays;
+	t_ray		**rays;
 }	t_map;
-
-typedef struct s_coord
-{
-	int	x;
-	int	y;
-}	t_coord;
-
-typedef struct s_fcoord
-{
-	float	x;
-	float	y;
-}	t_fcoord;
 
 // ft_cube_utils.c
 void	put_p(t_data *data, int x, int y, int color);
@@ -135,6 +141,16 @@ int	darken_rgb(int rgb, float len);
 void	create_line_colors(t_map *map, int ray_num);
 t_rgb	**create_xmp_array(t_map *map, t_xmp_data *xmpdata);
 void	get_textures(t_map *map);
-void	connect_dots_colors(t_map *map, int x, int height, t_ray ray);
+void	connect_dots_colors(t_map *map, int x, int height, t_ray *ray);
 
+// render.c
+void    render_background(t_map *map, int ray_num);
+void	render_rays(t_map *map, int ray_num);
+void	calculate_intersection(t_ray *ray, float fDistance);
+t_ray	*init_ray(float angle, t_map *map);
+
+// ft_render_utils.c
+void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check, t_map *map, t_fcoord *step);
+float	walk_shortest_path(t_ray *ray, t_coord *map_check, t_fcoord *step, t_map *map);
+float	rotate_angle(float angle);
 #endif

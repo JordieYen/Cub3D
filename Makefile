@@ -4,6 +4,8 @@ SOURCES = cube3d.c \
 			ft_shadows.c \
 			ft_hex_tools.c \
 			ft_textures.c \
+			ft_render_utils.c \
+			render.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
