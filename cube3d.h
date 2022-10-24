@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/21 18:41:48 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/24 14:01:39 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ typedef struct s_ray
 	float	xof;
 	float	yof;
 	float	len;
+	float	doorlen;
+	float	door_percentange;
 	int		up;
 	int		left;
 	int		hray_type;

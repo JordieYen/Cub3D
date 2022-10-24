@@ -55,14 +55,14 @@ void	get_textures(t_map *map)
 {
 	char		*wall_n;
 
-	wall_n = "./metal.xpm";
+	wall_n = "./textures/metal.xpm";
 	map->wall_n.wall = mlx_xpm_file_to_image(&map->mlx, wall_n, &map->wall_n.wall_width, &map->wall_n.wall_height);
 	map->wall_n.xpm_data.data = (int *)mlx_get_data_addr(map->wall_n.wall,
 		&map->wall_n.xpm_data.bits_per_pixel, &map->wall_n.xpm_data.size_line,
 		&map->wall_n.xpm_data.endian);
 	char		*door;
 
-	door = "./cyber.xpm";
+	door = "./textures/cyber.xpm";
 	map->door.wall = mlx_xpm_file_to_image(&map->mlx, door, &map->door.wall_width, &map->door.wall_height);
 	map->door.xpm_data.data = (int *)mlx_get_data_addr(map->door.wall,
 		&map->door.xpm_data.bits_per_pixel, &map->door.xpm_data.size_line,
