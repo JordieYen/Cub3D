@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:42 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/24 17:45:21 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/24 19:57:14 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int	getdoorlen(t_ray *ray, float distance, char c)
 
 	if (c == '1')
 		return (true);
+	if (ray->firstdoor == 1)
+		return (false);
 	ca = ray->playerangle - ray->angle;
 	DistT = distance * BLK_WDT_PXL;
 	if (ca < 0)
@@ -69,6 +71,7 @@ int	getdoorlen(t_ray *ray, float distance, char c)
 	ray->isdoor = 'y';
 	ray->doorx = (ray->start.x + ray->dir.x * distance);
 	ray->doory = (ray->start.y + ray->dir.y * distance);
+	ray->firstdoor = 1;
 	return (false);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:43:04 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/24 19:12:08 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/24 19:57:30 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ t_ray	*init_ray(float angle, t_map *map)
 	ray = malloc(sizeof(t_ray));
 	ray->angle = angle;
 	ray->playerangle = map->player->angle;
+	ray->firstdoor = 0;
 	ray->isdoor = ';';
 	ray->side = 'r';
 	ray->start.x = map->player->x;

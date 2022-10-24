@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/24 19:50:39 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/24 19:56:32 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ typedef struct s_ray
 	int		doorxmin;
 	float	doorx;
 	float	doory;
+	int		firstdoor;
 	float	angle;
 	float	playerangle;
 	float	x;
