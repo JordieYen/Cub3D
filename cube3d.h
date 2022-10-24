@@ -12,6 +12,7 @@
 
 #ifndef CUBE3D_H
 # define CUBE3D_H
+# define E 14
 # define W 13
 # define A 0
 # define S 1
@@ -72,6 +73,8 @@ typedef struct s_ray
 	float	xof;
 	float	yof;
 	float	len;
+	float	doorlen;
+	float	door_percentange;
 	int		up;
 	int		left;
 	int		magnitude;
@@ -113,6 +116,7 @@ typedef struct s_map
 	void		*mlx;
 	void		*win;
 	t_wall		wall_n;
+	t_wall		door;
 	t_data		*img;
 	t_player	*player;
 	t_ray		**rays;
