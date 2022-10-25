@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_textures.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:54 by bunyodshams       #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/10/25 14:37:21 by jking-ye         ###   ########.fr       */
+=======
+/*   Updated: 2022/10/25 15:54:39 by bunyodshams      ###   ########.fr       */
+>>>>>>> 035032db04fc4c834373fa36e57137bb8201c6e0
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,15 +114,17 @@ void	connect_dots_colors(t_map *map, int x, int height, t_ray *ray)
 void	get_textures(t_map *map)
 {
 	char		*wall_n;
+	char		*door;
 
-	wall_n = "./textures/metal.xpm";
+	wall_n = map->tex->wall_no_dir;
+	printf("NWALL DIR %s\n", map->tex->wall_no_dir);
 	map->wall_n.wall = mlx_xpm_file_to_image(&map->mlx, wall_n, &map->wall_n.wall_width, &map->wall_n.wall_height);
 	map->wall_n.xpm_data.data = (int *)mlx_get_data_addr(map->wall_n.wall,
 		&map->wall_n.xpm_data.bits_per_pixel, &map->wall_n.xpm_data.size_line,
 		&map->wall_n.xpm_data.endian);
-	char		*door;
 
-	door = "./textures/42.xpm";
+	door = map->tex->wall_do_dir;
+	printf("NWALL DIR %s\n", map->tex->wall_do_dir);
 	map->door.wall = mlx_xpm_file_to_image(&map->mlx, door, &map->door.wall_width, &map->door.wall_height);
 	map->door.xpm_data.data = (int *)mlx_get_data_addr(map->door.wall,
 		&map->door.xpm_data.bits_per_pixel, &map->door.xpm_data.size_line,

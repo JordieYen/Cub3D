@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/25 14:31:46 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/25 16:13:06 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,15 @@ typedef struct s_player
 	float dx;
 	float dy;
 } t_player;
+
+typedef struct s_textures
+{
+	char *wall_no_dir;
+	char *wall_so_dir;
+	char *wall_we_dir;
+	char *wall_ea_dir;
+	char *wall_do_dir;
+} t_tex;
 
 typedef struct s_rgb
 {
@@ -114,19 +123,23 @@ typedef struct s_wall
 
 typedef struct s_map
 {
-	char	**coord;
-	char	direction;
-	int		xlen;
-	int		ylen;
-	long int	last_frame;
-	int			fps;
-	void		*mlx;
-	void		*win;
-	t_wall		wall_n;
-	t_wall		door;
-	t_data		*img;
-	t_player	*player;
-	t_ray		**rays;
+	char			**coord;
+	char			direction;
+	int				xlen;
+	int				ylen;
+	long int		last_frame;
+	int				fps;
+	void			*mlx;
+	void			*win;
+	int				map_start_n;
+	t_wall			wall_n;
+	t_wall			door;
+	t_data			*img;
+	t_player		*player;
+	t_ray			**rays;
+	t_tex			*tex;
+	unsigned int	f_color;
+	unsigned int	c_color;
 }	t_map;
 
 // ft_cube_utils.c
@@ -162,4 +175,23 @@ void	render_doors(t_map *map, int ray_num);
 void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check, t_map *map, t_fcoord *step);
 float	walk_shortest_path(t_ray *ray, t_coord *map_check, t_fcoord *step, t_map *map);
 float	rotate_angle(float angle);
+
+// cube_doors.c
+void	handledoors(t_map *map);
+void	closedoor(t_map *map);
+void	opendoor(t_map *map);
+int		check_if_valid(t_map *map, int offset, char door, char axis);
+
+// cube_parser.c
+void		init_map(t_map *map, int fd);
+void		fill_map(t_map *map, int fd);
+int			check_walls(t_map *map);
+int			check_cub(t_map *map, char *config_map);
+
+// cube_parser_utils.c
+void		init_zero(t_map *map);
+void		init_texture(t_map *map, char *line);
+void		init_color(t_map *map, char *line);
+int			textures_color_filled(t_map *map, int flag);
+
 #endif

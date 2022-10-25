@@ -6,6 +6,9 @@ SOURCES = cube3d.c \
 			ft_textures.c \
 			ft_render_utils.c \
 			render.c \
+			cube_doors.c \
+			cube_parser.c \
+			cube_parser_utils.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
