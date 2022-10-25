@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/24 19:48:31 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:33:17 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -375,7 +375,7 @@ void	shoot_rays(t_map *map)
 	t_ray		*ray;
 
 	map->rays = malloc(sizeof(t_ray) * WIN_W);
-	angle = (map->player->angle) - (DR/21.333 * (WIN_W/2));
+	angle = (map->player->angle) - (DR/16 * (WIN_W/2));
 	if (angle < 0)
 		angle += 2 * PI;
 	else if (angle > 2 * PI)
@@ -417,7 +417,7 @@ void	createScreen(t_map *map)
 		}
 	}
 	shoot_rays(map);
-	// render_background(map, WIN_W);
+	render_background(map, WIN_W);
 	render_rays(map, WIN_W);
 	render_doors(map, WIN_W);
 	draw_minimap(map);

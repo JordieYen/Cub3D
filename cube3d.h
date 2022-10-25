@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/24 19:56:32 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:31:46 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define P2 PI/2
 # define P3 3*PI/2
 # define DR 0.0174533
-# define FOV 40 * 100
+# define FOV 40 * 500
 #include <stdbool.h>
 
 typedef struct s_player

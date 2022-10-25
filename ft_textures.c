@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/24 18:59:46 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:37:21 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	connect_dots_doors(t_map *map, int x, int height, t_ray *ray)
 
 	y = -1;
 	y_offset = 400 - (height / 2.5) - 0.01;
-	while(y++ < height)
+	while(y++ < height - 1)
 	{
 		if (y_offset + y > 0 && y_offset + y < WIN_H)
 		{
@@ -118,7 +118,7 @@ void	get_textures(t_map *map)
 		&map->wall_n.xpm_data.endian);
 	char		*door;
 
-	door = "./textures/jail.xpm";
+	door = "./textures/42.xpm";
 	map->door.wall = mlx_xpm_file_to_image(&map->mlx, door, &map->door.wall_width, &map->door.wall_height);
 	map->door.xpm_data.data = (int *)mlx_get_data_addr(map->door.wall,
 		&map->door.xpm_data.bits_per_pixel, &map->door.xpm_data.size_line,

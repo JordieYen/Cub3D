@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:42 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/24 19:57:14 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:18:16 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check, t_map *map, t_fcoord
 
 float	rotate_angle(float angle)
 {
-	angle += DR/21.3333;
+	angle += DR/16;
 	if (angle < 0)
 		angle += 2 * PI;
 	if (angle > 2 * PI)
