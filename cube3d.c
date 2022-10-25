@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/24 19:48:31 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/25 16:09:31 by bunyodshams      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,229 +20,6 @@
 # include <stdlib.h>
 # include <sys/time.h>
 
-void	init_map(t_map *map, int fd)
-{
-	int		x;
-	int		y;
-	char	*line;
-
-	line = get_next_line(fd);
-	x = 0;
-	y = 0;
-	while (line != NULL)
-	{
-		if (ft_strlen(line) > x)
-			x = ft_strlen(line);
-		y++;
-		free(line);
-		line = get_next_line(fd);
-	}
-	map->xlen = x - 1;
-	map->ylen = y;
-	if (y > 0)
-		map->coord = malloc((y + 1) * sizeof(char *));
-	while (y >= 0)
-	{
-		map->coord[y] = malloc((x + 1) * sizeof(char));
-		y--;
-	}
-	map->player = malloc(sizeof(t_player));
-	map->player->angle = 4.71239;
-	map->player->dx = cos(map->player->angle) / 10;
-	map->player->dy = sin(map->player->angle) / 10;
-}
-
-void	fill_map(t_map *map, int fd)
-{
-	int		i;
-	int		j;
-	char	*line;
-
-	i = 0;
-	while (i < map->ylen)
-	{
-		j = 0;
-		line = get_next_line(fd);
-		while (j < map->xlen + 2)
-		{
-			if (j < ft_strlen(line) - 1)
-				map->coord[i][j] = line[j];
-			else
-				map->coord[i][j] = ' ';
-			if (j == map->xlen + 1)
-				map->coord[i][j] = '\0';
-			j++;
-		}
-		free(line);
-		i++;
-	}
-	map->coord[i] = NULL;
-}
-
-int	check_space(t_map *map, int x, int y)
-{
-	if (map->coord[y + 1] != NULL)
-	{
-		if (map->coord[y + 1][x] != ' ' && map->coord[y + 1][x] != '1')
-			return (0);
-	}
-	if (y != 0)
-	{
-		if (map->coord[y - 1][x] != ' ' && map->coord[y - 1][x] != '1')
-			return (0);
-	}
-	if (map->coord[y][x + 1] != '\0')
-	{
-		if (map->coord[y][x + 1] != ' ' && map->coord[y][x + 1] != '1')
-			return (0);
-	}
-	if (x != 0)
-	{
-		if (map->coord[y][x - 1] != ' ' && map->coord[y][x - 1] != '1')
-			return (0);
-	}
-	return (1);
-}
-
-int	check_walls(t_map *map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (map->coord[i] != NULL)
-	{
-		j = 0;
-		while (map->coord[i][j] != '\0')
-		{
-			if (map->coord[i][j] == ' ')
-			{
-				if (!check_space(map, j, i))
-					return (0);
-			}
-			if ((i == 0 || map->coord[i + 1] == 0) && (map->coord[i][j]
-				!= ' ' && map->coord[i][j] != '1'))
-				return (0);
-			else if ((j == 0 || map->coord[i][j + 1] == '\0')
-				&& (map->coord[i][j] != ' ' && map->coord[i][j] != '1'))
-				return (0);
-			j++;
-		}
-		i++;
-	}
-	return (1);
-}
-
-int	check_map(t_map *map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (map->coord[i] != NULL)
-	{
-		j = 0;
-		while (map->coord[i][j] != '\0')
-		{
-			if (map->coord[i][j] != '0' && map->coord[i][j] != '1'
-				&& map->coord[i][j] != ' ' && map->coord[i][j] != 'N'
-				&& map->coord[i][j] != 'S' && map->coord[i][j] != 'E'
-				&& map->coord[i][j] != 'W' && map->coord[i][j] != 'O')
-				return (0);
-			else if (map->coord[i][j] != 'N'
-				&& map->coord[i][j] != 'S' && map->coord[i][j] != 'E'
-				&& map->coord[i][j] != 'W')
-				map->direction = map->coord[i][j];
-			j++;
-		}
-		i++;
-	}
-	if (!check_walls(map))
-		return (0);
-	return (1);
-}
-
-int	check_if_valid(t_map *map, int offset, char door, char axis)
-{
-	if (axis == 'x')
-	{
-		if (map->player->x + offset < map->xlen && map->player->y + offset < map->ylen)
-		{
-			if (map->coord[(int)(map->player->y)][(int)(map->player->x + offset)] == door)
-				return (1);
-		}
-	}
-	if (axis == 'y')
-	{
-		if (map->player->x + offset < map->xlen && map->player->y + offset < map->ylen)
-		{
-			if (map->coord[(int)(map->player->y + offset)][(int)(map->player->x)] == door)
-				return (1);
-		}
-	}
-	return (0);
-}
-
-void	opendoor(t_map *map)
-{
-	if (check_if_valid(map, -1, 'C', 'y'))
-		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'O';
-	else if (check_if_valid(map, -2, 'C', 'y'))
-		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'O';
-	if (check_if_valid(map, 1, 'C', 'y'))
-		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'O';
-	else if (check_if_valid(map, 2, 'C', 'y'))
-		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'O';
-	if (check_if_valid(map, -1, 'C', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'O';
-	else if (check_if_valid(map, -2, 'C', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'O';
-	if (check_if_valid(map, 1, 'C', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'O';
-	else if (check_if_valid(map, 2, 'C', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'O';
-}
-
-void	closedoor(t_map *map)
-{
-	if (check_if_valid(map, -1, 'O', 'y'))
-		map->coord[(int)(map->player->y - 1)][(int)(map->player->x)] = 'C';
-	else if (check_if_valid(map, -2, 'O', 'y'))
-		map->coord[(int)(map->player->y - 2)][(int)(map->player->x)] = 'C';
-	if (check_if_valid(map, 1, 'O', 'y'))
-		map->coord[(int)(map->player->y + 1)][(int)(map->player->x)] = 'C';
-	else if (check_if_valid(map, 2, 'O', 'y'))
-		map->coord[(int)(map->player->y + 2)][(int)(map->player->x)] = 'C';
-	if (check_if_valid(map, -1, 'O', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x - 1)] = 'C';
-	else if (check_if_valid(map, -2, 'O', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x - 2)] = 'C';
-	if (check_if_valid(map, 1, 'O', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x + 1)] = 'C';
-	else if (check_if_valid(map, 2, 'O', 'x'))
-		map->coord[(int)(map->player->y)][(int)(map->player->x + 2)] = 'C';
-}
-
-void	handledoors(t_map *map)
-{
-	static int	isclosed;
-
-	if (map->player->x - floor(map->player->x) >= 0.00001 
-		&& map->player->y - floor(map->player->y) >= 0.00001)
-	{
-		if (isclosed == 0)
-		{
-			opendoor(map);
-			isclosed = 1;
-		}
-		else
-		{
-			closedoor(map);
-			isclosed = 0;
-		}
-	}
-}
-//TODO: dont move player at all if it will touch a wall on any side
 void move_player(t_map *map, int key)
 {
 	if (key == E)
@@ -454,19 +231,11 @@ int	render_screen(void *varg)
 
 int	main(int argc, char **argv)
 {
-	int		fd;
 	t_map	map;
 	t_data	img;
 
-	if (argc == 2)
+	if (argc == 2 && check_cub(&map, argv[1]))
 	{
-		fd = open(argv[1], O_RDONLY);
-		init_map(&map, fd);
-		close(fd);
-		fd = open(argv[1], O_RDONLY);
-		fill_map(&map, fd);
-		if (check_map(&map) != 1)
-			printf("invalid map\n");
 		map.mlx = mlx_init();
 		map.win = mlx_new_window(map.mlx, WIN_W, WIN_H, "MLX CUBE3D");
 		img.img = mlx_new_image(map.mlx, WIN_W, WIN_H);
@@ -481,6 +250,8 @@ int	main(int argc, char **argv)
 		mlx_loop(map.mlx);
 	}
 	else
-		printf("input file name.");
-	return (0);
+	{
+		// free_map(map) TODO: free
+		return (0);
+	}
 }
