@@ -1,3 +1,4 @@
 *.o
-*.a
+libft.a
+libgnl.a
 cube3d

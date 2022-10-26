@@ -143,6 +143,7 @@ typedef struct s_map
 	t_player		*player;
 	t_ray			**rays;
 	t_tex			*tex;
+	t_coord			mouse;
 	unsigned int	f_color;
 	unsigned int	c_color;
 }	t_map;
@@ -198,5 +199,11 @@ void		init_zero(t_map *map);
 void		init_texture(t_map *map, char *line);
 void		init_color(t_map *map, char *line);
 int			textures_color_filled(t_map *map, int flag);
+
+// cube_mouse.c
+int			read_mouse(int x, int y, t_map *map);
+int			deal_key(int key, t_map *map);
+void		move_player(t_map *map, int key);
+
 
 #endif

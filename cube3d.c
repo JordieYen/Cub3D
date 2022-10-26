@@ -20,55 +20,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 
-void move_player(t_map *map, int key)
-{
-	if (key == E)
-		handledoors(map);
-	if (key == S)
-	{
-		if (map->coord[(int)(map->player->y - map->player->dy)][(int)(map->player->x - map->player->dx)] != '1'
-			&& map->coord[(int)(map->player->y - map->player->dy)][(int)(map->player->x - map->player->dx)] != 'C')
-		{
-			map->player->x -= map->player->dx;
-			map->player->y -= map->player->dy;
-		}
-	}
-	if (key == W)
-	{
-		if (map->coord[(int)(map->player->y + map->player->dy * 2)][(int)(map->player->x + map->player->dx * 2)] != '1'
-			&& map->coord[(int)(map->player->y + map->player->dy * 2)][(int)(map->player->x + map->player->dx * 2)] != 'C')
-		{
-			map->player->x += map->player->dx;
-			map->player->y += map->player->dy;
-		}
-	}
-	if (key == D)
-	{
-		map->player->angle += DR * 3;
-		if (map->player->angle > 2 * PI)
-			map->player->angle = map->player->angle - 2 * PI;
-		map->player->dx = cos(map->player->angle) / 10;
-		map->player->dy = sin(map->player->angle) / 10;
-	}
-	if (key == A)
-	{
-		map->player->angle -= DR * 3;
-		if (map->player->angle < 0)
-			map->player->angle = map->player->angle + 2 * PI;
-		map->player->dx = cos(map->player->angle) / 10;
-		map->player->dy = sin(map->player->angle) / 10;
-	}
-}
-
 void	createScreen(t_map *map);
-
-
-int	deal_key(int key, t_map *map)
-{
-	if (key == W || key == A || key == S || key == D || key == E)
-		move_player(map, key);
-	return (0);
-}
 
 void	draw_player(t_map *map, int	x, int y)
 {
@@ -276,7 +228,10 @@ int	main(int argc, char **argv)
 		createScreen(map);
 		map->last_frame = 0;
 		mlx_hook(map->win, 2, 0, deal_key, map);
+		mlx_hook(map->win, 6, 0, read_mouse, map);
 		mlx_loop_hook(map->mlx, render_screen, map);
+		mlx_do_key_autorepeaton(map->mlx);
+		mlx_mouse_hide(map->mlx, map->win);
 		mlx_loop(map->mlx);
 	}
 	else

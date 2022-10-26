@@ -9,6 +9,7 @@ SOURCES = cube3d.c \
 			cube_doors.c \
 			cube_parser.c \
 			cube_parser_utils.c \
+			cube_move.c \
 
 OBJECTS = $(SOURCES:.c=.o)
 
