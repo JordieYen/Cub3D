@@ -1,10 +1,10 @@
-NO ./textures/grass_chess.xpm
-SO ./textures/grass_chess.xpm
-WE ./textures/grass_chess.xpm
-EA ./textures/grass_chess.xpm
-DO ./textures/jail.xpm
+NO ./textures/bloody-wall.xpm
+SO ./textures/bloody-wall.xpm
+WE ./textures/bloody-wall.xpm
+EA ./textures/bloody-wall.xpm
+DO ./textures/42.xpm
 
-F 220,100,0,
+F 220,100,0
 C 225,30,0
 
 

@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/25 16:12:47 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/26 17:00:51 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ void	createScreen(t_map *map)
 		}
 	}
 	shoot_rays(map);
-	render_background(map, WIN_W);
+	// render_background(map, WIN_W);
 	render_rays(map, WIN_W);
 	render_doors(map, WIN_W);
 	draw_minimap(map);
@@ -205,16 +205,42 @@ void	createScreen(t_map *map)
 	free(map->rays);
 }
 
+void	animatehand(t_map *map)
+{
+	static int	i;
+	static int direction;
+	
+	mlx_put_image_to_window(map->mlx, map->win, map->knife.wall, WIN_W - map->knife.wall_width, WIN_H - map->knife.wall_height + (i * 2));
+	if (direction == 0)
+	{
+		if (i < 20)
+			i++;
+		else
+			direction = 1;
+	}
+	else
+	{
+		if (i > 0)
+			i--;
+		else
+			direction = 0;
+	}
+	map->offset = i;
+}
+
 int	render_screen(void *varg)
 {
 	t_map *map;
 	struct timeval tv;
 	int	color;
+	char *fps_str;
+	char *fps_num;
 
 	gettimeofday(&tv, NULL);
 	map = (t_map *) varg;
 	mlx_clear_window(map->mlx, map->win);
 	createScreen(map);
+	animatehand(map);
 	map->fps = ((tv.tv_sec * 1000) + (tv.tv_usec / 1000)) - map->last_frame;
 	map->last_frame = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	color = 0xFFFFFF;
@@ -224,30 +250,34 @@ int	render_screen(void *varg)
 		color = 0xFFFF00;
 	if (1000 / map->fps < 10)
 		color = 0xFF0000;
-
-	mlx_string_put(map->mlx, map->win, 0 ,0, color, ft_strjoin("fps :",ft_itoa((float) 1000 / map->fps)));
+	fps_num = ft_itoa((float) 1000 / map->fps);
+	fps_str = ft_strjoin("fps :", fps_num);
+	mlx_string_put(map->mlx, map->win, 0 ,0, color, fps_str);
+	free(fps_num);
+	free(fps_str);
 	return 0;
 }
 
 int	main(int argc, char **argv)
 {
-	t_map	map;
+	t_map	*map;
 	t_data	img;
 
-	if (argc == 2 && check_cub(&map, argv[1]))
+	map = malloc(sizeof(t_map));
+	if (argc == 2 && check_cub(map, argv[1]))
 	{
-		map.mlx = mlx_init();
-		map.win = mlx_new_window(map.mlx, WIN_W, WIN_H, "MLX CUBE3D");
-		img.img = mlx_new_image(map.mlx, WIN_W, WIN_H);
+		map->mlx = mlx_init();
+		map->win = mlx_new_window(map->mlx, WIN_W, WIN_H, "MLX CUBE3D");
+		img.img = mlx_new_image(map->mlx, WIN_W, WIN_H);
 		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
-		map.img = &img;
-		get_textures(&map);
-		createScreen(&map);
-		map.last_frame = 0;
-		mlx_hook(map.win, 2, 0, deal_key, &map);
-		mlx_loop_hook(map.mlx, render_screen, &map);
-		mlx_loop(map.mlx);
+		map->img = &img;
+		get_textures(map);
+		createScreen(map);
+		map->last_frame = 0;
+		mlx_hook(map->win, 2, 0, deal_key, map);
+		mlx_loop_hook(map->mlx, render_screen, map);
+		mlx_loop(map->mlx);
 	}
 	else
 	{

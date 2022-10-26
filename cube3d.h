@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/25 16:13:06 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/26 15:22:29 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ typedef struct s_wall
 
 typedef struct s_map
 {
+	int				offset;
 	char			**coord;
 	char			direction;
 	int				xlen;
@@ -132,7 +133,11 @@ typedef struct s_map
 	void			*mlx;
 	void			*win;
 	int				map_start_n;
+	t_wall			knife;
 	t_wall			wall_n;
+	t_wall			wall_s;
+	t_wall			wall_e;
+	t_wall			wall_w;
 	t_wall			door;
 	t_data			*img;
 	t_player		*player;

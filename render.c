@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:43:04 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/24 19:57:30 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/25 19:02:33 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,18 @@ void    render_background(t_map *map, int ray_num)
 	int	i;
 	int	j;
 
-	i = -1;    
+	i = -1;
     while (++i < ray_num)
 	{
 		j = -1;
-		color = 0xFFFFFF;
-		while (j++ < 1080)
+		color = map->c_color;
+		while (j++ < WIN_H)
 		{
+			if (j < WIN_H / 2)
+				color = map->c_color;
+			else
+				color = map->f_color;
 			put_p(map->img, i, j, color);
-			if (j < 504 && j > 300 && color - 0x010101 > 0)
-				color = color - 0x010101;
-			if (j > 504 && j < 700  && color + 0x010101 < 0xFFFFFF)
-				color = color + 0x010101;
 		}
 	} 
 }

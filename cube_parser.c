@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube_parser.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 11:32:17 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/25 16:08:48 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/25 16:45:37 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ void	read_cub(t_map *map, int fd)
             break;
         n++;
 	}
+	if (line == NULL)
+		return ;
     while (*line == '\n' && ++n)
     {
         free(line);
@@ -184,16 +186,18 @@ int check_map(t_map *map)
 		return (0);
 	return (1);
 }
+
 int	check_cub(t_map *map, char *config_map)
 {
     int fd;
 
+	map->tex = malloc(sizeof(t_tex));
     init_zero(map);
     fd = open(config_map, O_RDONLY);
     read_cub(map, fd);
 	if (!textures_color_filled(map, 3))
     {
-        perror("Error: parsing textures and/or color");
+        ft_putstr_fd("Error: parsing textures and/or color\n", 2);
         return (0);
     }
 	close(fd);

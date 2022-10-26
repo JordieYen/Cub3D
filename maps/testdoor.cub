@@ -1,3 +1,12 @@
+NO ./textures/bloody-wall.xpm
+SO ./textures/bloody-wall.xpm
+WE ./textures/bloody-wall.xpm
+EA ./textures/bloody-wall.xpm
+DO ./textures/42.xpm
+
+F 220,100,0
+C 225,30,0
+
 111111111
 101000101
 1111C1111
