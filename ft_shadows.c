@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_shadows.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:49 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/23 01:42:50 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/26 20:44:22 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	darken_rgb(int rgb, float len)
 	unsigned int	blue;
 	unsigned int	urgb;
 
+	// printf("len %f\n", len);
 	urgb = rgb;
 	red = (urgb >> 16);
 	green = (((urgb >> 8) << 24) >> 24);

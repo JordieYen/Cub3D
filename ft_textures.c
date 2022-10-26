@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/26 15:23:57 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/26 18:56:52 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,17 @@ void	get_xpm_data(t_map *map, t_wall *wall, char *texture)
 
 void	get_textures(t_map *map)
 {
+	map->hand = malloc(sizeof(t_wall) * 10);
+	map->hand[0].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-1.xpm", &map->hand[0].wall_width, &map->hand[0].wall_height);
+	map->hand[1].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-2.xpm", &map->hand[1].wall_width, &map->hand[1].wall_height);
+	map->hand[2].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-3.xpm", &map->hand[2].wall_width, &map->hand[2].wall_height);
+	map->hand[3].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-4.xpm", &map->hand[3].wall_width, &map->hand[3].wall_height);
+	map->hand[4].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-5.xpm", &map->hand[4].wall_width, &map->hand[4].wall_height);
+	map->hand[5].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-6.xpm", &map->hand[5].wall_width, &map->hand[5].wall_height);
+	map->hand[6].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-7.xpm", &map->hand[6].wall_width, &map->hand[6].wall_height);
+	map->hand[7].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-8.xpm", &map->hand[7].wall_width, &map->hand[7].wall_height);
+	map->hand[8].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-9.xpm", &map->hand[8].wall_width, &map->hand[8].wall_height);
+	map->hand[9].wall = mlx_xpm_file_to_image(&map->mlx, "./sprite-frames/frame-10.xpm", &map->hand[9].wall_width, &map->hand[9].wall_height);
 	map->knife.wall = mlx_xpm_file_to_image(&map->mlx, "./right-knife.xpm", &map->knife.wall_width, &map->knife.wall_height);
 	get_xpm_data(map, &map->wall_n, map->tex->wall_no_dir);
 	get_xpm_data(map, &map->wall_s, map->tex->wall_so_dir);

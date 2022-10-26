@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/26 17:00:51 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/26 21:00:35 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ void	createScreen(t_map *map)
 		}
 	}
 	shoot_rays(map);
-	// render_background(map, WIN_W);
+	render_background(map, WIN_W);
 	render_rays(map, WIN_W);
 	render_doors(map, WIN_W);
 	draw_minimap(map);
@@ -205,11 +205,38 @@ void	createScreen(t_map *map)
 	free(map->rays);
 }
 
+t_wall	changeframe(t_map *map)
+{
+	static int	i;
+	static int	direction;
+	t_wall		frame;
+	
+	frame = map->hand[i];
+	if (direction == 0)
+	{
+		if (i < 9)
+			i++;
+		else
+			direction = 1;
+	}
+	else
+	{
+		if (i > 0)
+			i--;
+		else
+			direction = 0;
+	}
+	return (frame);
+}
+
 void	animatehand(t_map *map)
 {
 	static int	i;
-	static int direction;
+	static int	direction;
+	// t_wall		frame;
 	
+	// frame = changeframe(map);
+	// mlx_put_image_to_window(map->mlx, map->win, frame.wall, WIN_W - frame.wall_width, WIN_H - frame.wall_height + (i * 2));
 	mlx_put_image_to_window(map->mlx, map->win, map->knife.wall, WIN_W - map->knife.wall_width, WIN_H - map->knife.wall_height + (i * 2));
 	if (direction == 0)
 	{
