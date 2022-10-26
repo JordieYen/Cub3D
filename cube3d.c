@@ -257,6 +257,7 @@ int	main(int argc, char **argv)
 		mlx_hook(map->win, 2, 0, deal_key, map);
 		mlx_hook(map->win, 6, 0, read_mouse, map);
 		mlx_loop_hook(map->mlx, render_screen, map);
+    	mlx_mouse_move(map->win, 100, 100);
 		mlx_do_key_autorepeaton(map->mlx);
 		mlx_mouse_hide(map->mlx, map->win);
 		mlx_loop(map->mlx);
