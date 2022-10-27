@@ -29,8 +29,23 @@ void move_player(t_map *map, int key)
 
 int	deal_key(int key, t_map *map)
 {
-	if (key == W || key == A || key == E)
+	static int i;
+
+	if (key == W || key == S || key == E)
 		move_player(map, key);
+	if (key == Q)
+	{
+		if (i == 0)
+		{
+			map->equipweapon = 1;
+			i = 1;
+		}
+		else if (i == 1)
+		{
+			map->equipweapon = 2;
+			i = 0;
+		}
+	}
 	return (0);
 }
 

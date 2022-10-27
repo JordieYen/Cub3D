@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 12:40:07 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/25 19:02:38 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/27 14:45:13 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,31 +67,33 @@ int     textures_color_filled(t_map *map, int flag)
 void    init_color(t_map *map, char *line)
 {
 	unsigned int    color;
+	unsigned int    total_color;
 	char			*line_ref;
 	int				rgb_num;
 
 	line_ref = line;
-	color = 0;
 	rgb_num = 0;
+	total_color = 0;
 	while (*line_ref)
 	{
+		color = 0;
 		if (*line_ref >= '0' && *line_ref <= '9')
 		{
-			// TODO : redo bitwise operations for color
 			rgb_num++;
 			while (*line_ref && *line_ref >= '0' && *line_ref <= '9')
 			{
 				color = (color * 10) + (*line_ref - 48);
 				line_ref++;
 			}
-			color = color << 8;
 		}
+		total_color =  (total_color << 8) + color;
 		line_ref++;
 	}
+	printf("%x\n", total_color);
 	if (!ft_strncmp(line, "F", 1) && rgb_num == 3)
-		map->f_color = (unsigned int)color;
+		map->f_color = total_color;
 	if (!ft_strncmp(line, "C", 1) && rgb_num == 3)
-		map->c_color = (unsigned int)color;
+		map->c_color = total_color;
 }
 
 void    init_texture(t_map *map, char *line)

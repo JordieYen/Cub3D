@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/26 18:57:17 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/27 13:40:29 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CUBE3D_H
 # define E 14
 # define W 13
+# define Q 12
 # define A 0
 # define S 1
 # define D 2
@@ -123,6 +124,7 @@ typedef struct s_wall
 
 typedef struct s_map
 {
+	int				equipweapon;
 	int				offset;
 	char			**coord;
 	char			direction;

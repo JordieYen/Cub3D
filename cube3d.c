@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/26 21:00:35 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/27 14:04:06 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ void	shoot_rays(t_map *map)
 		calculate_intersection(ray, walk_shortest_path(ray, &map_check, &step, map));
 		angle = rotate_angle(angle);
 	}
-
 }
 
 void	createScreen(t_map *map)
@@ -164,14 +163,14 @@ t_wall	changeframe(t_map *map)
 	t_wall		frame;
 	
 	frame = map->hand[i];
-	if (direction == 0)
+	if (direction == 0 && map->equipweapon == 1)
 	{
 		if (i < 9)
 			i++;
 		else
 			direction = 1;
 	}
-	else
+	else if (direction == 1 && map->equipweapon == 2)
 	{
 		if (i > 0)
 			i--;
@@ -185,11 +184,11 @@ void	animatehand(t_map *map)
 {
 	static int	i;
 	static int	direction;
-	// t_wall		frame;
+	t_wall		frame;
 	
-	// frame = changeframe(map);
-	// mlx_put_image_to_window(map->mlx, map->win, frame.wall, WIN_W - frame.wall_width, WIN_H - frame.wall_height + (i * 2));
-	mlx_put_image_to_window(map->mlx, map->win, map->knife.wall, WIN_W - map->knife.wall_width, WIN_H - map->knife.wall_height + (i * 2));
+	frame = changeframe(map);
+	mlx_put_image_to_window(map->mlx, map->win, frame.wall, WIN_W - frame.wall_width, WIN_H - frame.wall_height + (i * 2));
+	// mlx_put_image_to_window(map->mlx, map->win, map->knife.wall, WIN_W - map->knife.wall_width, WIN_H - map->knife.wall_height + (i * 2));
 	if (direction == 0)
 	{
 		if (i < 20)
@@ -258,7 +257,6 @@ int	main(int argc, char **argv)
 		mlx_hook(map->win, 6, 0, read_mouse, map);
 		mlx_loop_hook(map->mlx, render_screen, map);
     	mlx_mouse_move(map->win, 100, 100);
-		mlx_do_key_autorepeaton(map->mlx);
 		mlx_mouse_hide(map->mlx, map->win);
 		mlx_loop(map->mlx);
 	}
