@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memccpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/19 13:38:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2021/07/13 11:39:06 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/28 19:06:30 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
 
 void	*ft_memccpy(void *s1, const void *s2, char c, size_t n)
 {

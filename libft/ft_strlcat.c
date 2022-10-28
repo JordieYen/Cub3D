@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jking-ye <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 15:44:41 by jking-ye          #+#    #+#             */
-/*   Updated: 2021/07/13 11:35:34 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/28 19:07:08 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../includes/libft.h"
 
 unsigned long	ft_strlcat(void *dest, const void *src, unsigned int l)
 {

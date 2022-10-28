@@ -6,11 +6,11 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 19:51:23 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/04/01 18:42:00 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/28 19:05:36 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/get_next_line.h"
 
 int	count(char *str)
 {

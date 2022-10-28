@@ -4,8 +4,8 @@ WE ./textures/bloody-wall.xpm
 EA ./textures/bloody-wall.xpm
 DO ./textures/42.xpm
 
-F 255,255,255
-C 255,255,255
+F 0,0,0
+C 0,0,0
 
 
         1111111111111111111111111

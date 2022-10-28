@@ -1,35 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchr.c                                       :+:      :+:    :+:   */
+/*   weapon_manipulation.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/03 18:32:41 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/28 19:07:31 by jking-ye         ###   ########.fr       */
+/*   Created: 2022/10/28 19:16:16 by jking-ye          #+#    #+#             */
+/*   Updated: 2022/10/28 20:01:15 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft.h"
+#include "../includes/cube3d.h"
+#include <stdio.h>
 
-char	*ft_strrchr(char *str, int c)
+void	equipweapon(t_map *map)
 {
-	int		i;
-	char	*p;
-	char	chr;
+	static int	i;
 
-	i = 0;
-	p = 0;
-	chr = c;
-	if (chr == '\0')
-		return (&str[ft_strlen(str)]);
-	while (str[i] != '\0')
+	if (i == 0)
 	{
-		if (str[i] == chr)
-			p = &str[i];
-		if (str[i + 1] == '\0' && chr == '\0')
-			p = &str[i + 1];
-		i++;
+		map->equipweapon = 1;
+		i = 1;
 	}
-	return (p);
+	else if (i == 1)
+	{
+		map->equipweapon = 2;
+		i = 0;
+	}
+}
+
+void	swapweapon(t_map *map)
+{
+	static int	j;
+
+	if (j == 0)
+	{
+		map->swapweapon = 1;
+		j = 1;
+	}
+	else if (j == 1)
+	{
+		map->swapweapon = 2;
+		j = 0;
+	}
 }

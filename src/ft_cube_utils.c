@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cube_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bunyodshams <bunyodshams@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 18:32:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/23 01:38:45 by bunyodshams      ###   ########.fr       */
+/*   Updated: 2022/10/28 20:08:04 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3d.h"
+#include "../includes/cube3d.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,29 +35,10 @@ void	put_p(t_data *data, int x, int y, int color)
 
 float	dist(int x1, int y1, int x2, int y2)
 {
-	float hypo;
-	
+	float	hypo;
+
 	hypo = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 	return (hypo);
-}
-
-void    draw_two_points(t_map *map, int x1, int y1, int x2, int y2)
-{
-    int hypo;
-    int i;
-	float anglex;
-	float angley;
-	float aTan;
-
-    i = -1;
-    hypo = sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
-	aTan = -1/tan(map->rays[i]->angle);
-	anglex = aTan * (x1 - x2);
-	angley = aTan * (y1 - y2);
-    while (++i < hypo)
-	{
-		put_p(map->img, ((map->player->x * BLK_WDT) + map->player->x) + (anglex * i), (i * BLK_WDT) + map->player->y + (angley * i), 0xFFFF00);	
-	}
 }
 
 static int	i_s(int num1, int num2)
@@ -97,15 +78,17 @@ void	connectdots(t_data *img, t_coord coord0, t_coord coord1, int color)
 
 void	draw_2d_rays(t_map *map, int raynum)
 {
-	int i;
+	int		i;
 	t_coord	coord1;
 	t_coord	coord2;
 
 	i = -1;
-	init_mycoord(&coord1, map->player->x * BLK_WDT_PXL, map->player->y * BLK_WDT_PXL);
+	init_mycoord(&coord1, map->player->x * BLK_WDT_PXL,
+		map->player->y * BLK_WDT_PXL);
 	while (++i < raynum)
 	{
-		init_mycoord(&coord2, map->rays[i]->x * BLK_WDT_PXL, map->rays[i]->y * BLK_WDT_PXL);
+		init_mycoord(&coord2, map->rays[i]->x * BLK_WDT_PXL,
+			map->rays[i]->y * BLK_WDT_PXL);
 		connectdots(map->img, coord1, coord2, 0x330066);
 	}
 }
