@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 13:50:04 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:15:11 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void	set_player_posix(t_map *map)
 			{
 				map->player->x = x + 0.5;
 				map->player->y = y + 0.5;
+				map->player->start_char = map->coord[y][x];
 				map->coord[y][x] = '0';
 			}
 		}
@@ -71,8 +72,7 @@ void	set_player_posix(t_map *map)
 void	create_screen(t_map *map)
 {
 	int	x;
-	
-	set_player_posix(map);
+
 	shoot_rays(map);
 	render_background(map, WIN_W);
 	render_rays(map, WIN_W);

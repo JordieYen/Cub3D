@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 13:38:49 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:12:17 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 typedef struct s_player
 {
+	char	start_char;
 	float	x;
 	float	y;
 	float	angle;
@@ -147,6 +148,7 @@ typedef struct s_map
 
 // cube3d.c
 void		create_screen(t_map *map);
+void		set_player_posix(t_map *map);
 
 // ft_cube_utils.c
 void		put_p(t_data *data, int x, int y, int color);

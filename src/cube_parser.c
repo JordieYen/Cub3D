@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 11:32:17 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/31 13:05:51 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:13:54 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,20 @@ static int	check_space(t_map *map, int x, int y)
 			return (0);
 	}
 	return (1);
+}
+
+void	set_start_direction(t_map *map)
+{
+	if (map->player->start_char == 'N')
+		map->player->angle = P3;
+	else if (map->player->start_char == 'S')
+		map->player->angle = P2;
+	else if (map->player->start_char == 'E')
+		map->player->angle = PI * 2;
+	else if (map->player->start_char == 'W')
+		map->player->angle = PI;
+	map->player->dx = cos(map->player->angle) / 10;
+	map->player->dy = sin(map->player->angle) / 10;
 }
 
 void	read_cub(t_map *map, int fd)
@@ -98,9 +112,6 @@ void	read_cub(t_map *map, int fd)
 		y++;
 	}
 	map->player = malloc(sizeof(t_player));
-	map->player->angle = 4.71239;
-	map->player->dx = cos(map->player->angle) / 10;
-	map->player->dy = sin(map->player->angle) / 10;
 }
 
 void	fill_map(t_map *map, int fd)
@@ -209,6 +220,8 @@ int	check_cub(t_map *map, char *config_map)
 	close(fd);
 	fd = open(config_map, O_RDONLY);
 	fill_map(map, fd);
+	set_player_posix(map);
+	set_start_direction(map);
 	close(fd);
 	if (!check_map(map))
 		return (0);
