@@ -1,4 +1,4 @@
-NAME = cub3d
+NAME = cub3D
 SOURCES = cube3d.c \
 			ft_cube_utils.c \
 			ft_shadows.c \
@@ -15,6 +15,7 @@ SOURCES = cube3d.c \
 			weapon_manipulation.c \
 			render_minimap.c \
 			frames.c \
+			cube_extra.c \
 
 SRC_DIR = src/
 OBJECTS = $(addprefix $(SRC_DIR), $(SOURCES:.c=.o))

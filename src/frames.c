@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 13:35:25 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 13:46:50 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:04:48 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,10 @@ void	animatehand(t_map *map)
 	frame = changeframe(map);
 	if (map->swapweapon == 1)
 		mlx_put_image_to_window(map->mlx, map->win, frame.wall,
-			WIN_W - frame.wall_width, WIN_H - frame.wall_height + (i * 2));
+			1440 - frame.wall_width, 810 - frame.wall_height + (i * 2));
 	else
-		mlx_put_image_to_window(map->mlx, map->win, map->knife.wall, WIN_W
-			- map->knife.wall_width, WIN_H - map->knife.wall_height + (i * 2));
+		mlx_put_image_to_window(map->mlx, map->win, map->knife.wall, 1440
+			- map->knife.wall_width, 810 - map->knife.wall_height + (i * 2));
 	rotate_i(&i, &direction);
 	map->offset = i;
 }

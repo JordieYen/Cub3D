@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:43:04 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/31 12:30:38 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:19:59 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#define PI 3.14159265359
 
 void	render_background(t_map *map, int ray_num)
 {
@@ -27,18 +28,18 @@ void	render_background(t_map *map, int ray_num)
 	while (++i < ray_num)
 	{
 		j = -1;
-		while (j++ < WIN_H / 2)
+		while (j++ < 810 / 2)
 		{
 			color_top = map->c_color;
 			color_top = darken_rgb(color_top, j * 0.9);
 			put_p(map->img, i, j, color_top);
 		}
-		j = WIN_H;
-		k = WIN_H / 2;
-		while (j-- > WIN_H / 2)
+		j = 810;
+		k = 810 / 2;
+		while (j-- > 810 / 2)
 		{
 			color_bottom = map->f_color;
-			color_bottom = darken_rgb(color_bottom, (j - WIN_H / 2) * 0.9);
+			color_bottom = darken_rgb(color_bottom, (j - 810 / 2) * 0.9);
 			put_p(map->img, i, k++, color_bottom);
 		}
 	}
@@ -52,7 +53,7 @@ void	render_rays(t_map *map, int ray_num)
 	i = -1;
 	while (++i < ray_num)
 	{
-		wall_height = (FOV) / map->rays[i]->len + 0.01;
+		wall_height = (40 * 500) / map->rays[i]->len + 0.01;
 		connect_dots_colors(map, i, wall_height, map->rays[i]);
 	}
 }
@@ -67,7 +68,7 @@ void	render_doors(t_map *map, int ray_num)
 	{
 		if (map->rays[i]->isdoor == 'y')
 		{
-			wall_height = (FOV) / map->rays[i]->doorlen + 0.01;
+			wall_height = (40 * 500) / map->rays[i]->doorlen + 0.01;
 			connect_dots_doors(map, i, wall_height, map->rays[i]);
 		}
 	}
@@ -85,11 +86,12 @@ void	calculate_intersection(t_ray *ray, float fDistance)
 		ray->side = 'n';
 	else if (ray->xmin == 0 && ray->angle > PI && ray->angle < 2 * PI)
 		ray->side = 's';
-	if (ray->xmin == 1 && ray->angle < P3 && ray->angle > P2)
+	if (ray->xmin == 1 && ray->angle < 3 * PI / 2 && ray->angle > (PI / 2))
 		ray->side = 'w';
-	else if (ray->xmin == 1 && (ray->angle < P2 || ray->angle > P3))
+	else if (ray->xmin == 1 && (ray->angle < (PI / 2)
+			|| ray->angle > 3 * PI / 2))
 		ray->side = 'e';
-	dist_t = fDistance * BLK_WDT_PXL;
+	dist_t = fDistance * 32;
 	if (ca < 0)
 		ca += 2 * PI;
 	if (ca > 2 * PI)

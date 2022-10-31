@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 20:13:12 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 12:50:44 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:30:35 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#define R 15
-#define E 14
-#define W 13
-#define Q 12
-#define A 0
-#define S 1
-#define D 2
+#define DR 0.0174533
 
 void	rotate_screen(t_map *map, int key)
 {
-	if (key == D)
+	if (key == 2)
 	{
 		map->player->angle += DR * 3;
 		if (map->player->angle > 2 * PI)
@@ -33,7 +27,7 @@ void	rotate_screen(t_map *map, int key)
 		map->player->dx = cos(map->player->angle) / 10;
 		map->player->dy = sin(map->player->angle) / 10;
 	}
-	if (key == A)
+	if (key == 0)
 	{
 		map->player->angle -= DR * 3;
 		if (map->player->angle < 0)
@@ -51,9 +45,9 @@ void	update_posix(t_map *map, int attribute)
 
 void	move_player(t_map *map, int key)
 {
-	if (key == E)
+	if (key == 14)
 		handledoors(map);
-	if (key == S)
+	if (key == 1)
 	{
 		if (map->coord[(int)(map->player->y - map->player->dy)]
 			[(int)(map->player->x - map->player->dx)] != '1'
@@ -61,7 +55,7 @@ void	move_player(t_map *map, int key)
 			[(int)(map->player->x - map->player->dx)] != 'C')
 			update_posix(map, -1);
 	}
-	if (key == W)
+	if (key == 13)
 	{
 		if (map->coord[(int)(map->player->y + map->player->dy * 2)]
 			[(int)(map->player->x + map->player->dx * 2)] != '1'
@@ -69,17 +63,17 @@ void	move_player(t_map *map, int key)
 			[(int)(map->player->x + map->player->dx * 2)] != 'C')
 			update_posix(map, 1);
 	}
-	if (key == D || key == A)
+	if (key == 2 || key == 0)
 		rotate_screen(map, key);
 }
 
 int	deal_key(int key, t_map *map)
 {
-	if (key == W || key == S || key == E || key == D || key == A)
+	if (key == 13 || key == 1 || key == 14 || key == 2 || key == 0)
 		move_player(map, key);
-	if (key == Q)
+	if (key == 12)
 		equipweapon(map);
-	if (key == R)
+	if (key == 15)
 		swapweapon(map);
 	if (key == 53)
 	{

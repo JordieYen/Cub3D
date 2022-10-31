@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 11:32:17 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/31 14:13:54 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 19:22:49 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,49 +19,8 @@
 #include <math.h>
 #include <stdio.h>
 
-static int	check_space(t_map *map, int x, int y)
+int	read_cub(t_map *map, int fd)
 {
-	if (map->coord[y + 1] != NULL)
-	{
-		if (map->coord[y + 1][x] != ' ' && map->coord[y + 1][x] != '1')
-			return (0);
-	}
-	if (y != 0)
-	{
-		if (map->coord[y - 1][x] != ' ' && map->coord[y - 1][x] != '1')
-			return (0);
-	}
-	if (map->coord[y][x + 1] != '\0')
-	{
-		if (map->coord[y][x + 1] != ' ' && map->coord[y][x + 1] != '1')
-			return (0);
-	}
-	if (x != 0)
-	{
-		if (map->coord[y][x - 1] != ' ' && map->coord[y][x - 1] != '1')
-			return (0);
-	}
-	return (1);
-}
-
-void	set_start_direction(t_map *map)
-{
-	if (map->player->start_char == 'N')
-		map->player->angle = P3;
-	else if (map->player->start_char == 'S')
-		map->player->angle = P2;
-	else if (map->player->start_char == 'E')
-		map->player->angle = PI * 2;
-	else if (map->player->start_char == 'W')
-		map->player->angle = PI;
-	map->player->dx = cos(map->player->angle) / 10;
-	map->player->dy = sin(map->player->angle) / 10;
-}
-
-void	read_cub(t_map *map, int fd)
-{
-	int		x;
-	int		y;
 	int		n;
 	char	*line;
 
@@ -69,12 +28,8 @@ void	read_cub(t_map *map, int fd)
 	n = 1;
 	while (line != NULL)
 	{
-		if (!ft_strncmp(line, "NO", 2) || !ft_strncmp(line, "SO", 2)
-			|| !ft_strncmp(line, "WE", 2) || !ft_strncmp(line, "EA", 2)
-			|| !ft_strncmp(line, "DO", 2))
-			init_texture(map, line);
-		if (!ft_strncmp(line, "F", 1) || !ft_strncmp(line, "C", 1))
-			init_color(map, line);
+		if (!init_texture_color(map, line))
+			return (0);
 		free(line);
 		line = get_next_line(fd);
 		if (textures_color_filled(map, 3))
@@ -82,36 +37,15 @@ void	read_cub(t_map *map, int fd)
 		n++;
 	}
 	if (line == NULL)
-		return ;
+		return (0);
 	while (*line == '\n' && ++n)
 	{
 		free(line);
 		line = get_next_line(fd);
 	}
 	map->map_start_n = n;
-	x = 0;
-	y = 0;
-	while (line != NULL)
-	{
-		if (ft_strlen(line) > x)
-			x = ft_strlen(line);
-		y++;
-		free(line);
-		line = get_next_line(fd);
-	}
-	if (line)
-		free(line);
-	map->xlen = x - 1;
-	map->ylen = y;
-	if (y > 0)
-		map->coord = malloc((y + 1) * sizeof(char *));
-	y = 0;
-	while (y < map->ylen)
-	{
-		map->coord[y] = malloc((x + 2) * sizeof(char));
-		y++;
-	}
-	map->player = malloc(sizeof(t_player));
+	configure_map(map, fd, line);
+	return (1);
 }
 
 void	fill_map(t_map *map, int fd)
@@ -121,16 +55,13 @@ void	fill_map(t_map *map, int fd)
 	char	*line;
 
 	while (map->map_start_n--)
+		free(get_next_line(fd));
+	i = -1;
+	while (++i < map->ylen)
 	{
+		j = -1;
 		line = get_next_line(fd);
-		free(line);
-	}
-	i = 0;
-	while (i < map->ylen)
-	{
-		j = 0;
-		line = get_next_line(fd);
-		while (j < map->xlen + 2)
+		while (j++ < map->xlen + 2)
 		{
 			if (j < ft_strlen(line) - 1)
 				map->coord[i][j] = line[j];
@@ -138,10 +69,8 @@ void	fill_map(t_map *map, int fd)
 				map->coord[i][j] = ' ';
 			if (j == map->xlen + 1)
 				map->coord[i][j] = '\0';
-			j++;
 		}
 		free(line);
-		i++;
 	}
 	map->coord[i] = NULL;
 }
@@ -175,50 +104,55 @@ int	check_walls(t_map *map)
 	return (1);
 }
 
-int	check_map(t_map *map)
+int	check_map(t_map *m)
 {
 	int	j;
 	int	i;
 
-	i = 0;
-	while (map->coord[i] != NULL)
+	i = -1;
+	while (m->coord[++i] != NULL)
 	{
-		j = 0;
-		while (map->coord[i][j] != '\0')
+		j = -1;
+		while (m->coord[i][++j] != '\0')
 		{
-			if (map->coord[i][j] != '0' && map->coord[i][j] != '1'
-				&& map->coord[i][j] != ' ' && map->coord[i][j] != 'N'
-				&& map->coord[i][j] != 'S' && map->coord[i][j] != 'E'
-				&& map->coord[i][j] != 'W' && map->coord[i][j] != 'C')
+			if (m->coord[i][j] != '0' && m->coord[i][j] != '1'
+				&& m->coord[i][j] != ' ' && m->coord[i][j] != 'N'
+				&& m->coord[i][j] != 'S' && m->coord[i][j] != 'E'
+				&& m->coord[i][j] != 'W' && m->coord[i][j] != 'C')
 				return (0);
-			else if (map->coord[i][j] != 'N'
-				&& map->coord[i][j] != 'S' && map->coord[i][j] != 'E'
-				&& map->coord[i][j] != 'W')
-				map->direction = map->coord[i][j];
-			j++;
+			else if (m->coord[i][j] != 'N'
+				&& m->coord[i][j] != 'S' && m->coord[i][j] != 'E'
+				&& m->coord[i][j] != 'W')
+				m->direction = m->coord[i][j];
 		}
-		i++;
 	}
-	if (!check_walls(map))
+	if (!check_walls(m))
 		return (0);
 	return (1);
 }
 
-int	check_cub(t_map *map, char *config_map)
+int	check_cub(t_map *map, char *cm)
 {
 	int	fd;
 
+	if (ft_strlen(cm) < 4 || (ft_strncmp(&cm[ft_strlen(cm) - 4], ".cub", 4)))
+	{
+		ft_putstr_fd("Error: file is not .cub\n", 2);
+		return (0);
+	}
 	map->tex = malloc(sizeof(t_tex));
 	init_zero(map);
-	fd = open(config_map, O_RDONLY);
-	read_cub(map, fd);
-	if (!textures_color_filled(map, 3))
+	fd = open(cm, O_RDONLY);
+	if (!read_cub(map, fd) || !textures_color_filled(map, 3) || fd == -1)
 	{
-		ft_putstr_fd("Error: parsing textures and/or color\n", 2);
+		if (fd == -1)
+			ft_putstr_fd("Error: can't read config file\n", 2);
+		else
+			ft_putstr_fd("Error: parsing textures and/or color\n", 2);
 		return (0);
 	}
 	close(fd);
-	fd = open(config_map, O_RDONLY);
+	fd = open(cm, O_RDONLY);
 	fill_map(map, fd);
 	set_player_posix(map);
 	set_start_direction(map);

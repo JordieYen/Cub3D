@@ -6,12 +6,13 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 20:03:36 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/28 20:03:43 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:33:24 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include "../includes/mlx.h"
 
 void	free_coord(t_map *map)
@@ -19,7 +20,7 @@ void	free_coord(t_map *map)
 	int	y;
 
 	y = 0;
-	while (y < map->ylen + 2)
+	while (y < map->ylen + 1)
 	{
 		free(map->coord[y]);
 		y++;

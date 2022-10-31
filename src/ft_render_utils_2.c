@@ -6,12 +6,15 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 13:03:21 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 13:03:41 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:15:16 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 #include <math.h>
+#define BLK_WDT 1
+#define BLK_WDT_PXL 32
+#define DR 0.0174533
 
 int	getdoorlen(t_ray *ray, float distance, char c)
 {

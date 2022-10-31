@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 14:15:11 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 19:03:24 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <float.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#define DR 0.0174533
 
 void	shoot_rays(t_map *map)
 {
@@ -28,14 +29,14 @@ void	shoot_rays(t_map *map)
 	t_fcoord	step;
 	t_ray		*ray;
 
-	map->rays = malloc(sizeof(t_ray *) * WIN_W);
-	angle = (map->player->angle) - (DR / 16 * (WIN_W / 2));
+	map->rays = malloc(sizeof(t_ray *) * 1440);
+	angle = (map->player->angle) - (DR / 16 * (1440 / 2));
 	if (angle < 0)
 		angle += 2 * PI;
 	else if (angle > 2 * PI)
 		angle -= 2 * PI;
 	i = -1;
-	while (++i < WIN_W)
+	while (++i < 1440)
 	{
 		map->rays[i] = init_ray(angle, map);
 		ray = map->rays[i];
@@ -74,13 +75,13 @@ void	create_screen(t_map *map)
 	int	x;
 
 	shoot_rays(map);
-	render_background(map, WIN_W);
-	render_rays(map, WIN_W);
-	render_doors(map, WIN_W);
+	render_background(map, 1440);
+	render_rays(map, 1440);
+	render_doors(map, 1440);
 	draw_minimap(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
 	x = -1;
-	while (++x < WIN_W)
+	while (++x < 1440)
 		free(map->rays[x]);
 	free(map->rays);
 }
@@ -94,8 +95,8 @@ int	main(int argc, char **argv)
 	if (argc == 2 && check_cub(map, argv[1]))
 	{
 		map->mlx = mlx_init();
-		map->win = mlx_new_window(map->mlx, WIN_W, WIN_H, "MLX CUBE3D");
-		img.img = mlx_new_image(map->mlx, WIN_W, WIN_H);
+		map->win = mlx_new_window(map->mlx, 1440, 810, "MLX CUBE3D");
+		img.img = mlx_new_image(map->mlx, 1440, 810);
 		img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
 				&img.line_length, &img.endian);
 		map->img = &img;
@@ -109,5 +110,6 @@ int	main(int argc, char **argv)
 		mlx_mouse_hide(map->mlx, map->win);
 		mlx_loop(map->mlx);
 	}
+	// system("leaks cub3D");
 	return (0);
 }

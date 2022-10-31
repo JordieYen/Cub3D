@@ -6,22 +6,13 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 14:12:17 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:54:34 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUBE3D_H
 # define CUBE3D_H
-# define WIN_H 810
-# define WIN_W 1440
-# define BLK_WDT 1
-# define BLK_WDT_PXL 32
-# define STP_SZ 0.1
 # define PI 3.14159265359
-# define P2 PI/2
-# define P3 3*PI/2
-# define DR 0.0174533
-# define FOV 40 * 500
 # include <stdbool.h>
 
 typedef struct s_player
@@ -171,6 +162,7 @@ void		connect_dots_doors(t_map *map, int x, int height, t_ray *ray);
 void		get_xpm_data(t_map *map, t_wall *wall, char *texture);
 void		connect_dots_colors(t_map *map, int x, int height, t_ray *ray);
 void		connect_dots_doors(t_map *map, int x, int height, t_ray *ray);
+int			init_texture_color(t_map *map, char *line);
 
 // render.c
 void		render_background(t_map *map, int ray_num);
@@ -233,5 +225,12 @@ void		draw_minimap(t_map *map);
 t_wall		changeframe(t_map *map);
 void		animatehand(t_map *map);
 int			render_screen(void *varg);
+
+// cube_extra.c
+void		compare_walls(char *dir, t_map *map, char **args);
+void		assign_floor_ceiling_color(int rgb, t_map *map, char *line, int tc);
+void		configure_map(t_map *map, int fd, char *line);
+int			check_space(t_map *map, int x, int y);
+void		set_start_direction(t_map *map);
 
 #endif

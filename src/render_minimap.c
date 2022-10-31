@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 13:09:52 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 13:23:50 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 17:03:50 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,6 @@ void	draw_minimap(t_map *map)
 	int	size;
 
 	size = 224;
-	render_minimap(map, 30, WIN_H - size, size);
-	draw_player(map, 30 + (size / 2) - 15, WIN_H - size + (size / 2) - 15);
+	render_minimap(map, 30, 810 - size, size);
+	draw_player(map, 30 + (size / 2) - 15, 810 - size + (size / 2) - 15);
 }
