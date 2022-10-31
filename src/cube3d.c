@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/28 20:28:03 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 12:21:17 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,44 +58,29 @@ void	render_minimap(t_map *map, int start_x, int start_y, int size)
 		x = start_x - 1;
 		while (x++ < start_x + size - start_x)
 		{
-			put_p(map->img, x, y, 0);
 			if ((tempx > 0 && tempx < map->xlen)
 				&& (tempy > 0 && tempy < map->ylen))
 			{
-				if (map->coord[(int)tempy][(int)tempx] == '1')
-					color = 0x61061F;
-				else if (map->coord[(int)tempy][(int)tempx] == 'C')
+				if (map->coord[(int)tempy][(int)tempx] == '1' || map->coord[(int)tempy][(int)tempx] == 'C')
 					color = 0x61061F;
 				else
-					color = 0;
-				put_p(map->img, x, y, color);
+					color = 0x0E0101;
+				if (dist(start_x + (size / 2) - 15, start_y + (size / 2) - 15, x, y) < 90)
+					put_p(map->img, x, y, color);
 			}
 			tempx += 0.03125;
 		}
 		tempy += 0.03125;
 	}
-	draw_player(map, start_x + (size / 2) - 15, start_y + (size / 2) - 15);
 }
 
 void	draw_minimap(t_map *map)
 {
-	int	x;
-	int	y;
 	int	size;
 
 	size = 224;
-	y = WIN_H - size - 1;
 	render_minimap(map, 30, WIN_H - size, size);
-	while (y++ < WIN_H - 30)
-	{
-		x = 29;
-		while (x++ < size)
-		{
-			if (y <= WIN_H - size + 1 || x <= 31
-				|| y >= WIN_H - 31 || x >= size - 1)
-				put_p(map->img, x, y, 0x44101E);
-		}
-	}
+	draw_player(map, 30 + (size / 2) - 15, WIN_H - size + (size / 2) - 15);
 }
 
 void	shoot_rays(t_map *map)

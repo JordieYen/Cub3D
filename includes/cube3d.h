@@ -6,19 +6,12 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/28 20:33:08 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 13:04:31 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUBE3D_H
 # define CUBE3D_H
-# define R 15
-# define E 14
-# define W 13
-# define Q 12
-# define A 0
-# define S 1
-# define D 2
 # define WIN_H 810
 # define WIN_W 1440
 # define BLK_WDT 1
@@ -163,9 +156,14 @@ void		connectdots(t_data *img, t_coord coord0, t_coord coord1, int color);
 int			darken_rgb(int rgb, float len);
 
 // ft_textures.c
-void		create_line_colors(t_map *map, int ray_num);
-t_rgb		**create_xmp_array(t_map *map, t_xmp_data *xmpdata);
 void		get_textures(t_map *map);
+int			pick_color(t_ray *ray, t_map *map, float percentage);
+int			pick_color_door(t_ray *ray, t_map *map, float percentage);
+void		connect_dots_colors(t_map *map, int x, int height, t_ray *ray);
+void		connect_dots_doors(t_map *map, int x, int height, t_ray *ray);
+
+// ft_textures_utils.c
+void		get_xpm_data(t_map *map, t_wall *wall, char *texture);
 void		connect_dots_colors(t_map *map, int x, int height, t_ray *ray);
 void		connect_dots_doors(t_map *map, int x, int height, t_ray *ray);
 
@@ -181,7 +179,10 @@ void		init_map_check_ray_dir(t_ray *ray, t_coord *map_check,
 				t_map *map, t_fcoord *step);
 float		walk_shortest_path(t_ray *ray, t_coord *map_check,
 				t_fcoord *step, t_map *map);
+
+// ft_render_utils_2.c
 float		rotate_angle(float angle);
+int			getdoorlen(t_ray *ray, float distance, char c);
 
 // cube_doors.c
 void		handledoors(t_map *map);

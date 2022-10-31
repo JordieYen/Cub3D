@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/28 20:02:24 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 12:45:02 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,8 @@
 #include <math.h>
 #include <limits.h>
 
-int	pick_color(t_ray *ray, t_map *map, float percentage)
+t_wall	set_walls(t_map *map, t_ray *ray)
 {
-	int		pixel_x;
-	int		pixel_y;
 	t_wall	wall;
 
 	if (ray->side == 'n')
@@ -31,6 +29,16 @@ int	pick_color(t_ray *ray, t_map *map, float percentage)
 		wall = map->wall_e;
 	if (ray->side == 'w')
 		wall = map->wall_w;
+	return (wall);
+}
+
+int	pick_color(t_ray *ray, t_map *map, float percentage)
+{
+	int		pixel_x;
+	int		pixel_y;
+	t_wall	wall;
+
+	wall = set_walls(map, ray);
 	if (ray->side == 'n' || ray->side == 's')
 	{
 		pixel_y = (int)(wall.wall_height * percentage);
@@ -72,50 +80,13 @@ int	pick_color_door(t_ray *ray, t_map *map, float percentage)
 				+ wall.wall_width * pixel_y], ray->doorlen));
 }
 
-void	connect_dots_doors(t_map *map, int x, int height, t_ray *ray)
+void	init_walls(t_map *map)
 {
-	int		y;
-	float	y_offset;
-
-	y = -1;
-	y_offset = 400 - (height / 2.5) - 0.01;
-	while (y++ < height - 1)
-	{
-		if (y_offset + y > 0 && y_offset + y < WIN_H)
-		{
-			if (pick_color_door(ray, map, (float)y / height) != -1)
-				put_p(map->img, x, y_offset + y + map->offset,
-					pick_color_door(ray, map, (float)y / height));
-		}	
-	}
-}
-
-void	connect_dots_colors(t_map *map, int x, int height, t_ray *ray)
-{
-	int		y;
-	float	y_offset;
-
-	y = -1;
-	ray->angle = 0;
-	y_offset = 400 - (height / 2.5) - 0.01;
-	while (y++ < height - 1)
-	{
-		if (y_offset + y > 0 && y_offset + y < WIN_H)
-		{
-			if (pick_color(ray, map, (float)y / height) != -1)
-				put_p(map->img, x, y_offset + y + map->offset,
-					pick_color(ray, map, (float)y / height));
-		}	
-	}
-}
-
-void	get_xpm_data(t_map *map, t_wall *wall, char *texture)
-{	
-	wall->wall = mlx_xpm_file_to_image(&map->mlx, texture,
-			&wall->wall_width, &wall->wall_height);
-	wall->xpm_data.data = (int *)mlx_get_data_addr(wall->wall,
-			&wall->xpm_data.bits_per_pixel, &wall->xpm_data.size_line,
-			&wall->xpm_data.endian);
+	get_xpm_data(map, &map->wall_n, map->tex->wall_no_dir);
+	get_xpm_data(map, &map->wall_s, map->tex->wall_so_dir);
+	get_xpm_data(map, &map->wall_e, map->tex->wall_ea_dir);
+	get_xpm_data(map, &map->wall_w, map->tex->wall_we_dir);
+	get_xpm_data(map, &map->door, map->tex->wall_do_dir);
 }
 
 void	get_textures(t_map *map)
@@ -143,9 +114,5 @@ void	get_textures(t_map *map)
 			&map->hand[9].wall_width, &map->hand[9].wall_height);
 	map->knife.wall = mlx_xpm_file_to_image(&map->mlx, "./textures/knife.xpm",
 			&map->knife.wall_width, &map->knife.wall_height);
-	get_xpm_data(map, &map->wall_n, map->tex->wall_no_dir);
-	get_xpm_data(map, &map->wall_s, map->tex->wall_so_dir);
-	get_xpm_data(map, &map->wall_e, map->tex->wall_ea_dir);
-	get_xpm_data(map, &map->wall_w, map->tex->wall_we_dir);
-	get_xpm_data(map, &map->door, map->tex->wall_do_dir);
+	init_walls(map);
 }

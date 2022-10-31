@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 20:13:12 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/28 20:13:51 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 12:50:44 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#define R 15
+#define E 14
+#define W 13
+#define Q 12
+#define A 0
+#define S 1
+#define D 2
 
 void	rotate_screen(t_map *map, int key)
 {
@@ -36,6 +43,12 @@ void	rotate_screen(t_map *map, int key)
 	}
 }
 
+void	update_posix(t_map *map, int attribute)
+{
+	map->player->x += (map->player->dx * attribute);
+	map->player->y += (map->player->dy * attribute);
+}
+
 void	move_player(t_map *map, int key)
 {
 	if (key == E)
@@ -46,10 +59,7 @@ void	move_player(t_map *map, int key)
 			[(int)(map->player->x - map->player->dx)] != '1'
 			&& map->coord[(int)(map->player->y - map->player->dy)]
 			[(int)(map->player->x - map->player->dx)] != 'C')
-		{
-			map->player->x -= map->player->dx;
-			map->player->y -= map->player->dy;
-		}
+			update_posix(map, -1);
 	}
 	if (key == W)
 	{
@@ -57,10 +67,7 @@ void	move_player(t_map *map, int key)
 			[(int)(map->player->x + map->player->dx * 2)] != '1'
 			&& map->coord[(int)(map->player->y + map->player->dy * 2)]
 			[(int)(map->player->x + map->player->dx * 2)] != 'C')
-		{
-			map->player->x += map->player->dx;
-			map->player->y += map->player->dy;
-		}
+			update_posix(map, 1);
 	}
 	if (key == D || key == A)
 		rotate_screen(map, key);

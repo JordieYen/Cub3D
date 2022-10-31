@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 11:32:17 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/28 20:20:16 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 13:05:51 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int	check_walls(t_map *map)
 	return (1);
 }
 
-int check_map(t_map *map)
+int	check_map(t_map *map)
 {
 	int	j;
 	int	i;

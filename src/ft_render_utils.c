@@ -6,18 +6,23 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:42 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/28 19:54:17 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 13:03:59 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 #include <math.h>
 
-void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check,
-			t_map *map, t_fcoord *step)
+void	set_map_check(t_coord *map_check, t_map *map)
 {
 	map_check->x = map->player->x;
 	map_check->y = map->player->y;
+}
+
+void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check,
+			t_map *map, t_fcoord *step)
+{
+	set_map_check(map_check, map);
 	if (ray->dir.x < 0)
 	{
 		step->x = -1;
@@ -44,40 +49,22 @@ void	init_map_check_ray_dir(t_ray *ray, t_coord *map_check,
 	}
 }
 
-float	rotate_angle(float angle)
+void	update_distancex(t_coord *map_check,
+		t_fcoord *step, t_ray *ray, float	*distance)
 {
-	angle += DR / 16;
-	if (angle < 0)
-		angle += 2 * PI;
-	if (angle > 2 * PI)
-		angle -= 2 * PI;
-	return (angle);
+	map_check->x += step->x;
+	*distance = ray->length_1d.x;
+	ray->length_1d.x += ray->step_size.x;
+	ray->xmin = 1;
 }
 
-int	getdoorlen(t_ray *ray, float distance, char c)
+void	update_distancey(t_coord *map_check,
+		t_fcoord *step, t_ray *ray, float	*distance)
 {
-	float	ca;
-	float	dist_t;
-
-	if (c == '1')
-		return (true);
-	if (ray->firstdoor == 1)
-		return (false);
-	ca = ray->playerangle - ray->angle;
-	dist_t = distance * BLK_WDT_PXL;
-	if (ca < 0)
-		ca += 2 * PI;
-	if (ca > 2 * PI)
-		ca -= 2 * PI;
-	if (dist_t != -1)
-		dist_t = dist_t * cos(ca);
-	ray->doorlen = dist_t;
-	ray->doorxmin = ray->xmin;
-	ray->isdoor = 'y';
-	ray->doorx = (ray->start.x + ray->dir.x * distance);
-	ray->doory = (ray->start.y + ray->dir.y * distance);
-	ray->firstdoor = 1;
-	return (false);
+	map_check->y += step->y;
+	*distance = ray->length_1d.y;
+	ray->length_1d.y += ray->step_size.y;
+	ray->xmin = 0;
 }
 
 float	walk_shortest_path(t_ray *ray, t_coord *map_check,
@@ -93,19 +80,9 @@ float	walk_shortest_path(t_ray *ray, t_coord *map_check,
 	while (!tile_found && distance < max_distance)
 	{
 		if (ray->length_1d.x < ray->length_1d.y)
-		{
-			map_check->x += step->x;
-			distance = ray->length_1d.x;
-			ray->length_1d.x += ray->step_size.x;
-			ray->xmin = 1;
-		}
+			update_distancex(map_check, step, ray, &distance);
 		else
-		{
-			map_check->y += step->y;
-			distance = ray->length_1d.y;
-			ray->length_1d.y += ray->step_size.y;
-			ray->xmin = 0;
-		}
+			update_distancey(map_check, step, ray, &distance);
 		if (map_check->x >= 0 && map_check->x < map->xlen
 			&& map_check->y >= 0 && map_check->y < map->ylen)
 		{

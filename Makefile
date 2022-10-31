@@ -3,7 +3,9 @@ SOURCES = cube3d.c \
 			ft_cube_utils.c \
 			ft_shadows.c \
 			ft_textures.c \
+			ft_textures_utils.c \
 			ft_render_utils.c \
+			ft_render_utils_2.c \
 			render.c \
 			cube_doors.c \
 			cube_parser.c \

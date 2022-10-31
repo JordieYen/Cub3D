@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 18:32:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/28 20:08:04 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 12:47:22 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,19 +76,19 @@ void	connectdots(t_data *img, t_coord coord0, t_coord coord1, int color)
 	}
 }
 
-void	draw_2d_rays(t_map *map, int raynum)
-{
-	int		i;
-	t_coord	coord1;
-	t_coord	coord2;
+// void	draw_2d_rays(t_map *map, int raynum)
+// {
+// 	int		i;
+// 	t_coord	coord1;
+// 	t_coord	coord2;
 
-	i = -1;
-	init_mycoord(&coord1, map->player->x * BLK_WDT_PXL,
-		map->player->y * BLK_WDT_PXL);
-	while (++i < raynum)
-	{
-		init_mycoord(&coord2, map->rays[i]->x * BLK_WDT_PXL,
-			map->rays[i]->y * BLK_WDT_PXL);
-		connectdots(map->img, coord1, coord2, 0x330066);
-	}
-}
+// 	i = -1;
+// 	init_mycoord(&coord1, map->player->x * BLK_WDT_PXL,
+// 		map->player->y * BLK_WDT_PXL);
+// 	while (++i < raynum)
+// 	{
+// 		init_mycoord(&coord2, map->rays[i]->x * BLK_WDT_PXL,
+// 			map->rays[i]->y * BLK_WDT_PXL);
+// 		connectdots(map->img, coord1, coord2, 0x330066);
+// 	}
+// }
