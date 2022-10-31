@@ -13,6 +13,8 @@ SOURCES = cube3d.c \
 			cube_move.c \
 			frees.c \
 			weapon_manipulation.c \
+			render_minimap.c \
+			frames.c \
 
 SRC_DIR = src/
 OBJECTS = $(addprefix $(SRC_DIR), $(SOURCES:.c=.o))

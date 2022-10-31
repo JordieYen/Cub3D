@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 13:04:31 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/10/31 13:38:49 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,9 @@ typedef struct s_map
 	unsigned int	c_color;
 }	t_map;
 
+// cube3d.c
+void		create_screen(t_map *map);
+
 // ft_cube_utils.c
 void		put_p(t_data *data, int x, int y, int color);
 float		dist(int x1, int y1, int x2, int y2);
@@ -218,5 +221,15 @@ void		free_map(t_map *map);
 // weapon_manipulation.c
 void		equipweapon(t_map *map);
 void		swapweapon(t_map *map);
+
+// render_minimap.c
+void		draw_player(t_map *map, int x, int y);
+void		render_minimap(t_map *map, int start_x, int start_y, int size);
+void		draw_minimap(t_map *map);
+
+// frames.c
+t_wall		changeframe(t_map *map);
+void		animatehand(t_map *map);
+int			render_screen(void *varg);
 
 #endif
