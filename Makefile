@@ -16,6 +16,7 @@ SOURCES = cube3d.c \
 			render_minimap.c \
 			frames.c \
 			cube_extra.c \
+			error.c \
 
 SRC_DIR = src/
 OBJECTS = $(addprefix $(SRC_DIR), $(SOURCES:.c=.o))

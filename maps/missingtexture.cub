@@ -1,11 +1,6 @@
-
 NO   ./textures/bloody-wall.xpm
 
 SO           ./textures/bloody-wall.xpm
-
-WE ./textures/bloody-wall.xpm
-
-WE ./textures/bloody-wall.xpm
 
 EA       ./textures/bloody-wall.xpm
 
@@ -15,7 +10,6 @@ DO                ./textures/42.xpm
 
 F 0,0,0
 C 0,0,0
-
 
         1111111111111111111111111
         1000000000110000000000001

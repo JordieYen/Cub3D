@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 19:03:24 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:52:57 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,21 @@ void	set_player_posix(t_map *map)
 
 void	create_screen(t_map *map)
 {
-	int	x;
+	int		x;
+	t_data	img;
 
+	img.img = mlx_new_image(map->mlx, 1440, 810);
+	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel,
+			&img.line_length, &img.endian);
+	map->img = &img;
 	shoot_rays(map);
-	render_background(map, 1440);
+	if (map->darken != 1)
+		render_background(map, 1440);
 	render_rays(map, 1440);
 	render_doors(map, 1440);
 	draw_minimap(map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img->img, 0, 0);
+	mlx_destroy_image(map->mlx, map->img->img);
 	x = -1;
 	while (++x < 1440)
 		free(map->rays[x]);
@@ -110,6 +117,5 @@ int	main(int argc, char **argv)
 		mlx_mouse_hide(map->mlx, map->win);
 		mlx_loop(map->mlx);
 	}
-	// system("leaks cub3D");
 	return (0);
 }

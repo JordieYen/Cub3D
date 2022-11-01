@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 17:54:34 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:39:48 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ typedef struct s_map
 {
 	int				equipweapon;
 	int				swapweapon;
+	int				jumps;
+	int				darken;
 	int				offset;
 	char			**coord;
 	char			direction;
@@ -123,6 +125,8 @@ typedef struct s_map
 	int				map_start_n;
 	t_wall			*hand;
 	t_wall			knife;
+	t_wall			jump;
+	t_wall			black;
 	t_wall			wall_n;
 	t_wall			wall_s;
 	t_wall			wall_e;
@@ -215,6 +219,8 @@ void		free_map(t_map *map);
 // weapon_manipulation.c
 void		equipweapon(t_map *map);
 void		swapweapon(t_map *map);
+void		jumpscare(t_map *map);
+void		darken(t_map *map);
 
 // render_minimap.c
 void		draw_player(t_map *map, int x, int y);
@@ -232,5 +238,9 @@ void		assign_floor_ceiling_color(int rgb, t_map *map, char *line, int tc);
 void		configure_map(t_map *map, int fd, char *line);
 int			check_space(t_map *map, int x, int y);
 void		set_start_direction(t_map *map);
+
+// error.c
+void		error_exit(char *error);
+void		check_wall_dir(char **tex, char *dir);
 
 #endif

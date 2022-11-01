@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 11:32:17 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/31 19:22:49 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:30:03 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,20 +136,16 @@ int	check_cub(t_map *map, char *cm)
 	int	fd;
 
 	if (ft_strlen(cm) < 4 || (ft_strncmp(&cm[ft_strlen(cm) - 4], ".cub", 4)))
-	{
-		ft_putstr_fd("Error: file is not .cub\n", 2);
-		return (0);
-	}
+		error_exit("Error: file is not .cub\n");
 	map->tex = malloc(sizeof(t_tex));
 	init_zero(map);
 	fd = open(cm, O_RDONLY);
 	if (!read_cub(map, fd) || !textures_color_filled(map, 3) || fd == -1)
 	{
 		if (fd == -1)
-			ft_putstr_fd("Error: can't read config file\n", 2);
+			error_exit("Error: can't read config file\n");
 		else
-			ft_putstr_fd("Error: parsing textures and/or color\n", 2);
-		return (0);
+			error_exit("Error: parsing textures and/or color\n");
 	}
 	close(fd);
 	fd = open(cm, O_RDONLY);

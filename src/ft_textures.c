@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/31 17:07:59 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:48:12 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ void	init_walls(t_map *map)
 	get_xpm_data(map, &map->wall_e, map->tex->wall_ea_dir);
 	get_xpm_data(map, &map->wall_w, map->tex->wall_we_dir);
 	get_xpm_data(map, &map->door, map->tex->wall_do_dir);
+	map->jump.wall = mlx_xpm_file_to_image(&map->mlx, "./textures/jump.xpm",
+			&map->jump.wall_width, &map->jump.wall_height);
 }
 
 void	get_textures(t_map *map)

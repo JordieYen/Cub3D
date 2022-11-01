@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 12:37:37 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 19:21:12 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:30:52 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,6 @@ int	init_texture_color(t_map *map, char *line)
 	else if (!ft_strncmp(line, "F", 1) || !ft_strncmp(line, "C", 1))
 		init_color(map, line);
 	else if (ft_strncmp(line, "\n", 1))
-	{
-		ft_putstr_fd("Error: bad key\n", 2);
-		system("leaks cub3D");
-		exit(0);
-	}
+		error_exit("Error: bad key\n");
 	return (1);
 }

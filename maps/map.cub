@@ -1,21 +1,11 @@
+NO  ./textures/backrooms.xpm
+SO  ./textures/bloody-wall.xpm
+WE  ./textures/mincraft_dirt.xpm
+EA  ./textures/cyberpunk.xpm
+DO  ./textures/42.xpm
 
-NO   ./textures/bloody-wall.xpm
-
-SO           ./textures/bloody-wall.xpm
-
-WE ./textures/bloody-wall.xpm
-
-WE ./textures/bloody-wall.xpm
-
-EA       ./textures/bloody-wall.xpm
-
-DO                ./textures/42.xpm
-
-
-
-F 0,0,0
-C 0,0,0
-
+F 1,0,1
+C 0,1,0
 
         1111111111111111111111111
         1000000000110000000000001

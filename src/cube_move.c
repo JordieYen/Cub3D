@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 20:13:12 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 17:30:35 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:32:49 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,14 @@ int	deal_key(int key, t_map *map)
 		equipweapon(map);
 	if (key == 15)
 		swapweapon(map);
+	if (key == 4)
+		jumpscare(map);
+	if (key == 18)
+		darken(map);
 	if (key == 53)
 	{
 		free_map(map);
-		system("leaks cub3d");
+		system("leaks cub3D");
 		exit(1);
 	}
 	return (0);
@@ -93,7 +97,7 @@ int	read_mouse(int x, int y, t_map *map)
 	mlx_mouse_move(map->win, 100, 100);
 	if (dir < 0)
 	{
-		map->player->angle += DR * (dir * -1 / 2);
+		map->player->angle += DR * (dir * -1 / 5);
 		if (map->player->angle > 2 * PI)
 			map->player->angle = map->player->angle - 2 * PI;
 		map->player->dx = cos(map->player->angle) / 10;
@@ -101,7 +105,7 @@ int	read_mouse(int x, int y, t_map *map)
 	}
 	if (dir > 0)
 	{
-		map->player->angle -= DR * (dir / 2);
+		map->player->angle -= DR * (dir / 5);
 		if (map->player->angle < 0)
 			map->player->angle = map->player->angle + 2 * PI;
 		map->player->dx = cos(map->player->angle) / 10;

@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 12:40:07 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/10/31 19:21:02 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:09:45 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	textures_color_filled(t_map *map, int flag)
 			|| map->tex->wall_we_dir == NULL
 			|| map->tex->wall_ea_dir == NULL
 			|| map->tex->wall_do_dir == NULL
-		    || map->f_color == UINT_MAX
+			|| map->f_color == UINT_MAX
 			|| map->c_color == UINT_MAX))
 		return (0);
 	return (1);

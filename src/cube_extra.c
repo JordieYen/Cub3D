@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:51:48 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 19:20:59 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:09:24 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,9 @@
 #include <unistd.h>
 #include "../includes/get_next_line.h"
 #include <math.h>
+#include <limits.h>
 #include <stdio.h>
 #define PI 3.14159265359
-
-void	check_wall_dir(char **tex, char *dir)
-{
-	if (*tex == NULL)
-		*tex = ft_strdup(dir);
-	else
-	{
-		ft_putstr_fd("Error: double key\n", 2);
-		// system("leaks cub3D");
-		exit(2);
-	}
-}
 
 void	compare_walls(char *dir, t_map *map, char **args)
 {
@@ -54,9 +43,19 @@ void	compare_walls(char *dir, t_map *map, char **args)
 void	assign_floor_ceiling_color(int rgb, t_map *map, char *line, int tc)
 {
 	if (!ft_strncmp(line, "F", 1) && rgb == 3)
-		map->f_color = tc;
+	{
+		if (map->f_color == UINT_MAX)
+			map->f_color = tc;
+		else
+			error_exit("Error: double color key\n");
+	}
 	if (!ft_strncmp(line, "C", 1) && rgb == 3)
-		map->c_color = tc;
+	{
+		if (map->c_color == UINT_MAX)
+			map->c_color = tc;
+		else
+			error_exit("Error: double color key\n");
+	}
 }
 
 void	configure_map(t_map *map, int fd, char *line)

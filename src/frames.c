@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 13:35:25 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 17:04:48 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:51:33 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ t_wall	changeframe(t_map *map)
 	static int	direction;
 	t_wall		frame;
 
-	frame = map->hand[i];
+	frame = map->hand[9];
+	if (i >= 0 && i <= 9)
+		frame = map->hand[i];
 	if (direction == 0 && map->equipweapon == 1)
 	{
 		if (i < 9)
@@ -75,6 +77,8 @@ void	animatehand(t_map *map)
 	else
 		mlx_put_image_to_window(map->mlx, map->win, map->knife.wall, 1440
 			- map->knife.wall_width, 810 - map->knife.wall_height + (i * 2));
+	if (map->jumps == 1)
+		mlx_put_image_to_window(map->mlx, map->win, map->jump.wall, 0, 0);
 	rotate_i(&i, &direction);
 	map->offset = i;
 }
@@ -98,7 +102,7 @@ void	put_framerate(t_map *map)
 		color = 0xFF0000;
 	fps_num = ft_itoa((float) 1000 / map->fps);
 	fps_str = ft_strjoin("fps :", fps_num);
-	mlx_string_put(map->mlx, map->win, 0, 0, color, fps_str);
+	mlx_string_put(map->mlx, map->win, 0, 10, color, fps_str);
 	free(fps_num);
 	free(fps_str);
 }
