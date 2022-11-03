@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 13:09:52 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/10/31 17:03:50 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/03 14:39:30 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	draw_player(t_map *map, int x, int y)
 {
 	int	color;
 
-	color = 0xAF133D;
+	color = 0x909090;
 	put_p(map->img, x, y, color);
 	put_p(map->img, x + 1, y, color);
 	put_p(map->img, x -1, y, color);
@@ -37,14 +37,14 @@ void	draw_player(t_map *map, int x, int y)
 	color = -1;
 	while (++color < 10)
 		put_p(map->img, x + (map->player->dx * color * 10),
-			y + (map->player->dy * color * 10), 0xAF133D);
+			y + (map->player->dy * color * 10), 0x909090);
 }
 
 void	set_color(t_map *map, t_fcoord temp, int *color)
 {
 	if (map->coord[(int)temp.y][(int)temp.x] == '1' ||
 		map->coord[(int)temp.y][(int)temp.x] == 'C')
-		*color = 0x61061F;
+		*color = 0x909090;
 	else
 		*color = 0x0E0101;
 }

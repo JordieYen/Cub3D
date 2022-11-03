@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:10:30 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/11/01 16:39:48 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:22:57 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,9 @@ typedef struct s_xmp_data
 
 typedef struct s_ray
 {
+	int			*rayi;
 	char		isdoor;
+	float		doorwidth;
 	float		doorlen;
 	int			doorxmin;
 	float		doorx;
@@ -109,6 +111,8 @@ typedef struct s_wall
 
 typedef struct s_map
 {
+	int				attack;
+	int				dooropen;
 	int				equipweapon;
 	int				swapweapon;
 	int				jumps;
@@ -124,6 +128,7 @@ typedef struct s_map
 	void			*win;
 	int				map_start_n;
 	t_wall			*hand;
+	t_wall			*blockhand;
 	t_wall			knife;
 	t_wall			jump;
 	t_wall			black;
@@ -242,5 +247,10 @@ void		set_start_direction(t_map *map);
 // error.c
 void		error_exit(char *error);
 void		check_wall_dir(char **tex, char *dir);
+
+// minecraft.c
+void		get_minecraft(t_map *map);
+void		free_blockhand(t_map *map);
+t_wall		changeblockframe(t_map *map);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 20:13:12 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/11/01 16:32:49 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/03 14:49:57 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int	deal_key(int key, t_map *map)
 		swapweapon(map);
 	if (key == 4)
 		jumpscare(map);
+	if (key == 3)
+		map->attack = 8;
 	if (key == 18)
 		darken(map);
 	if (key == 53)

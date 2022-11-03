@@ -1,19 +1,19 @@
 
-NO   ./textures/bloody-wall.xpm
+NO   ./textures/stonemc.xpm
 
-SO           ./textures/bloody-wall.xpm
+SO           ./textures/stonemc.xpm
 
 
-WE ./textures/bloody-wall.xpm
+WE ./textures/stonemc.xpm
 
-EA       ./textures/bloody-wall.xpm
+EA       ./textures/stonemc.xpm
 
 DO                ./textures/42.xpm
 
 
 
-F 200,30,0
-C 0,100,30
+F 142,142,142
+C 144,176,201
 
         1111111111111111111111111
         1000000000110000000000001

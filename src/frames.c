@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 13:35:25 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/11/01 16:51:33 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:22:49 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,9 @@ void	animatehand(t_map *map)
 	t_wall		frame;
 
 	frame = changeframe(map);
-	if (map->swapweapon == 1)
+	if (map->swapweapon == 3)
+		frame = changeblockframe(map);
+	if (map->swapweapon == 1 || map->swapweapon == 3)
 		mlx_put_image_to_window(map->mlx, map->win, frame.wall,
 			1440 - frame.wall_width, 810 - frame.wall_height + (i * 2));
 	else

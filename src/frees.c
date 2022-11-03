@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 20:03:36 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/11/01 16:48:31 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:22:18 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	free_texture(t_map *map)
 
 void	free_hand(t_map *map)
 {
+	free_blockhand(map);
 	mlx_destroy_image(map->mlx, map->hand[0].wall);
 	mlx_destroy_image(map->mlx, map->hand[1].wall);
 	mlx_destroy_image(map->mlx, map->hand[2].wall);

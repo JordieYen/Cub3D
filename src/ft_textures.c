@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/23 01:42:54 by bunyodshams       #+#    #+#             */
-/*   Updated: 2022/11/01 16:48:12 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/02 19:59:06 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int	pick_color_door(t_ray *ray, t_map *map, float percentage)
 {
 	int		pixel_x;
 	int		pixel_y;
+	float	open;
 	t_wall	wall;
 
 	wall = map->door;
@@ -67,11 +68,13 @@ int	pick_color_door(t_ray *ray, t_map *map, float percentage)
 	{
 		pixel_y = (int)(wall.wall_height * percentage);
 		pixel_x = wall.wall_width * (ceil(ray->doorx) - ray->doorx);
+		open = ceil(ray->doorx) - ray->doorx;
 	}
 	if (ray->doorxmin == 1)
 	{
 		pixel_y = (int)(wall.wall_height * percentage);
 		pixel_x = wall.wall_width * (ceil(ray->doory) - ray->doory);
+		open = ceil(ray->doory) - ray->doory;
 	}
 	if ((unsigned int)wall.xpm_data.data[pixel_x
 			+ wall.wall_width * pixel_y] == 4278190080)
@@ -116,5 +119,6 @@ void	get_textures(t_map *map)
 			&map->hand[9].wall_width, &map->hand[9].wall_height);
 	map->knife.wall = mlx_xpm_file_to_image(&map->mlx, "./textures/knife.xpm",
 			&map->knife.wall_width, &map->knife.wall_height);
+	get_minecraft(map);
 	init_walls(map);
 }

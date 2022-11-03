@@ -6,7 +6,7 @@
 /*   By: jking-ye <jking-ye@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/15 14:34:57 by jking-ye          #+#    #+#             */
-/*   Updated: 2022/11/01 16:52:57 by jking-ye         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:28:58 by jking-ye         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ int	main(int argc, char **argv)
 		get_textures(map);
 		create_screen(map);
 		map->last_frame = 0;
+		map->swapweapon = 2;
 		mlx_hook(map->win, 2, 0, deal_key, map);
 		mlx_hook(map->win, 6, 0, read_mouse, map);
 		mlx_loop_hook(map->mlx, render_screen, map);
